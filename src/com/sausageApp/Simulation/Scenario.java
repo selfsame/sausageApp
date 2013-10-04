@@ -5,11 +5,15 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.mappings.Ouya;
+import com.badlogic.gdx.utils.Json;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.joints.RevoluteJointDef;
+
+import com.badlogic.gdx.utils.JsonReader;
+
 import com.sausageApp.Game.myGame;
 
 import java.util.ArrayList;
@@ -22,34 +26,69 @@ public class Scenario {
     public ArrayList<Body> dynamics = new ArrayList<Body>();
     public ArrayList<Vec2> dynamic_sizes = new ArrayList<Vec2>();
 
+    private JsonReader JSON = new JsonReader();
+    private Json json = new Json();
+
+
 
 
 
     public Scenario() {
-        gravity = new Vec2(.0f, 16.0f);
+        gravity = new Vec2(.0f, 100.0f);
         world = new World(gravity);
+
+        //json.setElementType(ScenarioData.class, "static_objects", StaticObject.class);
+        ScenarioData scene = json.fromJson(ScenarioData.class, Gdx.files.internal( "scenarios/level01.json" ));
+        Object current = JSON.parse( Gdx.files.internal( "scenarios/level01.json" ) );
+
+        for (int i = 0; i < scene.static_objects.size(); i++) {
+            float x = scene.static_objects.get(i).x;
+            float y = scene.static_objects.get(i).y;
+            float w = scene.static_objects.get(i).w;
+            float h = scene.static_objects.get(i).h;
+
+
+            statics.add(createStatic(x, y, w, h));
+        }
+
+
+
         statics.add(createStatic(0f, Gdx.graphics.getHeight()-16f, Gdx.graphics.getWidth(), 8f));
         statics.add(createStatic(5f, Gdx.graphics.getHeight(), 10f, Gdx.graphics.getHeight()));
         statics.add(createStatic(0f, 16f, Gdx.graphics.getWidth(), 8f));
         statics.add(createStatic(Gdx.graphics.getWidth()-16f, Gdx.graphics.getHeight(), 10f, Gdx.graphics.getHeight()));
 
-        dynamics.add(createStatic(60f, 160f, 84f, 10f));
-        dynamics.add(createStatic(120f, 40f, 100f, 10f));
+        dynamics.add(createStatic(32f, 32f, 32f, 32f));
+        dynamics.add(createStatic(32f, 128f, 32f, 64f));
 
 
-        dynamic_sizes.add(new Vec2(84f,10f) );
-        dynamic_sizes.add(new Vec2(100f,10f) );
+        dynamic_sizes.add(new Vec2(32f,32f) );
+        dynamic_sizes.add(new Vec2(32f,64f) );
+
+        Gdx.app.log("CONVERTX", ":"+convertX(32f)+"::"+Gdx.graphics.getWidth());
 
     }
 
 
 
+    public Vec2 convertVec2(Vec2 v){
+        return new Vec2(convertX(v.x), convertY(v.y));
+    }
 
     public float convertX(float x){
-        return x;
+        return x * (Gdx.graphics.getWidth() * .001f) ;
     }
     public float convertY(float y){
-        return Gdx.graphics.getHeight() - (y);
+        return y * (Gdx.graphics.getWidth() * .001f);
+    }
+    public float unconvertX(float x){
+        return x * 1/(Gdx.graphics.getWidth() * .001f);
+    }
+    public float unconvertY(float y){
+        return y * 1/(Gdx.graphics.getWidth() * .001f);
+    }
+    public float flipY(float y){
+        return Gdx.graphics.getHeight() -  y;
     }
 
     public Vec2 getDimensions(Body b){
@@ -95,11 +134,11 @@ public class Scenario {
 
     public Body createStatic(float x, float y, float w, float h) {
         PolygonShape polygonShape = new PolygonShape();
-        polygonShape.setAsBox(w, h);
+        polygonShape.setAsBox(convertX(w), convertY(h));
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.STATIC;
-        bodyDef.position.set(x, y);
+        bodyDef.position.set(convertX(x), convertY(y));
         //bodyDef.angle = (float) (Math.PI / 4 * i);
         bodyDef.allowSleep = false;
         Body body = world.createBody(bodyDef);
