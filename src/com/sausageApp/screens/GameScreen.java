@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.sausageApp.Game.myGame;
 import com.sausageApp.Players.Player;
@@ -18,7 +20,9 @@ import com.sausageApp.Simulation.Scenario;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import java.util.ArrayList;
+import java.util.List;
 
+import com.badlogic.gdx.math.CatmullRomSpline;
 
 
 
@@ -92,14 +96,12 @@ public class GameScreen
         for(int i = 0; i < 20; i++) {
             float x =  sausage.get(i).getPosition().x ;
             float y =  scenario.convertY( sausage.get(i).getPosition().y );
-            shapeRenderer.filledCircle(x,y,16f);
+            shapeRenderer.filledCircle(x, y, 16f);
 
         }
         shapeRenderer.end();
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Curve);
-        shapeRenderer.curve(10, 100, 10, 50, 20, 120,  100, 10 );
-        shapeRenderer.end();
+
 
         shapeRenderer.setColor(new Color(1f, 1f, 1f, 1f));
 
@@ -142,6 +144,57 @@ public class GameScreen
 
 
         shapeRenderer.end();
+
+
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Curve);
+
+
+        Gdx.gl20.glLineWidth(3.0f);
+
+        for(int i = 0; i < 20; i++) {
+            float x =  sausage.get(i).getPosition().x ;
+            float y =  scenario.convertY( sausage.get(i).getPosition().y );
+
+
+
+
+            if ( i < 19 && i % 2 == 0){
+                float r1 =  sausage.get(i).getAngle()+1.57079633f;
+                Vec2 g1 = new Vec2((float)  Math.cos(-r1)*16, (float) Math.sin(-r1)*16);
+                float r2 =  sausage.get(i+1).getAngle()+1.57079633f;
+                Vec2 g2 = new Vec2((float)  Math.cos(-r2)*16, (float) Math.sin(-r2)*16);
+                float r3 =  sausage.get(i+2).getAngle()+1.57079633f;
+                Vec2 g3 = new Vec2((float)  Math.cos(-r3)*16, (float) Math.sin(-r3)*16);
+
+                float x2 =  sausage.get(i+1).getPosition().x ;
+                float y2 =  scenario.convertY( sausage.get(i+1).getPosition().y );
+                float x3 =  sausage.get(i+2).getPosition().x ;
+                float y3 =  scenario.convertY( sausage.get(i+2).getPosition().y );
+                float cx1 = (x2+g2.x + x+g1.x) / 2;
+                float cy1 = (y2+g2.y + y+g1.y) / 2;
+                float cx2 = (x2+g2.x + x3+g3.x) / 2;
+                float cy2 = (y2+g2.y + y3+g3.y) / 2;
+                shapeRenderer.setColor(new Color(1f, 0f, 1f, 1f));
+                shapeRenderer.curve(x+g1.x, y+g1.y, cx1, cy1, cx2, cy2, x3+g3.x, y3+g3.y);
+
+                cx1 = (x2-g2.x + x-g1.x) / 2;
+                cy1 = (y2-g2.y + y-g1.y) / 2;
+                cx2 = (x2-g2.x + x3-g3.x) / 2;
+                cy2 = (y2-g2.y + y3-g3.y) / 2;
+                shapeRenderer.setColor(new Color(0f, 1f, 1f, 1f));
+                shapeRenderer.curve(x-g1.x, y-g1.y, cx1, cy1, cx2, cy2, x3-g3.x, y3-g3.y);
+
+            }
+        }
+
+
+
+
+        shapeRenderer.end();
+
+
+
     }
 
     @Override
