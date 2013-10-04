@@ -3,12 +3,19 @@ package com.sausageApp.Game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.sausageApp.Players.Player;
 import com.sausageApp.screens.SplashScreen;
 import com.sausageApp.screens.GameScreen;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 //import org.jbox2d.dynamics.Body;
 
@@ -22,9 +29,12 @@ import com.sausageApp.screens.GameScreen;
  */
 public class myGame extends Game{
 
-    private Texture splashTexture;
-    private TextureRegion splashTextureRegion;
-    private SpriteBatch batch;
+
+
+    public ArrayList<Player> players = new ArrayList<Player>();
+    public Map<Controller, Player> player_map = new HashMap<Controller, Player>();
+    public int player_count = 0;
+    public ArrayList<Color> player_colors = new ArrayList<Color>();
 
     public SplashScreen getSplashScreen()
     {
@@ -38,7 +48,9 @@ public class myGame extends Game{
 
     @Override
     public void create() {
-        setScreen( getSplashScreen() );
+        player_colors.add(new Color(1f,.5f, .4f, 1f));
+        player_colors.add(new Color(.3f, .2f, .8f, 1f));
+        setScreen(getSplashScreen());
     }
 
     @Override

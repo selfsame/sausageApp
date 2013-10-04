@@ -15,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.sausageApp.Game.myGame;
+import com.sausageApp.Players.Avatar;
+import com.sausageApp.Players.Player;
 import tv.ouya.console.api.OuyaController;
 
 public class SplashScreen
@@ -25,22 +27,49 @@ public class SplashScreen
     private TextureRegion splashTextureRegion;
     private Stage stage;
 
+
     public SplashScreen(
             myGame game )
     {
         super( game );
     }
 
+    public void FindControllers(){
+        for(Controller controller: Controllers.getControllers()) {
+            if (!game.player_map.containsKey(controller)){
+                Player new_player = new Player(controller, game.player_colors.get(game.player_count), game.player_count);
+                game.players.add( new_player );
+                game.player_map.put(controller, new_player);
+                new_player.render_mode = game.player_count;
+                game.player_count += 1;
+            }
+        }
+        if (game.player_count == 0){
+            Player new_player = new Player(game.player_colors.get(game.player_count), game.player_count);
+            game.players.add( new_player );
+            game.player_count += 1;
+        }
+    }
 
     @Override
     public void show()
     {
         super.show();
 
+        FindControllers();
+
+
+
         stage = new Stage();
+
+
+
         Skin skin = super.getSkin();
 
         Gdx.input.setInputProcessor(stage);
+
+
+
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
@@ -63,17 +92,26 @@ public class SplashScreen
             }
         });
 
+
+
     }
 
     @Override
     public void render(
             float delta )
     {
+        float gamew = Gdx.graphics.getWidth();
+        float gameh = Gdx.graphics.getHeight();
         super.render( delta );
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT );
         batch.begin();
-        batch.draw( splashTextureRegion, 0, Gdx.graphics.getHeight()-Gdx.graphics.getWidth()*.6f, Gdx.graphics.getWidth()*.6f, Gdx.graphics.getWidth()*.6f );
+
+        for (int i = 0; i < game.players.size(); i++){
+            game.players.get(i).avatar.drawPortrait(batch, gamew*.1f+i*gamew*.25f, gameh*.6f, Gdx.graphics.getWidth()*.2f, Gdx.graphics.getWidth()*.2f);
+            game.players.get(i).handleInput();
+        }
+
         batch.end();
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();

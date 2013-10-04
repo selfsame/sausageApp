@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class Scenario {
     private Vec2 gravity;
     private World world;
-    public ArrayList<Body> statics = new ArrayList<Body>();
+    public ArrayList<StaticObject> statics = new ArrayList<StaticObject>();
     public ArrayList<Body> dynamics = new ArrayList<Body>();
     public ArrayList<Vec2> dynamic_sizes = new ArrayList<Vec2>();
 
@@ -37,35 +37,28 @@ public class Scenario {
         gravity = new Vec2(.0f, 100.0f);
         world = new World(gravity);
 
-        //json.setElementType(ScenarioData.class, "static_objects", StaticObject.class);
+
         ScenarioData scene = json.fromJson(ScenarioData.class, Gdx.files.internal( "scenarios/level01.json" ));
-        Object current = JSON.parse( Gdx.files.internal( "scenarios/level01.json" ) );
+
 
         for (int i = 0; i < scene.static_objects.size(); i++) {
+            String type = scene.static_objects.get(i).type;
             float x = scene.static_objects.get(i).x;
             float y = scene.static_objects.get(i).y;
             float w = scene.static_objects.get(i).w;
             float h = scene.static_objects.get(i).h;
 
-
-            statics.add(createStatic(x, y, w, h));
+            StaticObject new_static = new StaticObject(this, type, x, y, w, h);
+            statics.add(new_static);
         }
 
 
 
-        statics.add(createStatic(0f, Gdx.graphics.getHeight()-16f, Gdx.graphics.getWidth(), 8f));
-        statics.add(createStatic(5f, Gdx.graphics.getHeight(), 10f, Gdx.graphics.getHeight()));
-        statics.add(createStatic(0f, 16f, Gdx.graphics.getWidth(), 8f));
-        statics.add(createStatic(Gdx.graphics.getWidth()-16f, Gdx.graphics.getHeight(), 10f, Gdx.graphics.getHeight()));
+        statics.add(new StaticObject(this, "stone", 0f, convertX(Gdx.graphics.getHeight()-16f), convertX(Gdx.graphics.getWidth()), 8f));
+        statics.add(new StaticObject(this, "stone", 5f, convertX(Gdx.graphics.getHeight()), 10f, convertX(Gdx.graphics.getHeight())));
+        statics.add(new StaticObject(this, "stone", 0f, 16f, convertX(Gdx.graphics.getWidth()), 8f));
+        statics.add(new StaticObject(this, "stone", convertX(Gdx.graphics.getWidth()-16f), convertX(Gdx.graphics.getHeight()), 10f, convertX(Gdx.graphics.getHeight())));
 
-        dynamics.add(createStatic(32f, 32f, 32f, 32f));
-        dynamics.add(createStatic(32f, 128f, 32f, 64f));
-
-
-        dynamic_sizes.add(new Vec2(32f,32f) );
-        dynamic_sizes.add(new Vec2(32f,64f) );
-
-        Gdx.app.log("CONVERTX", ":"+convertX(32f)+"::"+Gdx.graphics.getWidth());
 
     }
 
@@ -76,16 +69,16 @@ public class Scenario {
     }
 
     public float convertX(float x){
-        return x * (Gdx.graphics.getWidth() * .001f) ;
+        return (1024f/Gdx.graphics.getWidth()) * x  ;
     }
     public float convertY(float y){
-        return y * (Gdx.graphics.getWidth() * .001f);
+        return (1024f/Gdx.graphics.getWidth()) * y;
     }
     public float unconvertX(float x){
-        return x * 1/(Gdx.graphics.getWidth() * .001f);
+        return x / (1024f/Gdx.graphics.getWidth()) ;
     }
     public float unconvertY(float y){
-        return y * 1/(Gdx.graphics.getWidth() * .001f);
+        return y / (1024f/Gdx.graphics.getWidth());
     }
     public float flipY(float y){
         return Gdx.graphics.getHeight() -  y;
@@ -134,11 +127,11 @@ public class Scenario {
 
     public Body createStatic(float x, float y, float w, float h) {
         PolygonShape polygonShape = new PolygonShape();
-        polygonShape.setAsBox(convertX(w), convertY(h));
+        polygonShape.setAsBox(w, h);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.STATIC;
-        bodyDef.position.set(convertX(x), convertY(y));
+        bodyDef.position.set(x, y);
         //bodyDef.angle = (float) (Math.PI / 4 * i);
         bodyDef.allowSleep = false;
         Body body = world.createBody(bodyDef);

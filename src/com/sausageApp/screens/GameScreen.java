@@ -21,6 +21,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.math.CatmullRomSpline;
 
@@ -36,8 +37,7 @@ public class GameScreen
     private Texture sausageSheet = new Texture("sheet.png");
     private TextureRegion sausageLink = new TextureRegion(sausageSheet, 0, 0, 32, 32);
     private TextureRegion sausageMiddle = new TextureRegion(sausageSheet, 0, 32, 32, 32);
-    private TextureRegion block = new TextureRegion(sausageSheet, 32, 32, 32, 32);
-    private TextureRegion stone = new TextureRegion(sausageSheet, 32, 0, 32, 32);
+
     private Scenario scenario;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
 
@@ -45,11 +45,10 @@ public class GameScreen
     private float last_y = 0f;
     private float r = 0f;
 
-    public ArrayList<Player> players = new ArrayList<Player>();
-    public int player_count = 0;
+
 
     public ArrayList<Vec2> spawn_points = new ArrayList<Vec2>();
-    public ArrayList<Color> colors = new ArrayList<Color>();
+
 
 
     public GameScreen(
@@ -67,23 +66,10 @@ public class GameScreen
 
         spawn_points.add(new Vec2(100f,100f));
         spawn_points.add(new Vec2(300f,150f));
-        colors.add(new Color(1.0f, .6f, .6f, 1.0f));
-        colors.add(new Color(.4f, .6f, 1f, 1.0f));
 
+        for (int i = 0; i < game.players.size(); i++){
+            game.players.get(i).SetScenario(scenario,spawn_points.get(game.players.get(i).uid));
 
-        for(Controller controller: Controllers.getControllers()) {
-            Player new_player = new Player(scenario, controller,  spawn_points.get(player_count), colors.get(player_count));
-            players.add( new_player );
-            new_player.render_mode = player_count;
-
-            player_count += 1;
-
-        }
-
-        if (player_count == 0){
-            Player new_player = new Player(scenario,  spawn_points.get(player_count), colors.get(player_count));
-            players.add( new_player );
-            player_count += 1;
         }
 
     }
@@ -98,28 +84,17 @@ public class GameScreen
         super.render( delta );
         scenario.step( delta );
 
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+        Gdx.gl.glClearColor(.1f, .2f, .2f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        for(int i = 0; i < player_count; i++) {
-            Player player = players.get(i);
+        for(int i = 0; i < game.player_count; i++) {
+            Player player = game.players.get(i);
             player.handleInput();
             player.render();
-
         }
 
         batch.begin();
-
-        for(int i = 0; i < scenario.statics.size(); i++) {
-            float fx =  scenario.statics.get(i).getPosition().x ;
-            float fy =  scenario.flipY(scenario.statics.get(i).getPosition().y );
-            Vec2 fv =  scenario.getDimensions(scenario.statics.get(i));
-            //fv = new Vec2(scenario.unconvertX(fv.x), scenario.unconvertY(fv.y));
-            batch.draw(stone, fx, fy, fv.x/2f, fv.y/2f);
-        }
-
-
-
+        for (int i = 0; i < scenario.statics.size(); i++) scenario.statics.get(i).render(batch);
         batch.end();
 
 
