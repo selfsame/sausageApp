@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -17,6 +18,11 @@ import com.sausageApp.Simulation.Scenario;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import java.util.ArrayList;
+
+
+
+
+
 
 
 public class GameScreen
@@ -35,8 +41,12 @@ public class GameScreen
     private float last_y = 0f;
     private float r = 0f;
 
-    public ArrayList<Player> players;
+    public ArrayList<Player> players = new ArrayList<Player>();
     public int player_count = 0;
+
+    public ArrayList<Vec2> spawn_points = new ArrayList<Vec2>();
+    public ArrayList<Color> colors = new ArrayList<Color>();
+
 
     public GameScreen(
             myGame game )
@@ -51,19 +61,48 @@ public class GameScreen
         super.show();
         scenario = new Scenario();
 
+        spawn_points.add(new Vec2(100f,100f));
+        spawn_points.add(new Vec2(300f,150f));
+        colors.add(new Color(1.0f, .6f, .6f, 1.0f));
+        colors.add(new Color(.4f, .6f, 1f, 1.0f));
+
+
         for(Controller controller: Controllers.getControllers()) {
-            players.add( new Player(scenario, controller,  new Vec2(100f,100f)) );
+            Player new_player = new Player(scenario, controller,  spawn_points.get(player_count), colors.get(player_count));
+            players.add( new_player );
             player_count += 1;
         }
 
-
+        if (player_count == 0){
+            Player new_player = new Player(scenario,  spawn_points.get(player_count), colors.get(player_count));
+            players.add( new_player );
+            player_count += 1;
+        }
 
     }
+
+
 
     public void drawLineSausage(ArrayList<Body> sausage){
         Gdx.gl20.glLineWidth(1.0f);
 
-        shapeRenderer.setColor(1f, .6f, .6f, 1f);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.FilledCircle);
+
+        for(int i = 0; i < 20; i++) {
+            float x =  sausage.get(i).getPosition().x ;
+            float y =  scenario.convertY( sausage.get(i).getPosition().y );
+            shapeRenderer.filledCircle(x,y,16f);
+
+        }
+        shapeRenderer.end();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Curve);
+        shapeRenderer.curve(10, 100, 10, 50, 20, 120,  100, 10 );
+        shapeRenderer.end();
+
+        shapeRenderer.setColor(new Color(1f, 1f, 1f, 1f));
+
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         last_x = sausage.get(0).getPosition().x ;
         last_y = scenario.convertY( sausage.get(0).getPosition().y ) ;
@@ -125,12 +164,13 @@ public class GameScreen
         for(int i = 0; i < player_count; i++) {
             Player player = players.get(i);
             player.handleInput();
+            shapeRenderer.setColor(player.color);
             drawLineSausage(player.sausage);
         }
 
         batch.begin();
 
-        for(int i = 0; i < 2; i++) {
+        for(int i = 0; i < 4; i++) {
             float fx =  scenario.statics.get(i).getPosition().x ;
             float fy =  scenario.convertY( scenario.statics.get(i).getPosition().y );
             Vec2 fv =  scenario.getDimensions(scenario.statics.get(i));

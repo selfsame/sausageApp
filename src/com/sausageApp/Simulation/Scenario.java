@@ -30,9 +30,13 @@ public class Scenario {
         world = new World(gravity);
         statics.add(createStatic(0f, Gdx.graphics.getHeight()-16f, Gdx.graphics.getWidth(), 8f));
         statics.add(createStatic(5f, Gdx.graphics.getHeight(), 10f, Gdx.graphics.getHeight()));
+        statics.add(createStatic(0f, 16f, Gdx.graphics.getWidth(), 8f));
+        statics.add(createStatic(Gdx.graphics.getWidth()-16f, Gdx.graphics.getHeight(), 10f, Gdx.graphics.getHeight()));
 
         dynamics.add(createStatic(60f, 160f, 84f, 10f));
         dynamics.add(createStatic(120f, 40f, 100f, 10f));
+
+
         dynamic_sizes.add(new Vec2(84f,10f) );
         dynamic_sizes.add(new Vec2(100f,10f) );
 
@@ -136,6 +140,6 @@ public class Scenario {
     }
 
     public void step(float delta) {
-          world.step(delta, 1, 1);
+          world.step(delta, 5, 5);
     }
 }
