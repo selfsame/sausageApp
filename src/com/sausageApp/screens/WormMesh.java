@@ -20,12 +20,12 @@ public class WormMesh {
     public ArrayList<Float> verticies = new ArrayList<Float>();
     public ArrayList<Short> indicies = new ArrayList<Short>();
 
-    public ArrayList<MeshSegment> segments;
-    public int segment_count = 10;
+    public ArrayList<MeshSegment> segments = new ArrayList<MeshSegment>();
+    public int segment_count = 9;
 
     public WormMesh(){
         for (int i=0;i<segment_count;i++){
-            segments.add( new MeshSegment(i), verticies );
+            segments.add( new MeshSegment(i, verticies, indicies) );
         }
 
     }
@@ -33,11 +33,19 @@ public class WormMesh {
 
 
     public Mesh CompileMesh(){
-        Mesh mesh = new Mesh(false, 512, 0,
-        new VertexAttribute(VertexAttributes.Usage.Position, 4, ShaderProgram.POSITION_ATTRIBUTE),
-        new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));
-
-        mesh.setVertices( verticies );
+        Mesh mesh = new Mesh(false, 512, 512,
+        new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
+        new VertexAttribute(VertexAttributes.Usage.Color, 4, "a_color"));
+        float[] verts = new float[verticies.size()];
+        for (int i=0;i<verticies.size();i++){
+            verts[i] = verticies.get(i);
+        }
+        short[] inds = new short[indicies.size()];
+        for (int i=0;i<indicies.size();i++){
+            inds[i] = indicies.get(i);
+        }
+        mesh.setVertices( verts );
+        mesh.setIndices( inds );
         return mesh;
     }
 }
