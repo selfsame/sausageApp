@@ -15,6 +15,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.sausageApp.Game.myGame;
 import com.sausageApp.Players.Player;
 import com.sausageApp.Simulation.Scenario;
@@ -42,7 +45,13 @@ public class GameScreen
     private float last_y = 0f;
     private float r = 0f;
 
+    private Stage stage;
     private SpriteBatch facebatch = new SpriteBatch();
+    public Touchpad touchpad;
+    private Touchpad.TouchpadStyle touchpadStyle;
+    private Skin touchpadSkin;
+    private Drawable touchBackground;
+    private Drawable touchKnob;
 
     public ArrayList<Vec2> spawn_points = new ArrayList<Vec2>();
 
@@ -59,7 +68,9 @@ public class GameScreen
     public void show()
     {
         super.show();
-        scenario = new Scenario(game);
+        scenario = new Scenario(game, this);
+
+
 
         spawn_points.add(new Vec2(100f,100f));
         spawn_points.add(new Vec2(300f,150f));
@@ -68,10 +79,34 @@ public class GameScreen
             game.players.get(i).SetScenario(scenario,spawn_points.get(game.players.get(i).uid));
 
         }
-
+        SetupTouchpads();
     }
 
+    public void SetupTouchpads(){
+        //Create a touchpad skin
+        touchpadSkin = new Skin();
+        //Set background image
+        touchpadSkin.add("touchBackground", new Texture("data/touchBackground.png"));
+        //Set knob image
+        touchpadSkin.add("touchKnob", new Texture("data/touchKnob.png"));
+        //Create TouchPad Style
+        touchpadStyle = new Touchpad.TouchpadStyle();
+        //Create Drawable's from TouchPad skin
+        touchBackground = touchpadSkin.getDrawable("touchBackground");
+        touchKnob = touchpadSkin.getDrawable("touchKnob");
+        //Apply the Drawables to the TouchPad Style
+        touchpadStyle.background = touchBackground;
+        touchpadStyle.knob = touchKnob;
+        //Create new TouchPad with the created style
+        touchpad = new Touchpad(scenario.P2S(10f), touchpadStyle);
+        //setBounds(x,y,width,height)
+        touchpad.setBounds(scenario.P2S(15f), scenario.P2S(15f), scenario.P2S(128f), scenario.P2S(128f));
 
+        //Create a Stage and add TouchPad
+        stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, batch);
+        stage.addActor(touchpad);
+        Gdx.input.setInputProcessor(stage);
+    }
 
 
     @Override
@@ -81,6 +116,7 @@ public class GameScreen
         long startTime = System.nanoTime();
 
         super.render( delta );
+
         scenario.step( delta );
 
         Gdx.gl.glClearColor(.1f, .2f, .2f, 1f);
@@ -113,7 +149,8 @@ public class GameScreen
         long duration = endTime - startTime;
         scenario.game.profiler.addStat("\nGameScreen.render(): (ms) "+(int)(duration*1.0e-6));
 
-
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
     }
 
     @Override

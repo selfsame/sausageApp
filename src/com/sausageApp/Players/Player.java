@@ -198,7 +198,14 @@ public class Player {
                 sausage.tail_link.applyLinearImpulse(new Vec2(0f, leftYAxis*FORCE), 4, false, true, .7f);
             }
 
+
         }
+        float touch_left_x = scenario.game_screen.touchpad.getKnobPercentX();
+        float touch_left_y = scenario.game_screen.touchpad.getKnobPercentY();
+        sausage.head_link.applyLinearImpulse(new Vec2(-touch_left_x*FORCE*1.5f, 0f), 4, false, true, .7f);
+        sausage.head_link.applyLinearImpulse(new Vec2(0f, touch_left_y *FORCE*1.5f), 4, false, true, .7f);
+
+
     }
 
 }

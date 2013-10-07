@@ -48,7 +48,7 @@ public class SplashScreen
 
         WormMesh worm = new WormMesh(10);
         mesh = worm.CompileMesh();
-        test_shader = worm.MakeDebugShader();
+        test_shader = worm.MakeShader();
 
 
 
@@ -147,7 +147,7 @@ public class SplashScreen
         }
 
 
-        Gdx.gl20.glLineWidth(2f);
+        Gdx.gl20.glLineWidth(1f);
         test_shader.begin();
         ticker += .01f;
         //float ts = (float)Math.sin(ticker)*.1f;
@@ -194,7 +194,7 @@ public class SplashScreen
 //                1f,
 //                1f, // repeated last entry
 //        }, 0, 12);
-        mesh.render(test_shader, GL20.GL_LINES);
+        mesh.render(test_shader, GL20.GL_LINE_STRIP);
         test_shader.end();
 
     }

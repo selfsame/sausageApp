@@ -22,7 +22,7 @@ public class MeshSegment {
         float[] interpolation_left = new float[]{.5f,0.0f,0f};
         float[] interpolation_right = new float[]{0f,0.0f,.5f};
 
-        int v_count = node_index*10; // was 6
+        int v_count = node_index*10; // the first node only has 5 vertices
 
         for (int i=0;i<3;i++){
             for (int j=0;j<2;j++){
@@ -34,6 +34,19 @@ public class MeshSegment {
               verticies.add( cp2[i] );
               verticies.add( interpolation_left[i] ); // this is the pair_index, which is a weight for interpolation between prev and next.
               verticies.add( interpolation_right[i] );
+
+                if (node_index == 1){
+                    verticies.add( 1f );
+                    verticies.add( .2f );
+                    verticies.add( .2f );
+                    verticies.add( 1.0f );
+                } else {
+                    verticies.add( .2f );
+                    verticies.add( .8f );
+                    verticies.add( .8f );
+                    verticies.add( 1.0f );
+                }
+
             }
         }
 
@@ -50,6 +63,18 @@ public class MeshSegment {
                 verticies.add( 1f );
                 verticies.add( interpolation_left[i] ); // this is the pair_index, which is a weight for interpolation between prev and next.
                 verticies.add( interpolation_right[i] );
+
+                if (node_index == 1){
+                    verticies.add( 1f );
+                    verticies.add( .2f );
+                    verticies.add( .2f );
+                    verticies.add( 1.0f );
+                } else {
+                    verticies.add( .2f );
+                    verticies.add( .8f );
+                    verticies.add( .8f );
+                    verticies.add( 1.0f );
+                }
             }
         }
 
@@ -104,4 +129,75 @@ public class MeshSegment {
 
 
     }
+
+
+    public MeshSegment(int node_index, ArrayList<Float> verticies, ArrayList<Short> indicies, boolean first){
+        //left, middle, and right pairs
+        //each pair has a top and bottom vertex
+        // each vertex has x, y, node_index, curve_coord_v, curve_coord_w, segment_pair_index
+        float[] x_spread = new float[]{0f,1.0f,.0f};
+        float[] y_spread = new float[]{1f,-1f};
+        float[] cp1 = new float[]{0f,.5f,1f};
+        float[] cp2 = new float[]{0f,0f,1f};
+        float[] interpolation_left = new float[]{.5f,0.0f,0f};
+        float[] interpolation_right = new float[]{0f,0.0f,.5f};
+
+        int v_count = 0; // was 6
+
+        for (int i=0;i<3;i++){
+            for (int j=0;j<2;j++){
+                if (i==0){
+                    if (j==0){
+                        verticies.add( x_spread[i] ); //this is actually used to determine if middle;
+                        verticies.add( .5f );
+                        verticies.add( (float)node_index );
+
+                        verticies.add( .5f );
+                        verticies.add( 0f );
+                        verticies.add( 2.0f); // this is the pair_index, which is a weight for interpolation between prev and next.
+                        verticies.add( 0f );
+
+                        verticies.add( .2f );
+                        verticies.add( .8f );
+                        verticies.add( .8f );
+                        verticies.add( 1.0f );
+                    }
+
+                }  else {
+                    verticies.add( x_spread[i] ); //this is actually used to determine if middle;
+                    verticies.add( y_spread[j] );
+                    verticies.add( (float)node_index );
+
+                    verticies.add( cp1[i] );
+                    verticies.add( cp2[i] );
+                    verticies.add( interpolation_left[i] ); // this is the pair_index, which is a weight for interpolation between prev and next.
+                    verticies.add( interpolation_right[i] );
+                }
+            }
+        }
+
+
+
+        indicies.add( (short)(v_count + 1) );
+        indicies.add( (short)(v_count + 0) );
+        indicies.add( (short)(v_count + 2) );
+
+        indicies.add( (short)(v_count + 2) );
+        indicies.add( (short)(v_count + 3) );
+        indicies.add( (short)(v_count + 4) );
+
+        indicies.add( (short)(v_count + 2) );
+        indicies.add( (short)(v_count + 5) );
+        indicies.add( (short)(v_count + 4) );
+
+
+
+
+
+
+
+    }
+
+
+
 }

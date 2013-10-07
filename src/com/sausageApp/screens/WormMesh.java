@@ -26,7 +26,11 @@ public class WormMesh {
     public WormMesh(int _count){
         segment_count = _count;
         for (int i=0;i<segment_count;i++){
-            segments.add( new MeshSegment(i, verticies, indicies) );
+//            if (i==0){
+//                segments.add( new MeshSegment(i, verticies, indicies,true) );
+//            } else {
+              segments.add( new MeshSegment(i, verticies, indicies) );
+
         }
 
     }
@@ -36,7 +40,8 @@ public class WormMesh {
     public Mesh CompileMesh(){
         Mesh mesh = new Mesh(false, 512, 512,
         new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
-        new VertexAttribute(VertexAttributes.Usage.Color, 4, "a_color"));
+        new VertexAttribute(VertexAttributes.Usage.Color, 4, "a_color"),
+        new VertexAttribute(VertexAttributes.Usage.Normal, 4, "a_normal"));
         float[] verts = new float[verticies.size()];
         for (int i=0;i<verticies.size();i++){
             verts[i] = verticies.get(i);
@@ -54,10 +59,12 @@ public class WormMesh {
         String vertexShader =
                 "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
                 + "attribute vec4 a_color ;   \n"
+                + "attribute vec4 a_normal ;   \n"
                 + "uniform vec2 nodes[128];                           \n"
                 //+ "uniform float concavity[48];                           \n"
                 + "                       \n"
                 + "varying vec4 v_color;                        \n"
+                + "varying vec4 v_normal;   \n"
                 + "varying float v_concavity;                        \n"
                 + "vec4 mod;                            \n"
                 + "int index;                           \n"
@@ -80,12 +87,12 @@ public class WormMesh {
 
                 + "   vec2 pos = node + ((next - node ) * interpolation_right + ((prev - node ) * interpolation_left ) )   ;                      \n"
 
-
+                + " v_normal = a_normal;"
                 + " next_normal = vec2(a_position.y * -1.0*(next.y-node.y)*1.0 , a_position.y * (next.x-node.x)*1.0  );                      \n"
                 + " prev_normal = vec2(a_position.y * -1.0*(node.y-prev.y)*1.0 , a_position.y * (node.x-prev.x)*1.0 );                      \n"
                 + " next_normal = next_normal*.03/length(next_normal);"
                 + " prev_normal = prev_normal*.03/length(prev_normal);"
-                +"   vec2 nspread = (next_normal * interpolation_right + prev_normal * interpolation_left) + a_position.x*((prev_normal+next_normal)/4) ;"
+                +"   vec2 nspread = (next_normal * interpolation_right + prev_normal * interpolation_left) + a_position.x*(normalize((prev_normal+next_normal)/2.0)*.015) ;"
                 + "  v_color = a_color;                     \n"
                 + "                                      \n"
                 + "  v_concavity = sign(  distance(next_normal+next, prev_normal+prev) - distance(next, prev));                         \n"
@@ -99,16 +106,17 @@ public class WormMesh {
 
                 + "#endif                      \n"
                 + "                      \n"
+                + "varying vec4 v_normal ;   \n"
                 + "varying vec4 v_color;                       \n"
                 + "varying float v_concavity;                        \n"
                 + "float mask;"
                 + "void main()                 \n"
                 + "{                           \n"
                 + "float thresh = 1.0;"
-                + "vec4 col = vec4(1.0,.5,.5,1.0); "
+                + "vec4 col = v_normal; "
                 + "mask = (v_color.x * v_color.x) - ( v_color.y) ;"
                 //+ "  if(mask*v_concavity > -0.1) col = vec4(1.0,.5,.5,1.0); \n"
-                + "  if(mask*v_concavity > 0.0) col = vec4(.1,.2,.2,1.0); "//discard; \n"    (.1f, .2f, .2f, 1f)
+                + "  if(mask*v_concavity > 0.1) col = vec4(.1,.2,.2,1.0); "//discard; \n"    (.1f, .2f, .2f, 1f)
 
                 + "  gl_FragColor = col;    \n"
 

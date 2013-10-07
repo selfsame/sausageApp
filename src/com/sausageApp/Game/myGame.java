@@ -34,6 +34,8 @@ public class myGame extends Game{
 
     public Profiler profiler;
 
+    public Screen current_screen;
+
     public SplashScreen getSplashScreen()
     {
         return new SplashScreen( this );
@@ -90,6 +92,7 @@ public class myGame extends Game{
             Screen screen )
     {
         super.setScreen( screen );
+        current_screen = screen;
         Gdx.app.log( "APP", "Setting screen: " + screen.getClass().getSimpleName() );
     }
 

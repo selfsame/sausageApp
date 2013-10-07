@@ -149,7 +149,7 @@ public class Sausage {
         sausage_shader.begin();
         UpdateMesh();
         if (player.debug_draw_sausage_mesh_lines){
-            mesh.render(sausage_shader, GL20.GL_LINES);
+            mesh.render(sausage_shader, GL20.GL_LINE_LOOP);
         } else {
             mesh.render(sausage_shader, GL20.GL_TRIANGLES);
         }
@@ -176,7 +176,9 @@ public class Sausage {
 
 
         float[] nodes = new float[(sausage_length+4)*2];
+        //Vector2 nlp = gdx2gl((scenario.B2S(sausage_bodies.get(1).getPosition())));
         Vector2 lp = gdx2gl((scenario.B2S(sausage_bodies.get(0).getPosition())));
+        //Vector2 ilp = lp.sub(nlp);
         nodes[0] =  lp.x;
         nodes[1] = lp.y;
         for(int i = 1; i < sausage_length+1; i++) {
@@ -184,11 +186,13 @@ public class Sausage {
             nodes[i*2] =  lp.x;
             nodes[i*2+1] =  lp.y;
         }
+        Vector2 nlp = gdx2gl((scenario.B2S(sausage_bodies.get(sausage_bodies.size()-2).getPosition())));
         lp = gdx2gl((scenario.B2S(sausage_bodies.get(sausage_bodies.size()-1).getPosition())));
-        nodes[(sausage_length+1)*2+1] =  lp.x;
-        nodes[(sausage_length+1)*2+2] = lp.y;
-        nodes[(sausage_length+1)*2+3] =  lp.x;
-        nodes[(sausage_length+1)*2+4] = lp.y;
+        Vector2 ilp = nlp.sub(lp);
+        nodes[(sausage_length+1)*2+1] =  lp.x+ilp.x;
+        nodes[(sausage_length+1)*2+2] = lp.y+ilp.y;
+        nodes[(sausage_length+1)*2+3] =  lp.x+(ilp.x*2f);
+        nodes[(sausage_length+1)*2+4] = lp.y+(ilp.y*2f);
 
         sausage_shader.setUniform2fv("nodes", nodes, 0, (sausage_length+1)*2);
 //        sausage_shader.setUniform2fv("nodes", new float[]{

@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.sausageApp.Game.myGame;
+import com.sausageApp.screens.GameScreen;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
@@ -26,12 +27,13 @@ public class Scenario {
 
 
     public myGame game;
+    public GameScreen game_screen;
 
-
-    public Scenario(myGame _game) {
+    public Scenario(myGame _game, GameScreen _game_screen) {
         gravity = new Vec2(.0f, 20.0f);
         world = new World(gravity);
         game = _game;
+        game_screen = _game_screen;
 
 
 
