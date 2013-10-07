@@ -46,9 +46,9 @@ public class SplashScreen
 
 
 
-        WormMesh worm = new WormMesh();
+        WormMesh worm = new WormMesh(10);
         mesh = worm.CompileMesh();
-        test_shader = worm.MakeShader();
+        test_shader = worm.MakeDebugShader();
 
 
 
@@ -152,48 +152,48 @@ public class SplashScreen
         ticker += .01f;
         //float ts = (float)Math.sin(ticker)*.1f;
         float ts = 0f;
-        test_shader.setUniform2fv("nodes", new float[]{
-                .01f,.9f, //repeated first entry
-                .05f,.8f,
-                -.05f,.7f-ts,
-                .1f,.6f+ts,
-                -.1f,.5f-ts,
-                .05f,.4f+ts,
-                .0f,-.06f-ts,
-                .1f,.05f+ts,
-                .2f,.1f-ts,
-                .3f,.0f+ts,
-                .4f,-.1f-ts,
-                .5f,-.2f, // repeated last entry
-                    }, 0, 24);
 //        test_shader.setUniform2fv("nodes", new float[]{
-//                .01f,.0f, //repeated first entry
-//                .05f,.0f,
-//                .1f,.2f,
-//                .1f,.0f,
-//                .3f,.25f,
-//                .4f,.05f,
-//                .5f,.25f,
-//                .6f,.05f,
-//                .7f,.25f,
-//                .8f,.05f,
-//                .9f,.25f,
-//                .9f,.25f, // repeated last entry
-//        }, 0, 24);
-        test_shader.setUniform1fv("concavity", new float[]{
-                1f, //repeated first entry
-                -1f,
-                1f,
-                -1f,
-                1f,
-                -1f,
-                1f,
-                -1f,
-                1f,
-                -1f,
-                1f,
-                -1f, // repeated last entry
-        }, 0, 12);
+//                .01f,.9f, //repeated first entry
+//                .05f,.8f,
+//                -.05f,.7f-ts,
+//                .1f,.6f+ts,
+//                -.1f,.5f-ts,
+//                .05f,.4f+ts,
+//                .0f,-.06f-ts,
+//                .1f,.05f+ts,
+//                .2f,.1f-ts,
+//                .3f,.0f+ts,
+//                .4f,-.1f-ts,
+//                .5f,-.2f, // repeated last entry
+//                    }, 0, 24);
+        test_shader.setUniform2fv("nodes", new float[]{
+                .0f,.0f, //repeated first entry
+                .0f,.0f,
+                .1f,.0f,
+                .2f,-.2f,
+                .3f,.0f,
+                .4f,.0f,
+                .5f,-.1f,
+                .6f,.0f,
+                .7f,.1f,
+                .8f,.0f,
+                .9f,.0f,
+                .9f,.0f, // repeated last entry
+        }, 0, 24);
+//        test_shader.setUniform1fv("concavity", new float[]{
+//                1f, //repeated first entry
+//                1f,
+//                1f,
+//                1f,
+//                1f,
+//                1f,
+//                1f,
+//                1f,
+//                1f,
+//                1f,
+//                1f,
+//                1f, // repeated last entry
+//        }, 0, 12);
         mesh.render(test_shader, GL20.GL_LINES);
         test_shader.end();
 

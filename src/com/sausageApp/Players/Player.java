@@ -185,8 +185,19 @@ public class Player {
             float leftYAxis = controller.getAxis(Ouya.AXIS_LEFT_Y);
             float rightXAxis = controller.getAxis(Ouya.AXIS_RIGHT_X);
             float rightYAxis = controller.getAxis(Ouya.AXIS_RIGHT_Y);
-            sausage.head.setLinearVelocity(new Vec2(left_linV.x+leftXAxis*22f, left_linV.y+leftYAxis*22f));
-            sausage.tail.setLinearVelocity(new Vec2(right_linV.x+rightXAxis*22f, right_linV.y+rightYAxis*22f));
+            if (leftXAxis > 0.0 || leftXAxis < 0.0){
+                sausage.head_link.applyLinearImpulse(new Vec2(leftXAxis*FORCE, 0f), 4, false, true, .7f);
+            }
+            if (leftYAxis > 0.0 || leftYAxis < 0.0){
+                sausage.head_link.applyLinearImpulse(new Vec2(0f, leftYAxis*FORCE), 4, false, true, .7f);
+            }
+            if (rightXAxis > 0.0 || rightXAxis < 0.0){
+                sausage.tail_link.applyLinearImpulse(new Vec2(leftXAxis*FORCE, 0f), 4, false, true, .7f);
+            }
+            if (rightYAxis > 0.0 || rightYAxis < 0.0){
+                sausage.tail_link.applyLinearImpulse(new Vec2(0f, leftYAxis*FORCE), 4, false, true, .7f);
+            }
+
         }
     }
 

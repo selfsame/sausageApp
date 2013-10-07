@@ -22,7 +22,7 @@ public class MeshSegment {
         float[] interpolation_left = new float[]{.5f,0.0f,0f};
         float[] interpolation_right = new float[]{0f,0.0f,.5f};
 
-        int v_count = node_index*6;
+        int v_count = node_index*10; // was 6
 
         for (int i=0;i<3;i++){
             for (int j=0;j<2;j++){
@@ -37,36 +37,69 @@ public class MeshSegment {
             }
         }
 
-//        indicies.add( (short)v_count );
-//        indicies.add( (short)(v_count + 2) );
-//        indicies.add( (short)(v_count + 4) );
-//
-//        indicies.add( (short)(v_count + 1) );
-//        indicies.add( (short)(v_count + 3) );
-//        indicies.add( (short)(v_count + 5) );
+         x_spread = new float[]{0f,.0f};
+         interpolation_left = new float[]{.5f,0f};
+         interpolation_right = new float[]{0f,.5f};
+        for (int i=0;i<2;i++){
+            for (int j=0;j<2;j++){
+                verticies.add( x_spread[i] ); //this is actually used to determine if middle;
+                verticies.add( y_spread[j] );
+                verticies.add( (float)node_index );
 
-        indicies.add( (short)(v_count ) );
-        indicies.add( (short)(v_count + 1) );
-        indicies.add( (short)(v_count + 2) );
+                verticies.add( 1f );
+                verticies.add( 1f );
+                verticies.add( interpolation_left[i] ); // this is the pair_index, which is a weight for interpolation between prev and next.
+                verticies.add( interpolation_right[i] );
+            }
+        }
 
-        indicies.add( (short)(v_count + 1) );
-        indicies.add( (short)(v_count + 2) );
-        indicies.add( (short)(v_count + 3) );
+        indicies.add( (short)(v_count + 6) );
+        indicies.add( (short)(v_count + 7) );
+        indicies.add( (short)(v_count + 8) );
 
+        indicies.add( (short)(v_count + 7) );
+        indicies.add( (short)(v_count + 8) );
+        indicies.add( (short)(v_count + 9) );
+
+
+
+
+
+
+
+
+        indicies.add( (short)v_count );
         indicies.add( (short)(v_count + 2) );
-        indicies.add( (short)(v_count + 3) );
         indicies.add( (short)(v_count + 4) );
 
+        indicies.add( (short)(v_count + 1) );
         indicies.add( (short)(v_count + 3) );
-        indicies.add( (short)(v_count + 4) );
         indicies.add( (short)(v_count + 5) );
 
 
 
 
+
+//        indicies.add( (short)(v_count ) );
 //        indicies.add( (short)(v_count + 1) );
 //        indicies.add( (short)(v_count + 2) );
+//
 //        indicies.add( (short)(v_count + 1) );
+//        indicies.add( (short)(v_count + 2) );
+//        indicies.add( (short)(v_count + 3) );
+//
+//        indicies.add( (short)(v_count + 2) );
+//        indicies.add( (short)(v_count + 3) );
+//        indicies.add( (short)(v_count + 4) );
+//
+//        indicies.add( (short)(v_count + 3) );
+//        indicies.add( (short)(v_count + 4) );
+//        indicies.add( (short)(v_count + 5) );
+
+
+
+
+
 
 
 

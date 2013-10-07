@@ -34,7 +34,7 @@ public class Sausage {
     public ArrayList<Link> sausage_links = new ArrayList<Link>();
     public Link head_link;
     public Link tail_link;
-    public int sausage_length = 10;
+    public int sausage_length = 20;
 
     private Scenario scenario;
 
@@ -95,8 +95,8 @@ public class Sausage {
 
         RevoluteJointDef jd = new RevoluteJointDef();
         jd.collideConnected = false;
-        jd.upperAngle = .97079633f;
-        jd.lowerAngle = -.97079633f;
+        jd.upperAngle = 1.47079633f;
+        jd.lowerAngle = -1.47079633f;
         jd.enableLimit = true;
 
 
@@ -143,7 +143,9 @@ public class Sausage {
         }
 
 
-        Gdx.gl20.glLineWidth(2f);
+        Gdx.gl20.glLineWidth(1f);
+        Gdx.gl20.glEnable(GL20.GL_BLEND);
+        //Gdx.gl20.glBlendFunc(GL20.GL_BLEND_DST_ALPHA);
         sausage_shader.begin();
         UpdateMesh();
         if (player.debug_draw_sausage_mesh_lines){
@@ -173,17 +175,22 @@ public class Sausage {
     public void UpdateMesh(){
 
 
-        float[] nodes = new float[24];
+        float[] nodes = new float[(sausage_length+4)*2];
         Vector2 lp = gdx2gl((scenario.B2S(sausage_bodies.get(0).getPosition())));
         nodes[0] =  lp.x;
         nodes[1] = lp.y;
         for(int i = 1; i < sausage_length+1; i++) {
-            lp = gdx2gl((scenario.B2S(sausage_bodies.get(i).getPosition())));
+            lp = gdx2gl((scenario.B2S(sausage_bodies.get(i-1).getPosition())));
             nodes[i*2] =  lp.x;
             nodes[i*2+1] =  lp.y;
         }
+        lp = gdx2gl((scenario.B2S(sausage_bodies.get(sausage_bodies.size()-1).getPosition())));
+        nodes[(sausage_length+1)*2+1] =  lp.x;
+        nodes[(sausage_length+1)*2+2] = lp.y;
+        nodes[(sausage_length+1)*2+3] =  lp.x;
+        nodes[(sausage_length+1)*2+4] = lp.y;
 
-        sausage_shader.setUniform2fv("nodes", nodes, 0, 24);
+        sausage_shader.setUniform2fv("nodes", nodes, 0, (sausage_length+1)*2);
 //        sausage_shader.setUniform2fv("nodes", new float[]{
 //                .01f,.0f, //repeated first entry
 //                .05f,.0f,
@@ -198,20 +205,22 @@ public class Sausage {
 //                .9f,.25f,
 //                .9f,.25f, // repeated last entry
 //        }, 0, 24);
-        sausage_shader.setUniform1fv("concavity", new float[]{
-                1f, //repeated first entry
-                -1f,
-                1f,
-                -1f,
-                1f,
-                -1f,
-                1f,
-                -1f,
-                1f,
-                -1f,
-                1f,
-                -1f, // repeated last entry
-        }, 0, 12);
+//        sausage_shader.setUniform1fv("concavity", new float[]{
+//                1f, //repeated first entry
+//                1f,
+//                1f,
+//                1f,
+//                1f,
+//                1f,
+//                1f,
+//                1f,
+//                1f,
+//                1f,
+//                1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,
+//                1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,
+//                1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,
+//                 // repeated last entry
+//        }, 0, 48);
 
 
     }
@@ -220,7 +229,7 @@ public class Sausage {
 
     private void DefineShaders(){
 
-        WormMesh worm = new WormMesh();
+        WormMesh worm = new WormMesh(sausage_length);
         mesh = worm.CompileMesh();
         sausage_shader = worm.MakeShader();
 
