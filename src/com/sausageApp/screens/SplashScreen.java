@@ -48,8 +48,10 @@ public class SplashScreen
 
         String vertexShader =
                 "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
+                + "attribute vec2 a_texCoords ;   \n"
                 + "uniform vec2 nodes[22];                           \n"
-                + "varying vec4 frag_pos;                        \n"
+                + "                       \n"
+                + "varying vec2 v_texCoords;                        \n"
                 + "vec4 mod;                            \n"
                 + "int index;                           \n"
                 + "vec2 node; "
@@ -67,43 +69,71 @@ public class SplashScreen
                 + "   next_normal = vec2( cos(av_nrad)*a_position.x - sin(av_nrad)*a_position.y, cos(av_nrad)*a_position.y + sin(av_nrad)*a_position.x );                      \n"
                 + "                         \n"
                 + "                       \n"
+                 + "  v_texCoords = a_texCoords;                     \n"
                 + "                           \n"
                 + "                           \n"
                 + "   mod =   vec4(node.x + next_normal.x , node.y + next_normal.y     ,0.0,a_position.w);                        \n"
-                + "   gl_Position =   mod;  frag_pos = mod;  \n"
+                + "   gl_Position =   mod;   \n"
                 + "}                             \n";
         String fragmentShader = "#ifdef GL_ES                \n"
                 + "precision mediump float;    \n"
-                + "varying vec4 frag_pos;                       \n"
+
                 + "#endif                      \n"
+                + "                      \n"
+                + "varying vec2 v_texCoords;                       \n"
+                + "float mask;"
                 + "void main()                 \n"
                 + "{                           \n"
-                + "  gl_FragColor = vec4(abs(frag_pos.x),0.0,0.0,1.0);    \n"
+                + "float thresh = 0.0;"
+                + "mask = (v_texCoords.x * v_texCoords.x) - ( v_texCoords.y) ;"
+                + "  if(mask < 0.0) thresh = 1.0; \n"
+                + "  gl_FragColor = vec4(thresh,.5,.5,1.0);    \n"
+
                 + "}";
         test_shader = new ShaderProgram(vertexShader, fragmentShader);
-        mesh = new Mesh(false, 256, 0,
-                new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
-        float[] verts = new float[6*10];
-
+        mesh = new Mesh(false, 512, 512,
+                new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
+                new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));
+        float[] verts = new float[10*10];
+        float cp1 = 0f;
+        float cp2 = 0f;
         for (int i=0;i<10;i++){
             //for (int j=0;j<3;j++){
-            verts[i*6] = 0.0f;
-            verts[i*6+1] = 0.1f;
-            verts[i*6+2] = (float)i; //index for node in uniform
+            if (i % 3 == 0) {
+                cp1 = 0f;
+                cp2 = 0f;
+            }
+            if (i % 3 == 1) {
+                cp1 = .5f;
+                cp2 = 0f;
+            }
+            if (i % 3 == 2) {
+                cp1 = 1f;
+                cp2 = 1f;
+            }
+
+            verts[i*10] = 0.0f;
+            verts[i*10+1] = 0.05f;
+            verts[i*10+2] = (float)i; //index for node in uniform
+
+            verts[i*10+3] = cp1;
+            verts[i*10+4] = cp2;
 
 
-            verts[i*6+3] = 0.0f;
-            verts[i*6+4] = -0.1f;
-            verts[i*6+5] = (float)i;
+            verts[i*10+5] = 0.0f;
+            verts[i*10+6] = -0.05f;
+            verts[i*10+7] = (float)i;
 
+            verts[i*10+8] = cp1;
+            verts[i*10+9] = cp2;
 
         }
 
 
-        short[] indic = new short[]{0, 2,4,1,3,5,4,6,8,5,7,9};
+        short[] indic = new short[]{0,2,4, 1,3,5,  4,6,8, 5,7,9,  8,10,12, 9,11,13,   12,14,16, 13,15,17,   16,18,20, 17,19,21, 20,22,24, 21,23,25, 24,26,28, 25,27,29, 28,30,32, 29,31,33};
 
         mesh.setVertices( verts );
-        //mesh.setIndices( indic );
+        mesh.setIndices( indic );
 
 
 
@@ -207,16 +237,16 @@ public class SplashScreen
         test_shader.setUniform2fv("nodes", new float[]{
                 .0f,.0f, //repeated first entry
                 .0f,.0f,
-                .1f,.1f,
-                .2f,-.1f,
-                .3f,.1f,
-                .4f,-.1f,
-                .5f,-.1f,
-                .6f,-.2f,
-                .7f,-.1f,
+                .1f,.2f,
+                .2f,.0f,
+                .3f,.2f,
+                .4f,.0f,
+                .5f,.2f,
+                .6f,.0f,
+                .7f,.2f,
                 .8f,.0f,
-                .9f,.1f,
-                .9f,.1f // repeated last entry
+                .9f,.2f,
+                .9f,.2f // repeated last entry
                     }, 0, 22);
         mesh.render(test_shader, GL20.GL_TRIANGLES);
         test_shader.end();
