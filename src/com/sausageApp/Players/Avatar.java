@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
 
 import java.util.ArrayList;
 
@@ -30,18 +32,25 @@ public class Avatar {
     private Sprite backdrop_sprite;
     private float bgr = 0f;
 
+    private Sprite mouth_sprite;
+    private Sprite eyes_sprite;
+
     private TextureRegion head = new TextureRegion(avatar_texture, 0, 128, 128, 128);
 
     private ArrayList<TextureRegion> eyes = new ArrayList<TextureRegion>();
     private ArrayList<TextureRegion> mouths = new ArrayList<TextureRegion>();
 
-    public int current_eyes = 0;
-    public int current_mouth = 0;
+    public int current_eyes = 1;
+    public int current_mouth = 1;
     public Color background_color = new Color(1f,.2f,.2f,1f);
 
-    public Avatar(){
+    public Player player;
 
+    public Avatar(Player _player){
+        player = _player;
         backdrop_sprite = new Sprite(backdrop);
+
+
 
 
        eyes.add( new TextureRegion(avatar_texture, 128, 0, 128, 32) );
@@ -52,6 +61,9 @@ public class Avatar {
         mouths.add( new TextureRegion(avatar_texture, 0, 32, 128, 32) );
         mouths.add( new TextureRegion(avatar_texture, 0, 64, 128, 32) );
         mouths.add( new TextureRegion(avatar_texture, 0, 96, 128, 32) );
+
+        mouth_sprite = new Sprite(mouths.get(current_mouth));
+        eyes_sprite = new Sprite(eyes.get(current_eyes));
     }
 
     public void changeEyes(int inc){
@@ -62,6 +74,7 @@ public class Avatar {
         } else {
             current_eyes += inc;
         }
+        eyes_sprite = new Sprite(eyes.get(current_eyes));
     }
     public void changeMouth(int inc){
         if (current_mouth+inc >= mouths.size()) {
@@ -71,6 +84,7 @@ public class Avatar {
         }  else {
             current_mouth += inc;
         }
+        mouth_sprite = new Sprite(mouths.get(current_mouth));
     }
 
     public void drawPortrait(SpriteBatch batch, float x, float y, float w, float h){
@@ -92,5 +106,25 @@ public class Avatar {
 
         batch.draw( arrow_inactive_left, x+w*.1f, y+w*.4f, w*.06f, w*.06f);
         batch.draw( arrow_inactive_right, x+w*.8f, y+w*.4f, w*.06f, w*.06f);
+    }
+
+    public float un(float a){
+        return player.scenario.P2S(a);
+    }
+
+    public void drawFace(SpriteBatch batch, Body body){
+
+        Vec2 bv = player.scenario.B2S(body.getPosition());
+        float br = body.getAngle();
+        //Vec2 g = new Vec2((float)  Math.cos(-r)*16, (float) Math.sin(-r)*16);
+        eyes_sprite.setBounds(bv.x - un(16f) , player.scenario.SFlip(bv.y) ,un(32f),un(8f));
+        eyes_sprite.setOrigin(un(16f), 0f);
+        eyes_sprite.setRotation((float) (Math.toDegrees(br)+90f)*-1f);
+        eyes_sprite.draw(batch);
+
+        mouth_sprite.setBounds(bv.x-un(16f) , player.scenario.SFlip(bv.y+un(8f)) ,un(32f),un(8f));
+        mouth_sprite.setOrigin(un(16f), un(8f));
+        mouth_sprite.setRotation((float) (Math.toDegrees(br)+90f)*-1f);
+        mouth_sprite.draw(batch);
     }
 }

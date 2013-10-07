@@ -4,10 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.mappings.Ouya;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -27,11 +29,84 @@ public class SplashScreen
     private TextureRegion splashTextureRegion;
     private Stage stage;
 
+// shader test
+
+    public ShaderProgram test_shader;
+    public Mesh mesh;
+    private float time = 0.f;
+
+
+
 
     public SplashScreen(
             myGame game )
     {
         super( game );
+
+
+        Color fragColor = new Color(1.0f,0f,0f,1f);
+
+        String vertexShader =
+                "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
+                + "uniform vec2 nodes[22];                           \n"
+                + "varying vec4 frag_pos;                        \n"
+                + "vec4 mod;                            \n"
+                + "int index;                           \n"
+                + "vec2 node; "
+                + "vec2 prev; "
+                + "vec2 next; "
+                + "vec2 next_normal; float next_nrad; float av_nrad;"
+                + "vec2 prev_normal; float prev_nrad; "
+                + "void main()                   \n"
+                + "{                             \n"
+                + "   index = int(a_position.z)+1;             \n"
+                + "   node = nodes[index]; prev = nodes[index-1]; next = nodes[index+1];              \n"
+                +"   next_nrad = atan( (next.y-node.y), next.x-node.x); "
+                +"   prev_nrad = atan( (node.y-prev.y), node.x-prev.x); "
+                +"   av_nrad = (next_nrad + prev_nrad) / 2.0;"
+                + "   next_normal = vec2( cos(av_nrad)*a_position.x - sin(av_nrad)*a_position.y, cos(av_nrad)*a_position.y + sin(av_nrad)*a_position.x );                      \n"
+                + "                         \n"
+                + "                       \n"
+                + "                           \n"
+                + "                           \n"
+                + "   mod =   vec4(node.x + next_normal.x , node.y + next_normal.y     ,0.0,a_position.w);                        \n"
+                + "   gl_Position =   mod;  frag_pos = mod;  \n"
+                + "}                             \n";
+        String fragmentShader = "#ifdef GL_ES                \n"
+                + "precision mediump float;    \n"
+                + "varying vec4 frag_pos;                       \n"
+                + "#endif                      \n"
+                + "void main()                 \n"
+                + "{                           \n"
+                + "  gl_FragColor = vec4(abs(frag_pos.x),0.0,0.0,1.0);    \n"
+                + "}";
+        test_shader = new ShaderProgram(vertexShader, fragmentShader);
+        mesh = new Mesh(false, 256, 0,
+                new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
+        float[] verts = new float[6*10];
+
+        for (int i=0;i<10;i++){
+            //for (int j=0;j<3;j++){
+            verts[i*6] = 0.0f;
+            verts[i*6+1] = 0.1f;
+            verts[i*6+2] = (float)i; //index for node in uniform
+
+
+            verts[i*6+3] = 0.0f;
+            verts[i*6+4] = -0.1f;
+            verts[i*6+5] = (float)i;
+
+
+        }
+
+
+        short[] indic = new short[]{0, 2,4,1,3,5,4,6,8,5,7,9};
+
+        mesh.setVertices( verts );
+        //mesh.setIndices( indic );
+
+
+
     }
 
     public void FindControllers(){
@@ -40,7 +115,6 @@ public class SplashScreen
                 Player new_player = new Player(controller, game.player_colors.get(game.player_count), game.player_count);
                 game.players.add( new_player );
                 game.player_map.put(controller, new_player);
-                new_player.render_mode = game.player_count;
                 game.player_count += 1;
             }
         }
@@ -58,8 +132,6 @@ public class SplashScreen
 
         FindControllers();
 
-
-
         stage = new Stage();
 
 
@@ -76,8 +148,8 @@ public class SplashScreen
 
         // label "welcome"
         final TextButton button = new TextButton("New Game!", skin);
-        button.setPosition(Gdx.graphics.getWidth()*.6f+8, Gdx.graphics.getHeight()-160);
-        button.setSize(Gdx.graphics.getWidth()*.2f, 80);
+        button.setPosition(Gdx.graphics.getWidth()*.4f, Gdx.graphics.getHeight()*.15f);
+        button.setSize(Gdx.graphics.getWidth()*.2f, Gdx.graphics.getWidth()*.1f);
         stage.addActor( button );
 
         // load the splash image and create the texture region
@@ -127,6 +199,28 @@ public class SplashScreen
             }
 
         }
+
+
+        Gdx.gl20.glLineWidth(2f);
+        test_shader.begin();
+
+        test_shader.setUniform2fv("nodes", new float[]{
+                .0f,.0f, //repeated first entry
+                .0f,.0f,
+                .1f,.1f,
+                .2f,-.1f,
+                .3f,.1f,
+                .4f,-.1f,
+                .5f,-.1f,
+                .6f,-.2f,
+                .7f,-.1f,
+                .8f,.0f,
+                .9f,.1f,
+                .9f,.1f // repeated last entry
+                    }, 0, 22);
+        mesh.render(test_shader, GL20.GL_TRIANGLES);
+        test_shader.end();
+
     }
 
     @Override

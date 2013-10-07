@@ -1,7 +1,7 @@
 {"static_objects":[
-    {"type":"bluebox","w":251,"h":31,"x":212,"y":675},
-    {"type":"bluebox","w":251,"h":31,"x":631,"y":666},
-    {"type":"bluebox","w":117,"h":22,"x":352,"y":261},
-    {"type":"bluebox","w":82,"h":31,"x":598,"y":355},
-    {"type":"bluebox","w":251,"h":31,"x":371,"y":509}
+    {"type":"bluebox","w":64,"h":251,"x":112,"y":475},
+    {"type":"bluebox","w":251,"h":100,"x":631,"y":166},
+    {"type":"bluebox","w":117,"h":80,"x":352,"y":261},
+    {"type":"bluebox","w":82,"h":60,"x":598,"y":355},
+    {"type":"bluebox","w":251,"h":60,"x":371,"y":509}
     ]}

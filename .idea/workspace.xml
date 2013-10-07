@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_LOG_LEVEL" value="ERROR" />
+    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="Codes" />
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="DEBUG" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Android/assets/arrows.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Android/assets/avatar.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Android/assets/portrait_back.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/sausageApp/Players/Avatar.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/sausageApp/Simulation/StaticData.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Players/Avatar.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Players/Avatar.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Desktop/src/DesktopStarter.java" afterPath="$PROJECT_DIR$/Desktop/src/DesktopStarter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/screens/GameScreen.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/screens/GameScreen.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Players/Player.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Players/Player.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Simulation/Scenario.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Simulation/Scenario.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Simulation/ScenarioData.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Simulation/ScenarioData.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/screens/SplashScreen.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/screens/SplashScreen.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Simulation/StaticObject.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Simulation/StaticObject.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Android/assets/scenarios/level01.json" afterPath="$PROJECT_DIR$/Android/assets/scenarios/level01.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Game/myGame.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Game/myGame.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -23,28 +21,31 @@
     <ignored path=".idea/workspace.xml" />
     <file path="$PROJECT_DIR$/Android/res/values/strings.xml" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380818286022" ignored="false" />
     <file path="$PROJECT_DIR$/Android/res/layout/main.xml" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380818286022" ignored="false" />
-    <file path="/myGame.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380909251836" ignored="false" />
-    <file path="/DesktopStarter.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380819325627" ignored="false" />
+    <file path="/myGame.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380971362191" ignored="false" />
+    <file path="/DesktopStarter.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380967072935" ignored="false" />
     <file path="/Game.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380826366258" ignored="false" />
-    <file path="/fragment.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380912261398" ignored="false" />
+    <file path="/fragment.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380917785182" ignored="false" />
     <file path="/AndroidManifest.xml" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380826371730" ignored="false" />
-    <file path="/SplashScreen.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380913913700" ignored="false" />
+    <file path="/SplashScreen.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1381103695360" ignored="false" />
     <file path="$PROJECT_DIR$/Android/gen/com/example/Android/Game/BuildConfig.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380826312341" ignored="false" />
     <file path="$PROJECT_DIR$/Android/gen/com/example/Android/Game/R.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380826281658" ignored="false" />
     <file path="$PROJECT_DIR$/Android/gen/com/example/Android/Game/Manifest.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380826299726" ignored="false" />
     <file path="/AbstractScreen.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380833597420" ignored="false" />
-    <file path="/GameScreen.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380908937763" ignored="false" />
+    <file path="/GameScreen.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380985527478" ignored="false" />
     <file path="/StaticCreator.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380835628205" ignored="false" />
     <file path="/WorldCreator.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380835295667" ignored="false" />
-    <file path="/Scenario.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380898150859" ignored="false" />
-    <file path="/Dummy.txt" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380868267907" ignored="false" />
-    <file path="/Player.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380914407372" ignored="false" />
+    <file path="/Scenario.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1381088735224" ignored="false" />
+    <file path="/Dummy.txt" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380986984712" ignored="false" />
+    <file path="/Player.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1381089362217" ignored="false" />
     <file path="/ScenarioData.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380898097011" ignored="false" />
-    <file path="/StaticObject.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380901339875" ignored="false" />
+    <file path="/StaticObject.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1381086360399" ignored="false" />
     <file path="/level01.json" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380887646546" ignored="false" />
     <file path="/JsonScenario.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380898059690" ignored="false" />
-    <file path="/Avatar.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380911672604" ignored="false" />
+    <file path="/Avatar.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1381086686009" ignored="false" />
     <file path="/InputListenerImpl.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380912292652" ignored="false" />
+    <file path="/Sausage.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1381089324168" ignored="false" />
+    <file path="/Profiler.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380982789843" ignored="false" />
+    <file path="/Link.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1381088111887" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,60 +106,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="myGame.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Game/myGame.java">
+      <file leaf-file-name="DesktopStarter.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Desktop/src/DesktopStarter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="30" selection-start="1260" selection-end="1260" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#893#901#0" expanded="true" />
-                <element signature="e#964#984#0" expanded="true" />
-                <element signature="e#1078#1085#0" expanded="true" />
-              </folding>
+            <state line="18" column="31" selection-start="626" selection-end="626" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SplashScreen.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="SplashScreen.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/sausageApp/screens/SplashScreen.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="123" column="76" selection-start="3966" selection-end="4011" vertical-scroll-proportion="0.0">
+            <state line="88" column="36" selection-start="3839" selection-end="3839" vertical-scroll-proportion="0.3576052">
               <folding>
                 <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GameScreen.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/screens/GameScreen.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="69" column="8" selection-start="1781" selection-end="1827" vertical-scroll-proportion="-10.52">
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1478#1484#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Scenario.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Simulation/Scenario.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="59" column="166" selection-start="2192" selection-end="2192" vertical-scroll-proportion="-30.48">
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#733#747#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ScenarioData.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Simulation/ScenarioData.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="56" selection-start="149" selection-end="149" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#156#168#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -167,29 +129,54 @@
       <file leaf-file-name="StaticObject.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Simulation/StaticObject.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="38" column="8" selection-start="1249" selection-end="1367" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="StaticData.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Simulation/StaticData.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="19" selection-start="319" selection-end="319" vertical-scroll-proportion="0.0">
+            <state line="45" column="53" selection-start="1485" selection-end="1485" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Player.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="ScenarioData.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Simulation/ScenarioData.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="4" column="13" selection-start="78" selection-end="78" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Scenario.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Simulation/Scenario.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="31" column="40" selection-start="870" selection-end="870" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="level01.json" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Android/assets/scenarios/level01.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="5" column="54" selection-start="293" selection-end="293" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Player.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Player.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="125" column="35" selection-start="3325" selection-end="3325" vertical-scroll-proportion="0.87635237">
+            <state line="138" column="104" selection-start="3783" selection-end="3783" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Sausage.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Sausage.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="222" column="55" selection-start="7224" selection-end="7224" vertical-scroll-proportion="0.0">
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="e#971#977#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -198,11 +185,18 @@
       <file leaf-file-name="Avatar.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Avatar.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="64" column="5" selection-start="2431" selection-end="2431" vertical-scroll-proportion="0.0">
+            <state line="124" column="67" selection-start="4641" selection-end="4641" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Link.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Link.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="68" column="42" selection-start="1915" selection-end="1915" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1349#1364#0" expanded="true" />
-                <element signature="e#1427#1442#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -226,22 +220,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/Android/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/src/com/sausageApp/Simulation/level01.json" />
-        <option value="$PROJECT_DIR$/Android/assets/scenarios/level01.json" />
-        <option value="$PROJECT_DIR$/Desktop/src/DesktopStarter.java" />
-        <option value="$PROJECT_DIR$/src/com/sausageApp/Simulation/JsonScenario.java" />
         <option value="$PROJECT_DIR$/src/com/sausageApp/Simulation/StaticData.java" />
         <option value="$PROJECT_DIR$/src/com/sausageApp/Simulation/ScenarioData.java" />
-        <option value="$PROJECT_DIR$/src/com/sausageApp/Simulation/StaticObject.java" />
-        <option value="$PROJECT_DIR$/src/com/sausageApp/Simulation/Scenario.java" />
-        <option value="$PROJECT_DIR$/src/com/sausageApp/screens/GameScreen.java" />
-        <option value="$PROJECT_DIR$/src/com/sausageApp/Game/myGame.java" />
-        <option value="$PROJECT_DIR$/src/com/sausageApp/Players/Avatar.java" />
         <option value="$PROJECT_DIR$/src/com/sausageApp/Players/InputListenerImpl.java" />
         <option value="$PROJECT_DIR$/src/com/sausageApp/Players/InputListenerExtender.java" />
-        <option value="$PROJECT_DIR$/src/com/sausageApp/screens/SplashScreen.java" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/Game/myGame.java" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/screens/GameScreen.java" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/Game/Profiler.java" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/Simulation/StaticObject.java" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/Players/Avatar.java" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/Players/Link.java" />
+        <option value="$PROJECT_DIR$/Android/assets/scenarios/level01.json" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/Simulation/Scenario.java" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/Players/Sausage.java" />
         <option value="$PROJECT_DIR$/src/com/sausageApp/Players/Player.java" />
+        <option value="$PROJECT_DIR$/Desktop/src/DesktopStarter.java" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/screens/SplashScreen.java" />
       </list>
     </option>
   </component>
@@ -250,6 +244,22 @@
     <option name="y" value="-8" />
     <option name="width" value="1936" />
     <option name="height" value="1056" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>Abstraction issues</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -277,6 +287,8 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -334,6 +346,10 @@
               <option name="myItemId" value="sausageApp" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="screens" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -367,137 +383,15 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="libs" />
+              <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sausageApp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="sausageApp" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="libs" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gdx.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sausageApp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sausageApp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="libs" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gdx.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sausageApp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sausageApp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="libs" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gdx.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="badlogic" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sausageApp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sausageApp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="libs" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gdx.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="badlogic" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gdx" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sausageApp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sausageApp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="libs" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gdx.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="badlogic" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gdx" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="input" />
+              <option name="myItemId" value="Game" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -533,10 +427,22 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sausageApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sausageApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -546,22 +452,22 @@
     <property name="jdk.selected.JAVA_MODULE" value="Android 4.3 Platform" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="options.splitter.main.proportions" value="0.3" />
-    <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
+    <property name="options.lastSelected" value="preferences.keymap" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="recentsLimit" value="5" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/libs/ouya-sdk.jar!/" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="DEBUGGABLE_DEVICE" value="014E37840E019015" />
     <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="DEBUGGABLE_DEVICE" value="014E37840E019015" />
     <property name="DEBUGGABLE_PROCESS" value="com.example.Android" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="FullScreen" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
+    <property name="FullScreen" value="false" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
@@ -571,7 +477,7 @@
       <recent name="C:\Users\jplur\Desktop\dev\sausageApp\Android\assets\scenarios" />
     </key>
   </component>
-  <component name="RunManager" selected="Android Application.Android">
+  <component name="RunManager" selected="Application.asset_share">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
@@ -604,19 +510,6 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <method />
-    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -642,6 +535,19 @@
       <envs />
       <properties />
       <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -724,7 +630,13 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="Desktop" />
       <envs />
+      <RunnerSettings RunnerId="JProfiler">
+        <option name="WINDOW" value="false" />
+        <option name="JVMPI" value="false" />
+        <option name="INTERPRETED" value="false" />
+      </RunnerSettings>
       <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="JProfiler" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
@@ -784,29 +696,31 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <editor active="true" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3285968" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32748538" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3971079" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32703003" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.38598442" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32935324" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3259177" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1368421" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32865497" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.52389383" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16488793" sideWeight="0.74860954" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25139043" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16488793" sideWeight="0.7163515" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2836485" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="IntelliHeap" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32982457" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="JProfiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.52389383" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -880,134 +794,118 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$PROJECT_DIR$/Desktop/libs/gdx-backend-lwjgl.jar!/com/badlogic/gdx/backends/lwjgl/LwjglApplication.class">
+    <entry file="file://$PROJECT_DIR$/Android/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="84" column="0" selection-start="4317" selection-end="4317" vertical-scroll-proportion="0.87356323">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/libs/gdx.jar!/com/badlogic/gdx/math/CatmullRomSpline.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="30" selection-start="1424" selection-end="1424" vertical-scroll-proportion="0.76527333">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/screens/AbstractScreen.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="0" selection-start="904" selection-end="904" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/libs/gdx.jar!/com/badlogic/gdx/utils/JsonReader.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="38" selection-start="1100" selection-end="1100" vertical-scroll-proportion="0.6446945">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Android/assets/scenarios/level01.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="16" selection-start="16" selection-end="16" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Desktop/src/DesktopStarter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="23" selection-start="591" selection-end="591" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Simulation/ScenarioData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="56" selection-start="149" selection-end="149" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#156#168#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Simulation/StaticObject.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="8" selection-start="1249" selection-end="1367" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Simulation/Scenario.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="59" column="166" selection-start="2192" selection-end="2192" vertical-scroll-proportion="-30.48">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#733#747#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/screens/GameScreen.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="69" column="8" selection-start="1781" selection-end="1827" vertical-scroll-proportion="-10.52">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1478#1484#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Simulation/StaticData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="19" selection-start="319" selection-end="319" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Avatar.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="64" column="5" selection-start="2431" selection-end="2431" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1349#1364#0" expanded="true" />
-            <element signature="e#1427#1442#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/libs/gdx.jar!/com/badlogic/gdx/Gdx.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="63" selection-start="515" selection-end="515" vertical-scroll-proportion="0.3279743">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Game/myGame.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="30" selection-start="1260" selection-end="1260" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#893#901#0" expanded="true" />
-            <element signature="e#964#984#0" expanded="true" />
-            <element signature="e#1078#1085#0" expanded="true" />
-          </folding>
+        <state line="0" column="8" selection-start="8" selection-end="27" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/screens/SplashScreen.java">
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Simulation/StaticData.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="123" column="76" selection-start="3966" selection-end="4011" vertical-scroll-proportion="0.0">
+        <state line="9" column="13" selection-start="203" selection-end="203" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Game/Profiler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="128" selection-start="792" selection-end="792" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/screens/GameScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="91" column="45" selection-start="2168" selection-end="2168" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Simulation/ScenarioData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="13" selection-start="78" selection-end="78" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Simulation/StaticObject.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="45" column="53" selection-start="1485" selection-end="1485" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/libs/gdx.jar!/com/badlogic/gdx/Gdx.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="19" selection-start="118" selection-end="118" vertical-scroll-proportion="0.05733558">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Link.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="68" column="42" selection-start="1915" selection-end="1915" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Android/assets/scenarios/level01.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="54" selection-start="293" selection-end="293" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Simulation/Scenario.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="31" column="40" selection-start="870" selection-end="870" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Avatar.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="124" column="67" selection-start="4641" selection-end="4641" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Player.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="125" column="35" selection-start="3325" selection-end="3325" vertical-scroll-proportion="0.87635237">
+        <state line="138" column="104" selection-start="3783" selection-end="3783" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Desktop/src/DesktopStarter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="31" selection-start="626" selection-end="626" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Sausage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="222" column="55" selection-start="7224" selection-end="7224" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#971#977#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/screens/SplashScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="88" column="36" selection-start="3839" selection-end="3839" vertical-scroll-proportion="0.3576052">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

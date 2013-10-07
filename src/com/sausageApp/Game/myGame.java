@@ -36,6 +36,8 @@ public class myGame extends Game{
     public int player_count = 0;
     public ArrayList<Color> player_colors = new ArrayList<Color>();
 
+    public Profiler profiler;
+
     public SplashScreen getSplashScreen()
     {
         return new SplashScreen( this );
@@ -48,8 +50,9 @@ public class myGame extends Game{
 
     @Override
     public void create() {
-        player_colors.add(new Color(1f,.5f, .4f, 1f));
-        player_colors.add(new Color(.3f, .2f, .8f, 1f));
+        player_colors.add(new Color(.8f,.5f, .5f, 1f));
+        player_colors.add(new Color(.2f, .8f, .6f, 1f));
+        profiler = new Profiler();
         setScreen(getSplashScreen());
     }
 
@@ -68,6 +71,7 @@ public class myGame extends Game{
     {
         super.render();
 
+        profiler.render();
     }
     @Override
     public void pause()

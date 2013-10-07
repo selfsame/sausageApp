@@ -1,6 +1,7 @@
 package com.sausageApp.Simulation;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -25,24 +26,36 @@ public class StaticObject {
 
     private Scenario scenario;
     private Texture sausageSheet = new Texture("sheet.png");
+
+    private NinePatch chalkbox;
     private TextureRegion block = new TextureRegion(sausageSheet, 32, 32, 32, 32);
     private TextureRegion stone = new TextureRegion(sausageSheet, 32, 0, 32, 32);
 
     public StaticObject(Scenario _scenario, String _type, float _x, float _y, float _w, float _h){
+
+        Texture chalk = new Texture("chalk_ninepatch.png");
+        //chalk.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        chalkbox = new NinePatch(chalk, 4, 12, 8, 12);
+
         scenario = _scenario;
         type = _type;
-        w = scenario.unconvertX(_w);
-        h = scenario.unconvertX(_h);
-        x = scenario.unconvertX(_x);
-        y = scenario.unconvertX(_y);
-        body = scenario.createStatic(x+(w/2f), y, w/2f, h);
+        w = scenario.P2S(_w);
+        h = scenario.P2S(_h);
+        x = scenario.P2S(_x);
+        y = scenario.P2S(_y);
+        body = scenario.createStatic(_x+(_w/2f), _y-(_h/2f), _w/2f, _h/2f);
         sprite = new Sprite(stone);
-        sprite.setBounds(x , scenario.flipY(y) ,w,h);
+        sprite.setBounds(x , scenario.SFlip(y) ,w,h);
         sprite.setOrigin(w/2f,h/2f);
+
+
     }
 
     public void render(SpriteBatch batch){
-        sprite.draw(batch);
+
+        chalkbox.draw(batch,sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
+        //sprite.draw(batch);
+
 
     }
 

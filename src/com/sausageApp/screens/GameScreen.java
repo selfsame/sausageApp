@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -34,18 +35,14 @@ public class GameScreen
         extends
         AbstractScreen
 {
-    private Texture sausageSheet = new Texture("sheet.png");
-    private TextureRegion sausageLink = new TextureRegion(sausageSheet, 0, 0, 32, 32);
-    private TextureRegion sausageMiddle = new TextureRegion(sausageSheet, 0, 32, 32, 32);
 
     private Scenario scenario;
-    private ShapeRenderer shapeRenderer = new ShapeRenderer();
 
     private float last_x = 0f;
     private float last_y = 0f;
     private float r = 0f;
 
-
+    private SpriteBatch facebatch = new SpriteBatch();
 
     public ArrayList<Vec2> spawn_points = new ArrayList<Vec2>();
 
@@ -62,7 +59,7 @@ public class GameScreen
     public void show()
     {
         super.show();
-        scenario = new Scenario();
+        scenario = new Scenario(game);
 
         spawn_points.add(new Vec2(100f,100f));
         spawn_points.add(new Vec2(300f,150f));
@@ -81,11 +78,14 @@ public class GameScreen
     public void render(
             float delta )
     {
+        long startTime = System.nanoTime();
+
         super.render( delta );
         scenario.step( delta );
 
         Gdx.gl.glClearColor(.1f, .2f, .2f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
 
         for(int i = 0; i < game.player_count; i++) {
             Player player = game.players.get(i);
@@ -93,11 +93,25 @@ public class GameScreen
             player.render();
         }
 
-        batch.begin();
-        for (int i = 0; i < scenario.statics.size(); i++) scenario.statics.get(i).render(batch);
-        batch.end();
 
 
+        facebatch.begin();
+        for(int i = 0; i < game.player_count; i++) {
+            Player player = game.players.get(i);
+            player.avatar.drawFace(facebatch,player.sausage.sausage_bodies.get(player.sausage.sausage_bodies.size()-1));
+        }
+
+
+        for (int i = 0; i < scenario.statics.size(); i++) scenario.statics.get(i).render(facebatch);
+
+        facebatch.end();
+
+
+
+        long endTime = System.nanoTime();
+
+        long duration = endTime - startTime;
+        scenario.game.profiler.addStat("\nGameScreen.render(): (ms) "+(int)(duration*1.0e-6));
 
 
     }
@@ -112,8 +126,9 @@ public class GameScreen
     @Override
     public void dispose()
     {
-        sausageSheet.dispose();
         super.dispose();
+        batch.dispose();
+        facebatch.dispose();
     }
 }
 
