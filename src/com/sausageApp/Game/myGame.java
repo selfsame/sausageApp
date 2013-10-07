@@ -5,10 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.sausageApp.Players.Player;
 import com.sausageApp.screens.SplashScreen;
 import com.sausageApp.screens.GameScreen;
@@ -42,6 +38,8 @@ public class myGame extends Game{
     {
         return new SplashScreen( this );
     }
+
+
 
     public GameScreen getGameScreen()
     {

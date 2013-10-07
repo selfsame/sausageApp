@@ -65,7 +65,7 @@ public class Scenario {
 
 
     // 1024 576
-    private float PHYSICS_SCALE = 20f;
+    private float PHYSICS_SCALE = 15f;
 
     // Pixel scale to Box2d scale
     public float P2B(float a){

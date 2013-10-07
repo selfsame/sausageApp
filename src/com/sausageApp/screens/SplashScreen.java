@@ -35,7 +35,7 @@ public class SplashScreen
     public Mesh mesh;
     private float time = 0.f;
 
-
+    private float ticker = .0f;
 
 
     public SplashScreen(
@@ -44,64 +44,11 @@ public class SplashScreen
         super( game );
 
 
-        Color fragColor = new Color(1.0f,0f,0f,1f);
 
-        String vertexShader =
-                "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
-                + "attribute vec4 a_color ;   \n"
-                + "uniform vec2 nodes[26];                           \n"
-                + "uniform float concavity[13];                           \n"
-                + "                       \n"
-                + "varying vec2 v_color;                        \n"
-                + "varying float v_concavity;                        \n"
-                + "vec4 mod;                            \n"
-                + "int index;                           \n"
-                + "float interpolation_left;                           \n"
-                + "float interpolation_right;                           \n"
-                + "vec2 node; "
-                + "vec2 prev; "
-                + "vec2 next; "
-                + "vec2 next_normal; float next_nrad; float av_nrad;"
-                + "vec2 prev_normal; float prev_nrad; "
-                + "void main()                   \n"
-                + "{                             \n"
-                + "   index = int(a_position.z)+1;             \n"
-                + "   interpolation_left = a_color.z;             \n"
-                + "   interpolation_right = a_color.w;             \n"
-                + "   node = nodes[index]; prev = nodes[index-1]; next = nodes[index+1];              \n"
-                +"   next_nrad = atan( (next.y-node.y), next.x-node.x); "
-                +"   prev_nrad = atan( (node.y-prev.y), node.x-prev.x); "
-                +"   av_nrad = (next_nrad* interpolation_right + prev_nrad* interpolation_left) ;"
-                + "   next_normal = vec2( cos(av_nrad)*a_position.x - sin(av_nrad)*(a_position.y*.05), cos(av_nrad)*(a_position.y*.05) + sin(av_nrad)*a_position.x );                      \n"
-                + "   vec2 pos = node + ((next - node ) * interpolation_right + ((prev - node ) * interpolation_left ) )   ;                      \n"
-                + "                       \n"
-                 + "  v_color = a_color;                     \n"
-                + "                           \n"
-                + "  v_concavity = concavity[index]*a_position.y;                         \n"
-                + "                           \n"
-                //+ "   mod =   vec4(pos.x + next_normal.x , pos.y + next_normal.y     ,0.0,a_position.w);                        \n"
-                + "   mod =   vec4(pos.x + next_normal.x  , pos.y + next_normal.y    ,0.0,a_position.w);                        \n"
-                + "   gl_Position =   mod;   \n"
-                + "}                             \n";
-        String fragmentShader = "#ifdef GL_ES                \n"
-                + "precision mediump float;    \n"
 
-                + "#endif                      \n"
-                + "                      \n"
-                + "varying vec4 v_color;                       \n"
-                + "varying float v_concavity;                        \n"
-                + "float mask;"
-                + "void main()                 \n"
-                + "{                           \n"
-                + "float thresh = 0.0;"
-                + "mask = (v_color.x * v_color.x) - ( v_color.y) ;"
-                + "  if(mask*v_concavity > 0.0) discard; \n"
-                + "  gl_FragColor = vec4(1.0,.5,.5,1.0);    \n"
-
-                + "}";
-        test_shader = new ShaderProgram(vertexShader, fragmentShader);
         WormMesh worm = new WormMesh();
         mesh = worm.CompileMesh();
+        test_shader = worm.MakeShader();
 
 
 
@@ -202,22 +149,37 @@ public class SplashScreen
 
         Gdx.gl20.glLineWidth(2f);
         test_shader.begin();
-
+        ticker += .01f;
+        //float ts = (float)Math.sin(ticker)*.1f;
+        float ts = 0f;
         test_shader.setUniform2fv("nodes", new float[]{
-                .01f,.0f, //repeated first entry
-                .05f,.0f,
-                .1f,.2f,
-                .1f,.0f,
-                .3f,.25f,
-                .4f,.05f,
-                .5f,.25f,
-                .6f,.05f,
-                .7f,.25f,
-                .8f,.05f,
-                .9f,.25f,
-                .9f,.25f, // repeated last entry
-                .9f,.25f // repeated last entry
-                    }, 0, 26);
+                .01f,.9f, //repeated first entry
+                .05f,.8f,
+                -.05f,.7f-ts,
+                .1f,.6f+ts,
+                -.1f,.5f-ts,
+                .05f,.4f+ts,
+                .0f,-.06f-ts,
+                .1f,.05f+ts,
+                .2f,.1f-ts,
+                .3f,.0f+ts,
+                .4f,-.1f-ts,
+                .5f,-.2f, // repeated last entry
+                    }, 0, 24);
+//        test_shader.setUniform2fv("nodes", new float[]{
+//                .01f,.0f, //repeated first entry
+//                .05f,.0f,
+//                .1f,.2f,
+//                .1f,.0f,
+//                .3f,.25f,
+//                .4f,.05f,
+//                .5f,.25f,
+//                .6f,.05f,
+//                .7f,.25f,
+//                .8f,.05f,
+//                .9f,.25f,
+//                .9f,.25f, // repeated last entry
+//        }, 0, 24);
         test_shader.setUniform1fv("concavity", new float[]{
                 1f, //repeated first entry
                 -1f,
@@ -231,9 +193,8 @@ public class SplashScreen
                 -1f,
                 1f,
                 -1f, // repeated last entry
-                -1f // repeated last entry
-        }, 0, 13);
-        mesh.render(test_shader, GL20.GL_TRIANGLES);
+        }, 0, 12);
+        mesh.render(test_shader, GL20.GL_LINES);
         test_shader.end();
 
     }

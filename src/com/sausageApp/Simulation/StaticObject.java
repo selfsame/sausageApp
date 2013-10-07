@@ -54,7 +54,7 @@ public class StaticObject {
     public void render(SpriteBatch batch){
 
         chalkbox.draw(batch,sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
-        //sprite.draw(batch);
+
 
 
     }
