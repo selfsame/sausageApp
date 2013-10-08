@@ -25,7 +25,7 @@ public class WormMesh {
 
     public WormMesh(int _count){
         segment_count = _count;
-        for (int i=0;i<segment_count;i++){
+        for (int i=0;i<segment_count-1;i++){
 //            if (i==0){
 //                segments.add( new MeshSegment(i, verticies, indicies,true) );
 //            } else {

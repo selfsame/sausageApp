@@ -117,7 +117,7 @@ public class GameScreen
 
         super.render( delta );
 
-        scenario.step( delta );
+        scenario.step( .01f );
 
         Gdx.gl.glClearColor(.1f, .2f, .2f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

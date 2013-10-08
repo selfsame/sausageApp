@@ -135,7 +135,7 @@ public class Player {
 
 
     public void handleInput(){
-        float FORCE = 8f;
+        float FORCE = 5f;
         if (in_lobby){
             return;
         }
@@ -156,16 +156,16 @@ public class Player {
             }
 
             if(Gdx.input.isKeyPressed(Input.Keys.A)){
-                sausage.head_link.applyLinearImpulse(new Vec2(-FORCE, 0f), 4, false, true, .7f);
+                sausage.head_link.applyLinearImpulse(new Vec2(-FORCE, 0f), 10, false, true, .7f);
             }
             if(Gdx.input.isKeyPressed(Input.Keys.D)){
-                sausage.head_link.applyLinearImpulse(new Vec2(FORCE, 0f), 4, false, true, .7f);
+                sausage.head_link.applyLinearImpulse(new Vec2(FORCE, 0f), 10, false, true, .7f);
             }
             if(Gdx.input.isKeyPressed(Input.Keys.W)){
-                sausage.head_link.applyLinearImpulse(new Vec2(0, -FORCE), 4, false, true, .7f);
+                sausage.head_link.applyLinearImpulse(new Vec2(0, -FORCE), 10, false, true, .7f);
             }
             if(Gdx.input.isKeyPressed(Input.Keys.S)){
-                sausage.head_link.applyLinearImpulse(new Vec2(0, FORCE), 4, false, true, .7f);
+                sausage.head_link.applyLinearImpulse(new Vec2(0, FORCE), 10, false, true, .7f);
             }
 
             //debug options
@@ -192,10 +192,10 @@ public class Player {
                 sausage.head_link.applyLinearImpulse(new Vec2(0f, leftYAxis*FORCE), 4, false, true, .7f);
             }
             if (rightXAxis > 0.0 || rightXAxis < 0.0){
-                sausage.tail_link.applyLinearImpulse(new Vec2(leftXAxis*FORCE, 0f), 4, false, true, .7f);
+                sausage.tail_link.applyLinearImpulse(new Vec2(rightXAxis*FORCE, 0f), 4, false, true, .7f);
             }
             if (rightYAxis > 0.0 || rightYAxis < 0.0){
-                sausage.tail_link.applyLinearImpulse(new Vec2(0f, leftYAxis*FORCE), 4, false, true, .7f);
+                sausage.tail_link.applyLinearImpulse(new Vec2(0f, rightYAxis*FORCE), 4, false, true, .7f);
             }
 
 

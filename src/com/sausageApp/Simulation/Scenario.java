@@ -30,7 +30,7 @@ public class Scenario {
     public GameScreen game_screen;
 
     public Scenario(myGame _game, GameScreen _game_screen) {
-        gravity = new Vec2(.0f, 20.0f);
+        gravity = new Vec2(.0f, 20.8f);
         world = new World(gravity);
         game = _game;
         game_screen = _game_screen;
@@ -67,7 +67,7 @@ public class Scenario {
 
 
     // 1024 576
-    private float PHYSICS_SCALE = 15f;
+    private float PHYSICS_SCALE = 40f;
 
     // Pixel scale to Box2d scale
     public float P2B(float a){
@@ -129,11 +129,12 @@ public class Scenario {
 
 
 
-    public Body createDynamicCircle(float x, float y, float radius) {
+    public Body createDynamicCircle(float x, float y, float radius, float density) {
         CircleShape circleShape = new CircleShape();
         circleShape.m_radius = radius;
         FixtureDef circleF = new FixtureDef();
         circleF.shape = circleShape;
+        circleF.density = 1.0f*density;
         circleF.restitution = .4f;
         circleF.friction = .3f;
 
@@ -145,6 +146,7 @@ public class Scenario {
         bodyDef.allowSleep = false;
         Body body = world.createBody(bodyDef);
         body.m_angularDamping = .8f;
+        body.m_linearDamping = .8f;
         body.createFixture(circleShape, 5.0f);
         body.createFixture(circleF);
 
@@ -170,7 +172,7 @@ public class Scenario {
 
     public void step(float delta) {
         long startTime = System.nanoTime();
-        world.step(delta, 10, 10);
+        world.step(delta, 8, 6);
         long endTime = System.nanoTime();
 
         long duration = endTime - startTime;

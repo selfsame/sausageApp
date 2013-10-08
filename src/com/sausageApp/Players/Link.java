@@ -78,7 +78,8 @@ public class Link {
 
         if (align){
            Vec2 av = VBetween(body, target.body);
-           v = av.mul((float)(v.length() / av.length()));
+           av = av.mul((float)(v.length() / av.length()));
+           v = v.add(av).mul(.5f);
 
         }
 

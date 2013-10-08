@@ -35,15 +35,15 @@ public class MeshSegment {
               verticies.add( interpolation_left[i] ); // this is the pair_index, which is a weight for interpolation between prev and next.
               verticies.add( interpolation_right[i] );
 
-                if (node_index == 1){
+                if (node_index == 1 || node_index == 19 ){
                     verticies.add( 1f );
                     verticies.add( .2f );
                     verticies.add( .2f );
                     verticies.add( 1.0f );
                 } else {
-                    verticies.add( .2f );
-                    verticies.add( .8f );
-                    verticies.add( .8f );
+                    verticies.add( .9f );
+                    verticies.add( .5f );
+                    verticies.add( .5f );
                     verticies.add( 1.0f );
                 }
 
@@ -64,15 +64,15 @@ public class MeshSegment {
                 verticies.add( interpolation_left[i] ); // this is the pair_index, which is a weight for interpolation between prev and next.
                 verticies.add( interpolation_right[i] );
 
-                if (node_index == 1){
+                if (node_index == 1 || node_index == 19 ){
                     verticies.add( 1f );
                     verticies.add( .2f );
                     verticies.add( .2f );
                     verticies.add( 1.0f );
                 } else {
-                    verticies.add( .2f );
-                    verticies.add( .8f );
-                    verticies.add( .8f );
+                    verticies.add( .9f );
+                    verticies.add( .5f );
+                    verticies.add( .5f );
                     verticies.add( 1.0f );
                 }
             }

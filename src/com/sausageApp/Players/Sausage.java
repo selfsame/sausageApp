@@ -34,7 +34,7 @@ public class Sausage {
     public ArrayList<Link> sausage_links = new ArrayList<Link>();
     public Link head_link;
     public Link tail_link;
-    public int sausage_length = 20;
+    public int sausage_length = 30;
 
     private Scenario scenario;
 
@@ -90,25 +90,32 @@ public class Sausage {
 
         FixtureDef fd = new FixtureDef();
         fd.shape = shape;
-        fd.density = 46.0f;
-        fd.friction = 0.1f;
+        fd.density = 4.0f;
+        fd.friction = 0.001f;
 
         RevoluteJointDef jd = new RevoluteJointDef();
         jd.collideConnected = false;
-        jd.upperAngle = 1.47079633f;
-        jd.lowerAngle = -1.47079633f;
+        jd.upperAngle = 1.17079633f;
+        jd.lowerAngle = -1.17079633f;
         jd.enableLimit = true;
+        jd.maxMotorTorque = 10.0f;
+
+        jd.motorSpeed = 0f;
+
+        jd.enableMotor = true;
 
 
-        Body first = scenario.createDynamicCircle(x, y, radius*1.05f);
+        Body first = scenario.createDynamicCircle(x, y, radius*1.05f, 10f);
         Body prevBody = first;
-        sausage.add(first);
+        prevBody.m_angularDamping = 1.5f;
+        sausage.add(prevBody);
 
 
         for (int i = 0; i < link_count; ++i) {
-            Body next = scenario.createDynamicCircle(x+(radius*2f)+(i*(radius*2f))*1.06f, y, radius*1.05f);
+            Body next = scenario.createDynamicCircle(x+(radius*1.1f)+(i*(radius*1.1f))*1.06f, y, radius*1.01f, (10f-(.01f*i)));
             next.m_angularDamping = .8f;
-            Vec2 anchor = new Vec2(x+(i*(radius*2f)), y);
+            next.m_linearDamping = .01f*i;
+            Vec2 anchor = new Vec2(x+(i*(radius*1.1f)), y);
             jd.initialize(prevBody, next, anchor);
             scenario.world.createJoint(jd);
             sausage.add(next);
@@ -188,11 +195,15 @@ public class Sausage {
         }
         Vector2 nlp = gdx2gl((scenario.B2S(sausage_bodies.get(sausage_bodies.size()-2).getPosition())));
         lp = gdx2gl((scenario.B2S(sausage_bodies.get(sausage_bodies.size()-1).getPosition())));
-        Vector2 ilp = nlp.sub(lp);
-        nodes[(sausage_length+1)*2+1] =  lp.x+ilp.x;
-        nodes[(sausage_length+1)*2+2] = lp.y+ilp.y;
-        nodes[(sausage_length+1)*2+3] =  lp.x+(ilp.x*2f);
-        nodes[(sausage_length+1)*2+4] = lp.y+(ilp.y*2f);
+        //Vector2 ilp = lp.sub(nlp);
+        nodes[(sausage_length)*2] =  lp.x;
+        nodes[(sausage_length)*2+1] = lp.y; // a used node
+        nodes[(sausage_length+1)*2] =  nodes[(sausage_length)*2]; //lp.x-.5f;
+        nodes[(sausage_length+1)*2+1] = nodes[(sausage_length)*2+1]; //lp.y;
+        nodes[(sausage_length+1)*2+2] =  lp.x;
+        nodes[(sausage_length+1)*2+3] = lp.y+.1f;
+        nodes[(sausage_length+1)*2+4] =  lp.x;
+        nodes[(sausage_length+1)*2+5] = lp.y+.1f;
 
         sausage_shader.setUniform2fv("nodes", nodes, 0, (sausage_length+1)*2);
 //        sausage_shader.setUniform2fv("nodes", new float[]{
