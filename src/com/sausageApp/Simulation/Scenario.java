@@ -135,8 +135,8 @@ public class Scenario {
         FixtureDef circleF = new FixtureDef();
         circleF.shape = circleShape;
         circleF.density = 1.0f*density;
-        circleF.restitution = .4f;
-        circleF.friction = .3f;
+        circleF.restitution = .8f;
+        circleF.friction = .9f;
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.DYNAMIC;
@@ -180,7 +180,7 @@ public class Scenario {
     }
 
     public Vec2 GetSpawn(){
-        //return new Vec2( 1024f * .8f * (float)Math.random(), 576f * .8f * (float)Math.random());
-        return new Vec2(10f,10f);
+        return new Vec2( 1024f *( .8f * (float)Math.random()), 576f * (.8f * (float)Math.random()));
+        //return new Vec2(10f,10f);
     }
 }

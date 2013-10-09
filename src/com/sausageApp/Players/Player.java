@@ -135,7 +135,7 @@ public class Player {
 
 
     public void handleInput(){
-        float FORCE = 5f;
+        float FORCE = 4f;
         if (in_lobby){
             return;
         }

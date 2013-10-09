@@ -34,7 +34,7 @@ public class Sausage {
     public ArrayList<Link> sausage_links = new ArrayList<Link>();
     public Link head_link;
     public Link tail_link;
-    public int sausage_length = 30;
+    public int sausage_length = 15;
 
     private Scenario scenario;
 
@@ -91,7 +91,7 @@ public class Sausage {
         FixtureDef fd = new FixtureDef();
         fd.shape = shape;
         fd.density = 4.0f;
-        fd.friction = 0.001f;
+        fd.friction = 0.2f;
 
         RevoluteJointDef jd = new RevoluteJointDef();
         jd.collideConnected = false;
@@ -140,7 +140,7 @@ public class Sausage {
         Gdx.gl20.glLineWidth(0f);
         shapeRenderer.setColor(player.color);
         if (!player.debug_draw_sausage_mesh_lines){
-            shapeRenderer.filledCircle(v1.x, v1.y, scenario.P2S(SRADIUS));
+            shapeRenderer.filledCircle(v1.x, v1.y, scenario.P2S(SRADIUS)*1.3f);
         }
         shapeRenderer.end();
 
