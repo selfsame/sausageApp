@@ -92,10 +92,27 @@ public class WormMesh {
                 + " prev_normal = vec2(a_position.y * -1.0*(node.y-prev.y)*1.0 , a_position.y * (node.x-prev.x)*1.0 );                      \n"
                 + " next_normal = next_normal*.03/length(next_normal);"
                 + " prev_normal = prev_normal*.03/length(prev_normal);"
-                +"   vec2 nspread = (next_normal * interpolation_right + prev_normal * interpolation_left) + a_position.x*(normalize((prev_normal+next_normal)/2.0)*.015) ;"
+                + "  v_concavity = sign(  distance(next_normal+next, prev_normal+prev) - distance(next, prev));                         \n"
+
+
+//                + "  float curve_amount = distance(next_normal+next, prev_normal+prev) - distance(next, prev);                                    \n"
+//                + "  float prev_curve_amount = distance(node, prev_normal+prev) - distance(node, prev);                                    \n"
+//                + "  float next_curve_amount = distance(next_normal+next, node) - distance(next, node);                                    \n"
+//                + "  curve_amount =  (v_concavity + abs(v_concavity))*.5 * curve_amount*15.0 ;  "
+//                + "  prev_curve_amount =  (sign(prev_curve_amount) + abs(sign(prev_curve_amount)))*.5 * prev_curve_amount*15.0 ;  "
+//                        + "  next_curve_amount =  (sign(next_curve_amount) + abs(sign(next_curve_amount)))*.5 * next_curve_amount*15.0 ;  "
+                + "  float curve_amount = distance(next_normal+next, prev_normal+prev) - distance(next, prev);                                    \n"
+                + "  float prev_curve_amount = distance(node, prev_normal+prev) - distance(node, prev);                                    \n"
+                + "  float next_curve_amount = distance(next_normal+next, node) - distance(next, node);                                    \n"
+                + "  curve_amount =  (v_concavity ) * curve_amount*17.0 ;  "
+                + "  prev_curve_amount =  (prev_curve_amount) * prev_curve_amount*17.0 ;  "
+                + "  next_curve_amount =  (next_curve_amount)  * next_curve_amount*17.0 ;  "
+
+
+                +"   vec2 nspread = (next_normal * interpolation_right*(1.0+next_curve_amount) + prev_normal * interpolation_left*(1.0+prev_curve_amount)) + a_position.x*((prev_normal+next_normal)/4.0)*(1.0+curve_amount) ;"
                 + "  v_color = a_color;                     \n"
                 + "                                      \n"
-                + "  v_concavity = sign(  distance(next_normal+next, prev_normal+prev) - distance(next, prev));                         \n"
+
                 //+ "   nspread = nspread - abs(1- v_concavity)*abs(a_position.y+1)*.003*a_position.x;                          \n"
 
                 + "   mod =   vec4(pos.x + nspread.x  , pos.y + nspread.y    ,0.0,a_position.w);                        \n"
@@ -115,8 +132,8 @@ public class WormMesh {
                 + "float thresh = 1.0;"
                 + "vec4 col = v_normal; "
                 + "mask = (v_color.x * v_color.x) - ( v_color.y) ;"
-                //+ "  if(mask*v_concavity > -0.1) col = vec4(1.0,.5,.5,1.0); \n"
-                + "  if(mask*v_concavity > 0.1) col = vec4(.1,.2,.2,1.0); "//discard; \n"    (.1f, .2f, .2f, 1f)
+                //+ "  if(mask*v_concavity > 0) col = vec4(0.0,0.0,0.0,1.0); \n"
+                + "  if(mask*v_concavity > 0.0) discard;" //vec4(.1,.2,.2,1.0); "//discard; \n"    (.1f, .2f, .2f, 1f)
 
                 + "  gl_FragColor = col;    \n"
 

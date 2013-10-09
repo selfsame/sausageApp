@@ -34,7 +34,8 @@ public class Sausage {
     public ArrayList<Link> sausage_links = new ArrayList<Link>();
     public Link head_link;
     public Link tail_link;
-    public int sausage_length = 15;
+    public int sausage_length = 20;
+    private float L_DIST = 1.5f;
 
     private Scenario scenario;
 
@@ -46,7 +47,7 @@ public class Sausage {
 
     public FPSLogger FPS = new FPSLogger();
 
-    public float SRADIUS = 8f;
+    public float SRADIUS = 7.5f;
 
     public Sausage(Player _player, Scenario _scenario){
         player = _player;
@@ -105,17 +106,17 @@ public class Sausage {
         jd.enableMotor = true;
 
 
-        Body first = scenario.createDynamicCircle(x, y, radius*1.05f, 10f);
+        Body first = scenario.createDynamicCircle(x, y, radius*1.00f, 10f);
         Body prevBody = first;
         prevBody.m_angularDamping = 1.5f;
         sausage.add(prevBody);
 
 
         for (int i = 0; i < link_count; ++i) {
-            Body next = scenario.createDynamicCircle(x+(radius*1.1f)+(i*(radius*1.1f))*1.06f, y, radius*1.01f, (10f-(.01f*i)));
+            Body next = scenario.createDynamicCircle(x+(radius*L_DIST)+(i*(radius*L_DIST)), y, radius*1.00f, 10f);
             next.m_angularDamping = .8f;
             next.m_linearDamping = .01f*i;
-            Vec2 anchor = new Vec2(x+(i*(radius*1.1f)), y);
+            Vec2 anchor = new Vec2(x+(i*(radius*L_DIST)), y);
             jd.initialize(prevBody, next, anchor);
             scenario.world.createJoint(jd);
             sausage.add(next);
@@ -152,7 +153,7 @@ public class Sausage {
 
         Gdx.gl20.glLineWidth(1f);
         Gdx.gl20.glEnable(GL20.GL_BLEND);
-        //Gdx.gl20.glBlendFunc(GL20.GL_BLEND_DST_ALPHA);
+        Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
         sausage_shader.begin();
         UpdateMesh();
         if (player.debug_draw_sausage_mesh_lines){
@@ -168,6 +169,8 @@ public class Sausage {
 
 
     }
+
+
 
     public Vector2 gdx2gl(Vec2 v){
         float y = (float) (Gdx.graphics.getHeight()-v.y)/Gdx.graphics.getHeight()*2f-1f ;

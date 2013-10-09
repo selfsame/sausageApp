@@ -1,11 +1,15 @@
 package com.sausageApp.Simulation;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.sausageApp.Game.myGame;
 import com.sausageApp.screens.GameScreen;
+import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
@@ -24,7 +28,9 @@ public class Scenario {
     private JsonReader JSON = new JsonReader();
     private Json json = new Json();
 
+    private ShaderProgram level_shader;
 
+    private Mesh level_mesh;
 
     public myGame game;
     public GameScreen game_screen;
@@ -35,7 +41,9 @@ public class Scenario {
         game = _game;
         game_screen = _game_screen;
 
-
+        LevelMeshCompiler level_geo = new LevelMeshCompiler();
+        level_mesh = level_geo.CompileMesh();
+        level_shader = level_geo.MakeShader();
 
         ScenarioData scene = json.fromJson(ScenarioData.class, Gdx.files.internal( "scenarios/level01.json" ));
 
@@ -52,18 +60,32 @@ public class Scenario {
         }
 
 
+        Vec2[] pbies = new Vec2[(int)scene.physics_bodies.length/2];
+        for (int i = 0; i < (int)scene.physics_bodies.length/2; i++) {
+            pbies[i] = S2B(gl2S(new Vec2(scene.physics_bodies[i*2], scene.physics_bodies[i*2+1])));
 
-        statics.add(new StaticObject(this, "stone", 0f, 576f, 1024f, 16f));
+        }
+       createStaticChain( pbies);
+        //statics.add(new StaticObject(this, "stone", 0f, 576f, 1024f, 16f));
         statics.add(new StaticObject(this, "stone", 0f, 576f, 16f, 576f));
         statics.add(new StaticObject(this, "stone", 0f, 16f, 1008f, 16f));
         statics.add(new StaticObject(this, "stone", 1008f, 576f, 16f, 576f));
+
+        createStaticChain(new Vec2[]{P2B(new Vec2(0f,576f)), P2B(new Vec2(1024f, 576f)), P2B(new Vec2(1024f, 560f)), P2B(new Vec2(0f, 560f)) });
+
+
+        createStaticChain(new Vec2[]{P2B(new Vec2(40f,40f)), P2B(new Vec2(80f, 80f)), P2B(new Vec2(120f, 80f)), P2B(new Vec2(80f, 0f)) });
 
 
     }
 
 
 
-
+    public Vec2 gl2S(Vec2 v){
+        float y = (float)((v.y+1f)/2f)*(Gdx.graphics.getHeight()) ;
+        float x = (float)((v.x+1f)/2f)*(Gdx.graphics.getWidth()) ;
+        return new Vec2( x, y );
+    };
 
 
     // 1024 576
@@ -168,6 +190,24 @@ public class Scenario {
         return body;
     }
 
+    public Body createStaticChain(Vec2[] verticies) {
+
+        ChainShape chainShape = new ChainShape();
+        //PolygonShape chainShape = new PolygonShape();
+        chainShape.createChain(verticies, verticies.length);
+        //chainShape.set(verticies, verticies.length);
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyType.STATIC;
+
+
+
+        bodyDef.position.set(0f, 0f);
+
+        Body body = world.createBody(bodyDef);
+        body.createFixture(chainShape, 5.0f);
+        return body;
+    }
+
 
 
     public void step(float delta) {
@@ -177,7 +217,18 @@ public class Scenario {
 
         long duration = endTime - startTime;
         game.profiler.addStat("World Step: (ms) "+(int)(duration*1.0e-6));
+
+
+
+
     }
+
+    public void render(){
+        level_shader.begin();
+        level_mesh.render(level_shader, GL20.GL_TRIANGLES);
+        level_shader.end();
+    }
+
 
     public Vec2 GetSpawn(){
         return new Vec2( 1024f *( .8f * (float)Math.random()), 576f * (.8f * (float)Math.random()));

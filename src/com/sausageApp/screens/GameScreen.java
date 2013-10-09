@@ -151,6 +151,8 @@ public class GameScreen
 
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
+
+        scenario.render();
     }
 
     @Override

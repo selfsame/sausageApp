@@ -117,13 +117,13 @@ public class Avatar {
         Vec2 bv = player.scenario.B2S(body.getPosition());
         float br = body.getAngle();
         //Vec2 g = new Vec2((float)  Math.cos(-r)*16, (float) Math.sin(-r)*16);
-        eyes_sprite.setBounds(bv.x - un(16f) , player.scenario.SFlip(bv.y) ,un(32f),un(8f));
-        eyes_sprite.setOrigin(un(16f), 0f);
+        eyes_sprite.setBounds(bv.x - un(12f) , player.scenario.SFlip(bv.y) ,un(24f),un(8f));
+        eyes_sprite.setOrigin(un(12f), 0f);
         eyes_sprite.setRotation((float) (Math.toDegrees(br)+90f)*-1f);
         eyes_sprite.draw(batch);
 
-        mouth_sprite.setBounds(bv.x-un(16f) , player.scenario.SFlip(bv.y+un(8f)) ,un(32f),un(8f));
-        mouth_sprite.setOrigin(un(16f), un(8f));
+        mouth_sprite.setBounds(bv.x-un(12f) , player.scenario.SFlip(bv.y+un(8f)) ,un(24f),un(8f));
+        mouth_sprite.setOrigin(un(12f), un(8f));
         mouth_sprite.setRotation((float) (Math.toDegrees(br)+90f)*-1f);
         mouth_sprite.draw(batch);
     }
