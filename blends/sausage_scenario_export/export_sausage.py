@@ -194,7 +194,7 @@ def save_mesh(filepath,
 
 
 def save_selected(filepath,
-              objects, box2d_objects,
+              objects, box2d_objects, wireframe_objects,
               use_normals=True,
               use_uv_coords=True,
               use_colors=True,
@@ -211,8 +211,60 @@ def save_selected(filepath,
     vertices_str = ""
     vertex_indices_str = ""
     collide_groups_str = ""
+    wire_vertices_str = "["
+    wire_indicies_str = "["
     camera_str = "camera:[0.0, 0.0, 2.0], "
     object_count = 0
+    total_wire_verts = 0
+    for obj in wireframe_objects:
+        bm = bmesh.new() 
+        mesh = obj.data.copy()
+        
+        if not mesh:
+            raise Exception("Error, could not get mesh data from active object")
+        mesh.transform(global_matrix * obj.matrix_world)
+        bm.from_mesh(mesh)
+
+        first = False
+        color = bm.loops.layers.color[0]
+        for face in bm.faces:
+            
+            valid = False
+            starting_count = total_wire_verts
+            make_line = False
+            for iter in range(0,len(face.loops)):
+                loop = face.loops[iter]
+                ed = loop.edge 
+                if ed.smooth == False or make_line == True:
+
+                    wire_vertices_str += "{0:.4f}, {1:.4f}, {2:.4f}, ".format(*tuple(loop.vert.co[:])) 
+                    c = loop[color]
+                    if c:
+                        wire_vertices_str += "{0:.2f}, {1:.2f}, {2:.2f}, 1.0, ".format(*tuple( c )) # col
+                    else:
+                        wire_vertices_str += "0.0, 0.0, 0.0, 1.0, "
+                    
+                    
+                    if make_line:
+                        wire_indicies_str += "{0}, ".format(total_wire_verts-1)
+                        wire_indicies_str += "{0}, ".format(total_wire_verts)
+                    total_wire_verts += 1
+                if ed.smooth == False:
+                    make_line = True
+                    if iter == len(face.loops)-1:
+                       wire_indicies_str += "{0}, ".format(total_wire_verts-1)
+                        wire_indicies_str += "{0}, ".format(starting_count) 
+                else:
+                    make_line = False
+
+                    
+
+
+    if wire_vertices_str != "[":
+        wire_vertices_str = wire_vertices_str[:-2]+"]"
+    if wire_indicies_str != "[":
+        wire_indicies_str = wire_indicies_str[:-2]+"]"
+
     for obj in box2d_objects:
         bm = bmesh.new() 
         mesh = obj.data.copy()
@@ -373,11 +425,15 @@ def save_selected(filepath,
                 if len(pf) == 3:
                     vertex_indices_str += "{0}, {1}, {2}, ".format(*tuple([pf[0]+object_count,pf[1]+object_count,pf[2]+object_count]))
                 else:
-                    vertex_indices_str += "{0}, {1}, {2}, {1}, {2}, {3}, ".format(*tuple([pf[0]+object_count,pf[1]+object_count,pf[2]+object_count,pf[3]+object_count]))
+                    vertex_indices_str += "{0}, {1}, {2}, {0}, {2}, {3}, ".format(*tuple([pf[0]+object_count,pf[1]+object_count,pf[2]+object_count,pf[3]+object_count]))
             object_count += len(ply_verts)
 
 
-    fw("{"+camera_str+"static_vertices:["+vertices_str[0:-2]+"],\nstatic_indicies:["+vertex_indices_str[0:-2]+"],\ncollide_groups:["+collide_groups_str[0:-2]+"]}")
+    fw("{"+camera_str+"static_vertices:["+vertices_str[0:-2]+"],\n"+
+        "static_indicies:["+vertex_indices_str[0:-2]+"],\n"+
+        "wire_vertices:"+wire_vertices_str+",\n"+
+        "wire_indicies:"+wire_indicies_str+",\n"+
+        "collide_groups:["+collide_groups_str[0:-2]+"]}")
     file.close()
     print("writing %r done" % filepath)
 
@@ -401,11 +457,14 @@ def save(operator,
     obj = context.selected_objects
 
     objects = []
+    wireframe_objects = []
     box2d_objects = []
 
     for oo in context.selected_objects:
         if oo.SAUSAGE_visible_object:
             objects.append(oo)
+        if oo.SAUSAGE_wireframe_object:
+            wireframe_objects.append(oo)
         if oo.SAUSAGE_physics_edges:
             box2d_objects.append(oo)
 
@@ -420,7 +479,7 @@ def save(operator,
 
 
 
-    ret = save_selected(filepath, objects, box2d_objects,
+    ret = save_selected(filepath, objects, box2d_objects, wireframe_objects,
                     use_normals=use_normals,
                     use_uv_coords=use_uv_coords,
                     use_colors=use_colors,

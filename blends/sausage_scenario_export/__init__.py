@@ -34,6 +34,7 @@ from bpy_extras.io_utils import (ImportHelper,
 
 bpy.types.Object.SAUSAGE_physics_edges = bpy.props.BoolProperty()
 bpy.types.Object.SAUSAGE_visible_object = bpy.props.BoolProperty(default = True)
+bpy.types.Object.SAUSAGE_wireframe_object = bpy.props.BoolProperty()
 
 #bpy.types.MeshEdge.SAUSAGE_STATIC = bpy.props.BoolProperty()
 
@@ -56,6 +57,9 @@ class OBJECT_PT_hello( bpy.types.Panel ):
 
         row = layout.row()
         row.prop( obj, "SAUSAGE_physics_edges", text="Box2D EdgeShape" )
+
+        row = layout.row()
+        row.prop( obj, "SAUSAGE_wireframe_object", text="render as wireframe" )
 
  
 
@@ -107,7 +111,7 @@ class ExportSausageScenario(bpy.types.Operator, ExportHelper):
                    ('-Y', "-Y Forward", ""),
                    ('-Z', "-Z Forward", ""),
                    ),
-            default='-Z',
+            default='Z',
             )
     axis_up = EnumProperty(
             name="Up",
