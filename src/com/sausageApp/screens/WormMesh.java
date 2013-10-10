@@ -60,6 +60,7 @@ public class WormMesh {
                 "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
                 + "attribute vec4 a_color ;   \n"
                 + "attribute vec4 a_normal ;   \n"
+                        + "uniform mat4 u_worldView;"
                 + "uniform vec2 nodes[128];                           \n"
                 //+ "uniform float concavity[48];                           \n"
                 + "                       \n"
@@ -116,7 +117,7 @@ public class WormMesh {
                 //+ "   nspread = nspread - abs(1- v_concavity)*abs(a_position.y+1)*.003*a_position.x;                          \n"
 
                 + "   mod =   vec4(pos.x + nspread.x  , pos.y + nspread.y    ,0.0,a_position.w);                        \n"
-                + "   gl_Position =   mod;   \n"
+                + "   gl_Position =   mod * u_worldView;   \n"
                 + "}                             \n";
         String fragmentShader = "#ifdef GL_ES                \n"
                 + "precision mediump float;    \n"

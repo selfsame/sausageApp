@@ -1,10 +1,10 @@
 package com.sausageApp.Simulation;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.sausageApp.Game.myGame;
@@ -29,8 +29,13 @@ public class Scenario {
     private Json json = new Json();
 
     private ShaderProgram level_shader;
-
     private Mesh level_mesh;
+
+    private ShaderProgram debug_shader;
+    private ArrayList<Mesh> debug_mesh = new ArrayList<Mesh>();
+
+    float ticker = 0f;
+    public PerspectiveCamera camera;
 
     public myGame game;
     public GameScreen game_screen;
@@ -41,40 +46,51 @@ public class Scenario {
         game = _game;
         game_screen = _game_screen;
 
-        LevelMeshCompiler level_geo = new LevelMeshCompiler();
-        level_mesh = level_geo.CompileMesh();
-        level_shader = level_geo.MakeShader();
-
         ScenarioData scene = json.fromJson(ScenarioData.class, Gdx.files.internal( "scenarios/level01.json" ));
 
+        camera = new PerspectiveCamera( 46.596f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.translate(scene.camera[0], scene.camera[1], scene.camera[2]);
+        //camera.translate( 0f, .01f, 0f);
 
-        for (int i = 0; i < scene.static_objects.size(); i++) {
-            String type = scene.static_objects.get(i).type;
-            float x = scene.static_objects.get(i).x;
-            float y = scene.static_objects.get(i).y;
-            float w = scene.static_objects.get(i).w;
-            float h = scene.static_objects.get(i).h;
 
-            StaticObject new_static = new StaticObject(this, type, x, y, w, h);
-            statics.add(new_static);
+        LevelMeshCompiler level_geo = new LevelMeshCompiler();
+        level_mesh = level_geo.CompileMesh(scene.static_vertices, scene.static_indicies);
+        level_shader = level_geo.MakeShader();
+
+        for (int i = 0; i < scene.collide_groups.size(); i++) {
+            float[] group = scene.collide_groups.get(i);
+            Vec2[] pbies = new Vec2[(int)group.length/2];
+
+            float[] phys_debug = new float[((int)group.length/2)*7];
+            short[] phys_ind = new short[((int)group.length/2)*2+2];
+
+
+            for (int j = 0; j < (int)group.length/2; j++) {
+
+                pbies[j] = S2B(gl2S(new Vec2(group[j*2], group[j*2+1])));
+                phys_debug[j*7] = group[j*2];
+                phys_debug[j*7+1] = group[j*2+1];
+                phys_debug[j*7+2] = 0f;
+                phys_debug[j*7+3] = 1f;
+                phys_debug[j*7+4] = 0f;
+                phys_debug[j*7+5] = 0f;
+                phys_debug[j*7+6] = 1f;
+
+                phys_ind[j*2] = (short)(j*2);
+                phys_ind[j*2+1] = (short)(j*2+1);
+            }
+            phys_ind[group.length/2] = 0;
+            phys_ind[group.length/2+1] = 1;
+            debug_mesh.add( level_geo.CompileMesh(phys_debug, phys_ind) );
+
+
+            createStaticChain( pbies);
         }
 
 
-        Vec2[] pbies = new Vec2[(int)scene.physics_bodies.length/2];
-        for (int i = 0; i < (int)scene.physics_bodies.length/2; i++) {
-            pbies[i] = S2B(gl2S(new Vec2(scene.physics_bodies[i*2], scene.physics_bodies[i*2+1])));
-
-        }
-       createStaticChain( pbies);
-        //statics.add(new StaticObject(this, "stone", 0f, 576f, 1024f, 16f));
-        statics.add(new StaticObject(this, "stone", 0f, 576f, 16f, 576f));
-        statics.add(new StaticObject(this, "stone", 0f, 16f, 1008f, 16f));
-        statics.add(new StaticObject(this, "stone", 1008f, 576f, 16f, 576f));
-
-        createStaticChain(new Vec2[]{P2B(new Vec2(0f,576f)), P2B(new Vec2(1024f, 576f)), P2B(new Vec2(1024f, 560f)), P2B(new Vec2(0f, 560f)) });
 
 
-        createStaticChain(new Vec2[]{P2B(new Vec2(40f,40f)), P2B(new Vec2(80f, 80f)), P2B(new Vec2(120f, 80f)), P2B(new Vec2(80f, 0f)) });
+
 
 
     }
@@ -82,7 +98,7 @@ public class Scenario {
 
 
     public Vec2 gl2S(Vec2 v){
-        float y = (float)((v.y+1f)/2f)*(Gdx.graphics.getHeight()) ;
+        float y = (float)(((-1f*v.y)+1f)/2f)*(Gdx.graphics.getHeight()) ;
         float x = (float)((v.x+1f)/2f)*(Gdx.graphics.getWidth()) ;
         return new Vec2( x, y );
     };
@@ -224,9 +240,42 @@ public class Scenario {
     }
 
     public void render(){
+
+
+        ticker += .01f;
+        Vec2 pp = game.players.get(0).sausage.head.getPosition().mul(.01f);
+        Vector2 ppp = new Vector2(pp.x,pp.y);
+        Vector2 difff = ppp.sub(new Vector2(camera.position.x, camera.position.y)).mul(1f);
+        //camera.near = 2f;
+        //camera.far = 200f;
+
+        camera.translate(difff.x, 0f, 0f );
+        camera.lookAt(pp.x, pp.y, 0f);
+        //camera.rotateAround(ppp, new Vector3(0f,1f,0f), 1f);
+        camera.update();
+
+
+
         level_shader.begin();
+        //Gdx.gl.glEnable(GL20.GL_CULL_FACE);
+        //Gdx.gl.glCullFace(GL20.GL_BACK);
+        //Gdx.gl.glClearDepthf(1.0f);
+        Gdx.gl.glDepthRangef(0f, 1f);
+        Gdx.gl.glDepthFunc(GL20.GL_LESS);
+        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
+        level_shader.setUniformMatrix("u_worldView", camera.combined);
         level_mesh.render(level_shader, GL20.GL_TRIANGLES);
+
         level_shader.end();
+        ;
+
+//        level_shader.begin();
+//        //Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+//        for (int i = 0; i<debug_mesh.size();i++){
+//            level_shader.setUniformMatrix("u_worldView", camera.combined);
+//            debug_mesh.get(i).render(level_shader, GL20.GL_LINE_LOOP);
+//        }
+//        level_shader.end();
     }
 
 

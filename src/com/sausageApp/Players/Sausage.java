@@ -156,6 +156,7 @@ public class Sausage {
         Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
         sausage_shader.begin();
         UpdateMesh();
+        sausage_shader.setUniformMatrix("u_worldView", scenario.camera.combined);
         if (player.debug_draw_sausage_mesh_lines){
             mesh.render(sausage_shader, GL20.GL_LINE_LOOP);
         } else {
