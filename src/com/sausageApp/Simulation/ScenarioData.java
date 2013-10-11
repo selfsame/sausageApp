@@ -8,5 +8,7 @@ public class ScenarioData {
     public float[] camera = new float[]{};
     public float[] static_vertices = new float[]{};
     public short[] static_indicies = new short[]{};
+    public float[] wire_vertices = new float[]{};
+    public short[] wire_indicies = new short[]{};
     public ArrayList<float[]> collide_groups = new ArrayList<float[]>();
 }

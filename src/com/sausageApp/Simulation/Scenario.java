@@ -31,6 +31,9 @@ public class Scenario {
     private ShaderProgram level_shader;
     private Mesh level_mesh;
 
+    private ShaderProgram wire_shader;
+    private Mesh wire_mesh;
+
     private ShaderProgram debug_shader;
     private ArrayList<Mesh> debug_mesh = new ArrayList<Mesh>();
 
@@ -56,6 +59,9 @@ public class Scenario {
         LevelMeshCompiler level_geo = new LevelMeshCompiler();
         level_mesh = level_geo.CompileMesh(scene.static_vertices, scene.static_indicies);
         level_shader = level_geo.MakeShader();
+
+        wire_mesh = level_geo.CompileMesh(scene.wire_vertices, scene.wire_indicies);
+        wire_shader = level_geo.MakeWireShader();
 
         for (int i = 0; i < scene.collide_groups.size(); i++) {
             float[] group = scene.collide_groups.get(i);
@@ -269,13 +275,26 @@ public class Scenario {
         level_shader.end();
         ;
 
-//        level_shader.begin();
-//        //Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+        wire_shader.begin();
+        Gdx.gl.glEnable(GL20.GL_BLEND) ;
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+        Gdx.gl20.glLineWidth(1f);
+        Gdx.gl.glPolygonOffset(.75f, .8f);
+        Gdx.gl.glDepthRangef(0f, 100f);
+        Gdx.gl.glDepthFunc(GL20.GL_LESS);
+        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
+
+        wire_shader.setUniformMatrix("u_worldView", camera.combined);
+        //Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 //        for (int i = 0; i<debug_mesh.size();i++){
 //            level_shader.setUniformMatrix("u_worldView", camera.combined);
 //            debug_mesh.get(i).render(level_shader, GL20.GL_LINE_LOOP);
 //        }
-//        level_shader.end();
+        wire_mesh.render(wire_shader, GL20.GL_LINES);
+        Gdx.gl20.glDisable(GL20.GL_BLEND);
+        wire_shader.end();
+
     }
 
 

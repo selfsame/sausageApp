@@ -34,7 +34,7 @@ public class Sausage {
     public ArrayList<Link> sausage_links = new ArrayList<Link>();
     public Link head_link;
     public Link tail_link;
-    public int sausage_length = 20;
+    public int sausage_length = 40;
     private float L_DIST = 1.5f;
 
     private Scenario scenario;
@@ -134,16 +134,16 @@ public class Sausage {
 
         // hack for head
 
-        Vec2 v1 = scenario.SFlip(scenario.B2S(sausage_bodies.get(sausage_bodies.size()-1).getPosition()));
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.FilledCircle);
-
-        Gdx.gl20.glLineWidth(0f);
-        shapeRenderer.setColor(player.color);
-        if (!player.debug_draw_sausage_mesh_lines){
-            shapeRenderer.filledCircle(v1.x, v1.y, scenario.P2S(SRADIUS)*1.3f);
-        }
-        shapeRenderer.end();
+//        Vec2 v1 = scenario.SFlip(scenario.B2S(sausage_bodies.get(sausage_bodies.size()-1).getPosition()));
+//
+//        shapeRenderer.begin(ShapeRenderer.ShapeType.FilledCircle);
+//
+//        Gdx.gl20.glLineWidth(0f);
+//        shapeRenderer.setColor(player.color);
+//        if (!player.debug_draw_sausage_mesh_lines){
+//            shapeRenderer.filledCircle(v1.x, v1.y, scenario.P2S(SRADIUS)*1.3f);
+//        }
+//        shapeRenderer.end();
 
 
         if (player.debug_draw_sausage_links){
