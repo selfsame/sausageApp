@@ -8,8 +8,8 @@ import java.util.ArrayList;
 
 public class ScenarioData {
     public float[] camera = new float[]{};
-    public float[] static_vertices = new float[]{};
-    public short[] static_indicies = new short[]{};
+    public ArrayList<VertexObject> vertex_objects = new ArrayList<VertexObject>();
+    public ArrayList<VertexObject> texture_objects = new ArrayList<VertexObject>();
     public float[] static_tex_vertices = new float[]{};
     public short[] static_tex_indicies = new short[]{};
     public float[] wire_vertices = new float[]{};

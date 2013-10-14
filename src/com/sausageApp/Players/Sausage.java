@@ -34,7 +34,7 @@ public class Sausage {
     public ArrayList<Link> sausage_links = new ArrayList<Link>();
     public Link head_link;
     public Link tail_link;
-    public int sausage_length = 20;
+    public int sausage_length = 18;
     private float L_DIST = 1.5f;
 
     private Scenario scenario;
@@ -50,7 +50,9 @@ public class Sausage {
     public float SRADIUS = 7.5f;
 
     public Sausage(Player _player, Scenario _scenario){
+
         player = _player;
+        player.FORCE = .2f*sausage_length;
         scenario = _scenario;
         Vec2 spawn = scenario.GetSpawn();
         sausage_bodies = createSausageBodies(spawn.x, spawn.y, SRADIUS, sausage_length);
@@ -96,10 +98,10 @@ public class Sausage {
 
         RevoluteJointDef jd = new RevoluteJointDef();
         jd.collideConnected = false;
-        jd.upperAngle = 1.17079633f;
-        jd.lowerAngle = -1.17079633f;
+        jd.upperAngle = .57079633f;
+        jd.lowerAngle = -.57079633f;
         jd.enableLimit = true;
-        jd.maxMotorTorque = 10.0f;
+        jd.maxMotorTorque = 20.0f;
 
         jd.motorSpeed = 0f;
 
@@ -224,6 +226,10 @@ public class Sausage {
     }
 
     public void SimpleDraw(){
+        Gdx.gl.glDisable(GL20.GL_DEPTH_TEST) ;
+        Gdx.gl.glEnable(GL20.GL_FRONT_AND_BACK) ;
+        shapeRenderer.setProjectionMatrix(player.scenario.camera.combined);
+        shapeRenderer.translate(0f,0f,-1f);
         for(int i = 0; i < sausage_links.size(); i++) {
             Vec2 v1 = sausage_bodies.get(i).getPosition();
             v1 = scenario.SFlip(scenario.B2S(v1));

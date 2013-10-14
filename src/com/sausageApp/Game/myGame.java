@@ -51,7 +51,7 @@ public class myGame extends Game{
     @Override
     public void create() {
         player_colors.add(new Color(.8f,.5f, .5f, 1f));
-        player_colors.add(new Color(.2f, .8f, .6f, 1f));
+        player_colors.add(new Color(.8f, .8f, .2f, 1f));
         profiler = new Profiler();
         setScreen(getSplashScreen());
     }

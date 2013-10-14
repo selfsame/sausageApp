@@ -124,11 +124,7 @@ public class GameScreen
         Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
 
 
-        for(int i = 0; i < game.player_count; i++) {
-            Player player = game.players.get(i);
-            player.handleInput();
-            player.render();
-        }
+
 
 
 
@@ -154,6 +150,12 @@ public class GameScreen
         stage.draw();
 
         scenario.render();
+
+        for(int i = 0; i < game.player_count; i++) {
+            Player player = game.players.get(i);
+            player.handleInput();
+            player.render();
+        }
     }
 
     @Override
