@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.sausageApp.Players.Player;
 
 import java.util.ArrayList;
 
@@ -23,13 +24,16 @@ public class WormMesh {
     public ArrayList<MeshSegment> segments = new ArrayList<MeshSegment>();
     public int segment_count;
 
-    public WormMesh(int _count){
+    private Player player;
+
+    public WormMesh(int _count, Player _player){
         segment_count = _count;
+        player = _player;
         for (int i=0;i<segment_count-1;i++){
 //            if (i==0){
 //                segments.add( new MeshSegment(i, verticies, indicies,true) );
 //            } else {
-              segments.add( new MeshSegment(i, verticies, indicies) );
+              segments.add( new MeshSegment(i, verticies, indicies, player) );
 
         }
 
@@ -117,7 +121,7 @@ public class WormMesh {
                 //+ "   nspread = nspread - abs(1- v_concavity)*abs(a_position.y+1)*.003*a_position.x;                          \n"
 
                 + "   mod =   vec4(pos.x + nspread.x  , pos.y + nspread.y    ,0.0,a_position.w);                        \n"
-                + "   gl_Position =   mod * u_worldView;   \n"
+                + "   gl_Position =  u_worldView * mod ;   \n"
                 + "}                             \n";
         String fragmentShader = "#ifdef GL_ES                \n"
                 + "precision mediump float;    \n"

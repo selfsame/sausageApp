@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.sausageApp.Game.myGame;
@@ -31,6 +32,9 @@ public class Scenario {
     private ShaderProgram level_shader;
     private Mesh level_mesh;
 
+    private ShaderProgram tex_shader;
+    private Mesh tex_mesh;
+
     private ShaderProgram wire_shader;
     private Mesh wire_mesh;
 
@@ -43,16 +47,27 @@ public class Scenario {
     public myGame game;
     public GameScreen game_screen;
 
+    private ArrayList<SpawnPoint> spawn_points;
+    private int spawn_index = 0;
+
+    private ScenarioData scene;
+
+    private Texture tex;
+
     public Scenario(myGame _game, GameScreen _game_screen) {
         gravity = new Vec2(.0f, 20.8f);
         world = new World(gravity);
         game = _game;
         game_screen = _game_screen;
-
-        ScenarioData scene = json.fromJson(ScenarioData.class, Gdx.files.internal( "scenarios/level01.json" ));
-
+        //Gdx.gl.glViewport(0,0,(int)Gdx.graphics.getWidth(), (int)Gdx.graphics.getHeight());
+        scene = json.fromJson(ScenarioData.class, Gdx.files.internal( "scenarios/level01.json" ));
+        tex = new Texture(Gdx.files.internal("house_tex.png"));
         camera = new PerspectiveCamera( 46.596f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.translate(scene.camera[0], scene.camera[1], scene.camera[2]);
+        //camera.translate(scene.camera[0], scene.camera[1], scene.camera[2]);
+        //Gdx.graphics.setDisplayMode((int)Gdx.graphics.getWidth()/2,(int)Gdx.graphics.getHeight()/2, false);
+        camera.rotate(180f, 0f,1f,0f);
+        camera.position.set(scene.camera[0], scene.camera[1], -2f);
+        //camera.lookAt(scene.camera[0]+10f, scene.camera[1], 0f);
         //camera.translate( 0f, .01f, 0f);
 
 
@@ -60,22 +75,27 @@ public class Scenario {
         level_mesh = level_geo.CompileMesh(scene.static_vertices, scene.static_indicies);
         level_shader = level_geo.MakeShader();
 
+        tex_mesh = level_geo.CompileTexMesh(scene.static_tex_vertices, scene.static_tex_indicies);
+        tex_shader = level_geo.MakeTexShader();
+
         wire_mesh = level_geo.CompileMesh(scene.wire_vertices, scene.wire_indicies);
         wire_shader = level_geo.MakeWireShader();
 
-        for (int i = 0; i < scene.collide_groups.size(); i++) {
-            float[] group = scene.collide_groups.get(i);
-            Vec2[] pbies = new Vec2[(int)group.length/2];
+        spawn_points = scene.spawn_points;
 
-            float[] phys_debug = new float[((int)group.length/2)*7];
-            short[] phys_ind = new short[((int)group.length/2)*2+2];
+        for (Collider group: scene.collide_groups) {
+            float[] verts = group.verts;
+            Vec2[] pbies = new Vec2[(int)verts.length/2];
+
+            float[] phys_debug = new float[((int)verts.length/2)*7];
+            short[] phys_ind = new short[((int)verts.length/2)*2+2];
 
 
-            for (int j = 0; j < (int)group.length/2; j++) {
+            for (int j = 0; j < (int)verts.length/2; j++) {
 
-                pbies[j] = S2B(gl2S(new Vec2(group[j*2], group[j*2+1])));
-                phys_debug[j*7] = group[j*2];
-                phys_debug[j*7+1] = group[j*2+1];
+                pbies[j] = S2B(gl2S(new Vec2(verts[j*2],verts[j*2+1])));
+                phys_debug[j*7] = verts[j*2];
+                phys_debug[j*7+1] = verts[j*2+1];
                 phys_debug[j*7+2] = 0f;
                 phys_debug[j*7+3] = 1f;
                 phys_debug[j*7+4] = 0f;
@@ -85,29 +105,147 @@ public class Scenario {
                 phys_ind[j*2] = (short)(j*2);
                 phys_ind[j*2+1] = (short)(j*2+1);
             }
-            phys_ind[group.length/2] = 0;
-            phys_ind[group.length/2+1] = 1;
+            phys_ind[verts.length/2] = 0;
+            phys_ind[verts.length/2+1] = 1;
             debug_mesh.add( level_geo.CompileMesh(phys_debug, phys_ind) );
 
 
             createStaticChain( pbies);
         }
-
-
-
-
-
-
-
     }
 
+    public void step(float delta) {
+        long startTime = System.nanoTime();
+        world.step(delta, 8, 6);
+        long endTime = System.nanoTime();
+        long duration = endTime - startTime;
+        game.profiler.addStat("World Step: (ms) "+(int)(duration*1.0e-6));
+    }
 
+    public Vec2 S2gl(Vec2 v){
+        float SCALE = 4f;
+        float y = (float)( (Gdx.graphics.getHeight()-(v.y*SCALE))  /(Gdx.graphics.getHeight()*2f)-1f) ;
+        float x = (float)((v.x*SCALE)/(Gdx.graphics.getWidth()*2f)-1f) ;
+        return new Vec2( x, y );
+    }
 
     public Vec2 gl2S(Vec2 v){
         float y = (float)(((-1f*v.y)+1f)/2f)*(Gdx.graphics.getHeight()) ;
         float x = (float)((v.x+1f)/2f)*(Gdx.graphics.getWidth()) ;
         return new Vec2( x, y );
-    };
+    }
+
+
+
+    public void render(){
+
+
+        ticker += .01f;
+        int player_count = game.players.size();
+        Vec2 pp = new Vec2(0f,0f);
+        float ubx = 99999f;
+        float uby = 99999f;
+        float lbx = -99999f;
+        float lby = -99999f;
+        for (int i=0;i<player_count;i++){
+           Vec2 player_p = S2gl(B2S(game.players.get(i).sausage.head.getPosition()));
+           if (player_p.x < ubx) { ubx = player_p.x;}
+            if (player_p.y < uby) { uby = player_p.y;}
+            if (player_p.x > lbx) { lbx = player_p.x;}
+            if (player_p.y > lby) { lby = player_p.y;}
+           pp = pp.add(player_p);
+        }
+        float dist = new Vector2(ubx,uby).dst2(lbx,lby);
+        pp = pp.mul(1f/(float)player_count);
+        Vector2 ppp = new Vector2(pp.x,pp.y);
+        Vector2 difff = ppp.sub(new Vector2(camera.position.x, camera.position.y)).mul(1f);
+        //camera.near = 2f;
+        //camera.far = 200f;
+        //Vector3 up = camera.unproject(new Vector3(pp.x, pp.y, camera.position.z));
+        float finalx = camera.position.x;
+        float finaly = camera.position.y;
+        if ((camera.position.x-pp.x) > .5f){
+             finalx = pp.x+.5f;
+        }
+        if ((camera.position.x-pp.x) < -.5f){
+            finalx = pp.x-.5f;
+        }
+        if (((camera.position.y)-(pp.y)) > 2.5f){
+            finaly = pp.y+2.5f;
+        }
+        if (((camera.position.y)-(pp.y)) < 1.5f){
+            finaly = (pp.y+1.5f);
+        }
+        float final_dist =  (float)(Math.sqrt((double)dist));
+        if (final_dist < 2f){final_dist = 2f;}
+        camera.position.set(finalx, finaly, -final_dist);
+
+        //camera.lookAt(camera.position.x, camera.position.y, 0f);
+
+        //camera.rotateAround(ppp, new Vector3(0f,1f,0f), 1f);
+        camera.update();
+
+
+
+
+
+
+
+        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        //Gdx.gl20.glDisable(GL20.GL_BLEND);
+        level_shader.begin();
+        Gdx.gl.glDepthRangef(0f, 1f);
+        Gdx.gl.glDepthFunc(GL20.GL_LESS);
+        level_shader.setUniformMatrix("u_viewProj", camera.combined);
+        level_mesh.render(level_shader, GL20.GL_TRIANGLES);
+        level_shader.end();
+
+        wire_shader.begin();
+        //Gdx.gl.glEnable(GL20.GL_BLEND) ;
+        //Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        Gdx.gl20.glLineWidth(1f);
+        Gdx.gl.glPolygonOffset(.75f, .8f);
+        Gdx.gl.glDepthRangef(0f, 100f);
+        Gdx.gl.glDepthFunc(GL20.GL_LESS);
+        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
+        wire_shader.setUniformMatrix("u_viewProj", camera.combined);
+        //Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+//        for (int i = 0; i<debug_mesh.size();i++){
+//            level_shader.setUniformMatrix("u_worldView", camera.combined);
+//            debug_mesh.get(i).render(level_shader, GL20.GL_LINE_LOOP);
+//        }
+        wire_mesh.render(wire_shader, GL20.GL_LINES);
+        Gdx.gl20.glDisable(GL20.GL_BLEND);
+        wire_shader.end();
+
+
+        //Gdx.gl.glDisable(GL20.GL_BLEND);
+        Gdx.gl.glEnable(GL20.GL_BLEND) ;
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        //Gdx.gl20.glDisable(GL20.GL_BLEND);
+        tex_shader.begin();
+        Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
+        Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+        tex.bind();
+        Gdx.gl.glDepthRangef(0f, 1f);
+        Gdx.gl.glDepthFunc(GL20.GL_LESS);
+        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
+        tex_shader.setUniformMatrix("u_viewProj", camera.combined);
+        tex_mesh.render(tex_shader, GL20.GL_TRIANGLES);
+        tex_shader.end();
+
+    }
+
+
+    public Vec2 GetSpawn(){
+        SpawnPoint using = spawn_points.get(spawn_index);
+        spawn_index += 1;
+        return S2P(gl2S(new Vec2( using.pos[0], using.pos[1])));
+
+        //return new Vec2(10f,10f);
+    }
 
 
     // 1024 576
@@ -120,7 +258,6 @@ public class Scenario {
     public Vec2 P2B(Vec2 v){
         return new Vec2(P2B(v.x), P2B(v.y));
     }
-
     //Pixel scale to screen scale
     public float P2S(float a){
         return a / (1024f/Gdx.graphics.getWidth()) ;
@@ -128,8 +265,6 @@ public class Scenario {
     public Vec2 P2S(Vec2 v){
         return new Vec2(P2S(v.x), P2S(v.y));
     }
-
-
     //Box2d scale to Pixel scale
     public float B2P(float a){
         return a*PHYSICS_SCALE;
@@ -137,7 +272,6 @@ public class Scenario {
     public Vec2 B2P(Vec2 v){
         return new Vec2(B2P(v.x), B2P(v.y));
     }
-
     //Box2d scale to Screen scale
     public float B2S(float a){
         return P2S(B2P(a));
@@ -145,8 +279,6 @@ public class Scenario {
     public Vec2 B2S(Vec2 v){
         return new Vec2(B2S(v.x), B2S(v.y));
     }
-
-
     //Screen scale to Pixel scale
     public float S2P(float a){
         return (1024f/Gdx.graphics.getWidth()) * a ;
@@ -154,7 +286,6 @@ public class Scenario {
     public Vec2 S2P(Vec2 v){
         return new Vec2(S2P(v.x), S2P(v.y));
     }
-
     //Screen scale to Box2d scale
     public float S2B(float a){
         return P2B(S2P(a));
@@ -162,7 +293,6 @@ public class Scenario {
     public Vec2 S2B(Vec2 v){
         return new Vec2(S2B(v.x), S2B(v.y));
     }
-
     //Flip y axis for screen draws
     public float SFlip(float a){
         return Gdx.graphics.getHeight() - a;
@@ -181,19 +311,15 @@ public class Scenario {
         circleF.density = 1.0f*density;
         circleF.restitution = .8f;
         circleF.friction = .9f;
-
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.DYNAMIC;
         bodyDef.position.set(x, y);
-
-        //bodyDef.angle = (float) (Math.PI / 4 * i);
         bodyDef.allowSleep = false;
         Body body = world.createBody(bodyDef);
         body.m_angularDamping = .8f;
         body.m_linearDamping = .8f;
         body.createFixture(circleShape, 5.0f);
         body.createFixture(circleF);
-
         return body;
     }
 
@@ -201,11 +327,9 @@ public class Scenario {
         x = P2B(x); y = P2B(y); w = P2B(w); h = P2B(h);
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.setAsBox(w, h);
-
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.STATIC;
         bodyDef.position.set(x, y);
-        //bodyDef.angle = (float) (Math.PI / 4 * i);
         bodyDef.allowSleep = false;
         Body body = world.createBody(bodyDef);
         body.createFixture(polygonShape, 5.0f);
@@ -213,93 +337,13 @@ public class Scenario {
     }
 
     public Body createStaticChain(Vec2[] verticies) {
-
         ChainShape chainShape = new ChainShape();
-        //PolygonShape chainShape = new PolygonShape();
         chainShape.createChain(verticies, verticies.length);
-        //chainShape.set(verticies, verticies.length);
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.STATIC;
-
-
-
         bodyDef.position.set(0f, 0f);
-
         Body body = world.createBody(bodyDef);
         body.createFixture(chainShape, 5.0f);
         return body;
-    }
-
-
-
-    public void step(float delta) {
-        long startTime = System.nanoTime();
-        world.step(delta, 8, 6);
-        long endTime = System.nanoTime();
-
-        long duration = endTime - startTime;
-        game.profiler.addStat("World Step: (ms) "+(int)(duration*1.0e-6));
-
-
-
-
-    }
-
-    public void render(){
-
-
-        ticker += .01f;
-        Vec2 pp = game.players.get(0).sausage.head.getPosition().mul(.01f);
-        Vector2 ppp = new Vector2(pp.x,pp.y);
-        Vector2 difff = ppp.sub(new Vector2(camera.position.x, camera.position.y)).mul(1f);
-        //camera.near = 2f;
-        //camera.far = 200f;
-
-        camera.translate(difff.x, 0f, 0f );
-        camera.lookAt(pp.x, pp.y, 0f);
-        //camera.rotateAround(ppp, new Vector3(0f,1f,0f), 1f);
-        camera.update();
-
-
-
-        level_shader.begin();
-        //Gdx.gl.glEnable(GL20.GL_CULL_FACE);
-        //Gdx.gl.glCullFace(GL20.GL_BACK);
-        //Gdx.gl.glClearDepthf(1.0f);
-        Gdx.gl.glDepthRangef(0f, 1f);
-        Gdx.gl.glDepthFunc(GL20.GL_LESS);
-        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
-        level_shader.setUniformMatrix("u_worldView", camera.combined);
-        level_mesh.render(level_shader, GL20.GL_TRIANGLES);
-
-        level_shader.end();
-        ;
-
-        wire_shader.begin();
-        Gdx.gl.glEnable(GL20.GL_BLEND) ;
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-        Gdx.gl20.glLineWidth(1f);
-        Gdx.gl.glPolygonOffset(.75f, .8f);
-        Gdx.gl.glDepthRangef(0f, 100f);
-        Gdx.gl.glDepthFunc(GL20.GL_LESS);
-        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
-
-        wire_shader.setUniformMatrix("u_worldView", camera.combined);
-        //Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
-//        for (int i = 0; i<debug_mesh.size();i++){
-//            level_shader.setUniformMatrix("u_worldView", camera.combined);
-//            debug_mesh.get(i).render(level_shader, GL20.GL_LINE_LOOP);
-//        }
-        wire_mesh.render(wire_shader, GL20.GL_LINES);
-        Gdx.gl20.glDisable(GL20.GL_BLEND);
-        wire_shader.end();
-
-    }
-
-
-    public Vec2 GetSpawn(){
-        return new Vec2( 1024f *( .8f * (float)Math.random()), 576f * (.8f * (float)Math.random()));
-        //return new Vec2(10f,10f);
     }
 }

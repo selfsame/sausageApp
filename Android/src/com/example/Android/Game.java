@@ -3,6 +3,7 @@ package com.example.Android;
 import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 
 public class Game extends AndroidApplication
 {
@@ -14,6 +15,7 @@ public class Game extends AndroidApplication
         cfg.useAccelerometer = false;
         cfg.useCompass = false;
         cfg.useWakelock = true;
+
         cfg.useGL20 = true;
         initialize(new com.sausageApp.Game.myGame(), cfg);
     }

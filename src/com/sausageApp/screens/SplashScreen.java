@@ -16,9 +16,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
 import com.sausageApp.Game.myGame;
 import com.sausageApp.Players.Avatar;
 import com.sausageApp.Players.Player;
+import com.sausageApp.Simulation.LevelMeshCompiler;
+import com.sausageApp.Simulation.ScenarioData;
 import tv.ouya.console.api.OuyaController;
 
 public class SplashScreen
@@ -35,8 +39,12 @@ public class SplashScreen
     public Mesh mesh;
     private float time = 0.f;
 
+    private JsonReader JSON = new JsonReader();
+    private Json json = new Json();
     private float ticker = .0f;
 
+    ScenarioData scene = json.fromJson(ScenarioData.class, Gdx.files.internal( "scenarios/level01.json" ));
+    private Mesh level_mesh;
 
     public SplashScreen(
             myGame game )
@@ -45,10 +53,6 @@ public class SplashScreen
 
 
 
-
-        WormMesh worm = new WormMesh(10);
-        mesh = worm.CompileMesh();
-        test_shader = worm.MakeShader();
 
 
 
@@ -147,55 +151,11 @@ public class SplashScreen
         }
 
 
-        Gdx.gl20.glLineWidth(1f);
-        test_shader.begin();
         ticker += .01f;
-        //float ts = (float)Math.sin(ticker)*.1f;
         float ts = 0f;
-//        test_shader.setUniform2fv("nodes", new float[]{
-//                .01f,.9f, //repeated first entry
-//                .05f,.8f,
-//                -.05f,.7f-ts,
-//                .1f,.6f+ts,
-//                -.1f,.5f-ts,
-//                .05f,.4f+ts,
-//                .0f,-.06f-ts,
-//                .1f,.05f+ts,
-//                .2f,.1f-ts,
-//                .3f,.0f+ts,
-//                .4f,-.1f-ts,
-//                .5f,-.2f, // repeated last entry
-//                    }, 0, 24);
-        test_shader.setUniform2fv("nodes", new float[]{
-                .0f,.0f, //repeated first entry
-                .0f,.0f,
-                .1f,.0f,
-                .2f,-.2f,
-                .3f,.0f,
-                .4f,.0f,
-                .5f,-.1f,
-                .6f,.0f,
-                .7f,.1f,
-                .8f,.0f,
-                .9f,.0f,
-                .9f,.0f, // repeated last entry
-        }, 0, 24);
-//        test_shader.setUniform1fv("concavity", new float[]{
-//                1f, //repeated first entry
-//                1f,
-//                1f,
-//                1f,
-//                1f,
-//                1f,
-//                1f,
-//                1f,
-//                1f,
-//                1f,
-//                1f,
-//                1f, // repeated last entry
-//        }, 0, 12);
-        mesh.render(test_shader, GL20.GL_LINE_STRIP);
-        test_shader.end();
+
+
+
 
     }
 

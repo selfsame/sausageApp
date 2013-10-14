@@ -34,7 +34,7 @@ public class Sausage {
     public ArrayList<Link> sausage_links = new ArrayList<Link>();
     public Link head_link;
     public Link tail_link;
-    public int sausage_length = 40;
+    public int sausage_length = 20;
     private float L_DIST = 1.5f;
 
     private Scenario scenario;
@@ -210,37 +210,6 @@ public class Sausage {
         nodes[(sausage_length+1)*2+5] = lp.y+.1f;
 
         sausage_shader.setUniform2fv("nodes", nodes, 0, (sausage_length+1)*2);
-//        sausage_shader.setUniform2fv("nodes", new float[]{
-//                .01f,.0f, //repeated first entry
-//                .05f,.0f,
-//                .1f,.2f,
-//                .1f,.0f,
-//                .3f,.25f,
-//                .4f,.05f,
-//                .5f,.25f,
-//                .6f,.05f,
-//                .7f,.25f,
-//                .8f,.05f,
-//                .9f,.25f,
-//                .9f,.25f, // repeated last entry
-//        }, 0, 24);
-//        sausage_shader.setUniform1fv("concavity", new float[]{
-//                1f, //repeated first entry
-//                1f,
-//                1f,
-//                1f,
-//                1f,
-//                1f,
-//                1f,
-//                1f,
-//                1f,
-//                1f,
-//                1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,
-//                1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,
-//                1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,1f,
-//                 // repeated last entry
-//        }, 0, 48);
-
 
     }
 
@@ -248,7 +217,7 @@ public class Sausage {
 
     private void DefineShaders(){
 
-        WormMesh worm = new WormMesh(sausage_length);
+        WormMesh worm = new WormMesh(sausage_length, player);
         mesh = worm.CompileMesh();
         sausage_shader = worm.MakeShader();
 

@@ -1,5 +1,7 @@
 package com.sausageApp.screens;
 
+import com.sausageApp.Players.Player;
+
 import java.util.ArrayList;
 
 /**
@@ -10,8 +12,9 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 public class MeshSegment {
-
-    public MeshSegment(int node_index, ArrayList<Float> verticies, ArrayList<Short> indicies){
+    private Player player;
+    public MeshSegment(int node_index, ArrayList<Float> verticies, ArrayList<Short> indicies, Player _player){
+        player = _player;
         //left, middle, and right pairs
         //each pair has a top and bottom vertex
         // each vertex has x, y, node_index, curve_coord_v, curve_coord_w, segment_pair_index
@@ -41,9 +44,9 @@ public class MeshSegment {
                     verticies.add( .8f );
                     verticies.add( 1.0f );
                 } else {
-                    verticies.add( .9f );
-                    verticies.add( .5f );
-                    verticies.add( .5f );
+                    verticies.add( player.color.r );
+                    verticies.add( player.color.g );
+                    verticies.add( player.color.b );
                     verticies.add( 1.0f );
                 }
 
@@ -70,9 +73,9 @@ public class MeshSegment {
                     verticies.add( .8f );
                     verticies.add( 1.0f );
                 } else {
-                    verticies.add( .9f );
-                    verticies.add( .5f );
-                    verticies.add( .5f );
+                    verticies.add( player.color.r );
+                    verticies.add( player.color.g );
+                    verticies.add( player.color.b );
                     verticies.add( 1.0f );
                 }
             }

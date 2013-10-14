@@ -33,40 +33,64 @@ public class LevelMeshCompiler {
         return mesh;
     }
 
-    public Mesh CompileMesh(float[] _v){
+    public Mesh CompileTexMesh(float[] _v, short[] _i){
         verticies = _v;
-
-        Mesh mesh = new Mesh(false, verticies.length*7, 0,
+        indicies = _i;
+        SetData();
+        Mesh mesh = new Mesh(false, verticies.length*9,indicies.length,
                 new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
+                new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"),
                 new VertexAttribute(VertexAttributes.Usage.Color, 4, "a_color"));
         mesh.setVertices( verticies );
+        mesh.setIndices( indicies );
         return mesh;
     }
+
 
     public ShaderProgram MakeShader(){
         String vertexShader =
                 "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
                         + "attribute vec4 a_color ;   \n"
                         + "varying vec4 v_color ;   \n"
-                        + "uniform mat4 u_worldView;"
+                        + "uniform mat4 u_viewProj;"
                         + "void main()                   \n"
                         + "{  v_color = a_color;                           \n"
 
-                        + "   gl_Position =   a_position * u_worldView;   \n"
+                        + "   gl_Position =   u_viewProj * a_position;   \n"
                         + "}                             \n";
         String fragmentShader = "#ifdef GL_ES                \n"
                 + "precision mediump float;    \n"
-
                 + "#endif                      \n"
-
                 + "varying vec4 v_color;                       \n"
-
-
                 + "void main()                 \n"
                 + "{                           \n"
-
                 + "  gl_FragColor = v_color;    \n"
+                + "}";
+        return new ShaderProgram(vertexShader, fragmentShader);
+    }
 
+    public ShaderProgram MakeTexShader(){
+        String vertexShader =
+                "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
+                        + "attribute vec4 a_color ;   \n"
+                        + "attribute vec2 a_texCoords ;   \n"
+                        + "varying vec4 v_color ;   \n"
+                        + "varying vec2 v_texCoords ;   \n"
+                        + "uniform mat4 u_viewProj;"
+                        + "void main()                   \n"
+                        + "{  v_color = a_color;                           \n"
+                        + "   v_texCoords = a_texCoords;  \n"
+                        + "   gl_Position =   u_viewProj * a_position;   \n"
+                        + "}                             \n";
+        String fragmentShader = "#ifdef GL_ES                \n"
+                + "precision mediump float;    \n"
+                + "#endif                      \n"
+                + "varying vec4 v_color;                       \n"
+                + "varying vec2 v_texCoords ;   \n"
+                + "uniform sampler2D u_texture;\n"
+                + "void main()                 \n"
+                + "{                           \n"
+                + "  gl_FragColor =  (texture2D(u_texture, v_texCoords) * (v_color  )  )  ;    \n"
                 + "}";
         return new ShaderProgram(vertexShader, fragmentShader);
     }
@@ -76,11 +100,11 @@ public class LevelMeshCompiler {
                 "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
                         + "attribute vec4 a_color ;   \n"
                         + "varying vec4 v_color ;   \n"
-                        + "uniform mat4 u_worldView;"
+                        + "uniform mat4 u_viewProj;"
                         + "void main()                   \n"
                         + "{  v_color = a_color;                           \n"
 
-                        + "   gl_Position =   a_position * u_worldView;   \n"
+                        + "   gl_Position =   u_viewProj * a_position;   \n"
                         + "}                             \n";
         String fragmentShader = "#ifdef GL_ES                \n"
                 + "precision mediump float;    \n"
