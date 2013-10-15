@@ -193,8 +193,17 @@ def save_mesh(filepath,
 
 
 
+
+
+
+
+
+
+
+
+
 def save_selected(filepath,
-              objects, box2d_objects, wireframe_objects,
+              objects, box2d_objects, wireframe_objects, spawn_points,
               use_normals=True,
               use_uv_coords=True,
               use_colors=True,
@@ -210,10 +219,18 @@ def save_selected(filepath,
 
     vertices_str = ""
     vertex_indices_str = ""
+    vertex_objects = ""
+    texture_objects = ""
+
+    tex_vertices_str = ""
+    tex_vertex_indices_str = ""
+    tex_object_count = 0
+
     collide_groups_str = ""
     wire_vertices_str = "["
     wire_indicies_str = "["
     camera_str = "camera:[0.0, 0.0, 2.0], "
+    spawn_points_str = ""
     object_count = 0
     total_wire_verts = 0
     for obj in wireframe_objects:
@@ -232,7 +249,7 @@ def save_selected(filepath,
             valid = False
             starting_count = total_wire_verts
             make_line = False
-            for iter in range(0,len(face.loops)):
+            for iter in range(0,len(face.loops)-1):
                 loop = face.loops[iter]
                 ed = loop.edge 
                 if ed.smooth == False or make_line == True:
@@ -252,8 +269,9 @@ def save_selected(filepath,
                 if ed.smooth == False:
                     make_line = True
                     if iter == len(face.loops)-1:
-                       wire_indicies_str += "{0}, ".format(total_wire_verts-1)
+                        
                         wire_indicies_str += "{0}, ".format(starting_count) 
+                        wire_indicies_str += "{0}, ".format(total_wire_verts-1)
                 else:
                     make_line = False
 
@@ -264,6 +282,7 @@ def save_selected(filepath,
         wire_vertices_str = wire_vertices_str[:-2]+"]"
     if wire_indicies_str != "[":
         wire_indicies_str = wire_indicies_str[:-2]+"]"
+    
 
     for obj in box2d_objects:
         bm = bmesh.new() 
@@ -273,71 +292,62 @@ def save_selected(filepath,
             raise Exception("Error, could not get mesh data from active object")
         mesh.transform(global_matrix * obj.matrix_world)
         bm.from_mesh(mesh)
-        # def get_outside_loop():
-        #     for face in bm.faces:
-        #         for loop in face.loops:
-        #             if len(loop.link_loops) == 0:
-        #                 return loop
-        # start = get_outside_loop()
-        # verts = []
-        # verts.append(start.vert)
-        # next = start.link_loop_next
-        # safe = 0
-        # while safe < 200:
-        #     safe += 1
-        #     if len(next.link_loops) == 0:
-        #         verts.append(next.vert)
-        #         next = next.link_loop_next
-        #     else:
-        #         for l in next.link_loops:
-        #             if l != next:
-
-        #                 next = l
-                        
-        #                 break
-        # verts = []
-        # for face in bm.faces:
-        #     for loop in face.loops:
-        #         start = face.loops[0]
-        #         verts.append(start.vert)
-        #         next = start.link_loop_next
-        #         while next != start:
-        #             if next.vert not in verts:
-
-        #                 verts.append(next.vert)
-        #             next = next.link_loop_next  
-
         verts = bm.verts
 
 
 
-        loopset = "["
+        loopset = "{verts:["
         for v in verts:
             loopset += "{0:.4f}, {1:.4f}, ".format(*tuple(v.co[0:2]))
 
         if len(loopset) > 1:
             loopset = loopset[:-2]
-        collide_groups_str += loopset + "], "
+        collide_groups_str += loopset + "]}\n, "
+
+    for obj in spawn_points:
+        loc = obj.location*global_matrix
+        spawn_points_str += "{"+ "pos:[{0:.4f}, {1:.4f}]".format(*tuple( loc )) + "}, " 
+    if spawn_points_str != "":
+        spawn_points_str = spawn_points_str[:-2]
+
 
     for obj in objects:
+        bpy.context.scene.objects.active = obj
         if obj.type == "CAMERA":
             loc = obj.location*global_matrix
             camera_str = "camera:[{0:.4f}, {1:.4f}, {2:.4f}], ".format(*tuple( loc ))
         else: 
+            v
+            object_count = 0
             mesh = obj.data.copy()
+
+            vertices_str = ""
+            vertex_indices_str = ""
+            uses_alpha = False
+            use_texture = False
+
+            
+
+            if len(obj.data.uv_layers) > 0:
+                use_texture = True
+                has_uv = True
+                use_uv_coords = True
+            else:
+                use_uv_coords = False
+
 
             if not mesh:
                 raise Exception("Error, could not get mesh data from active object")
             mesh.transform(global_matrix * obj.matrix_world)
 
             # Be sure tessface & co are available!
-            if not mesh.tessfaces and mesh.polygons:
-                mesh.calc_tessface()
+            mesh.calc_tessface()
 
             has_uv = bool(mesh.tessface_uv_textures)
             has_vcol = bool(mesh.tessface_vertex_colors)
 
             if not has_uv:
+                print ("FAIL bool(mesh.tessface_uv_textures)")
                 use_uv_coords = False
             if not has_vcol:
                 use_colors = False
@@ -350,13 +360,20 @@ def save_selected(filepath,
             if has_uv:
                 active_uv_layer = mesh.tessface_uv_textures.active
                 if not active_uv_layer:
+                    print ("FAIL mesh.tessface_uv_textures.active")
                     use_uv_coords = False
                     has_uv = False
                 else:
                     active_uv_layer = active_uv_layer.data
 
+            alpha_vertex_color = False
             if has_vcol:
-                active_col_layer = mesh.tessface_vertex_colors.active
+                active_col_layer = mesh.tessface_vertex_colors[0]
+                if 'alpha' in mesh.tessface_vertex_colors:
+                    print("HAVE ALPHA")
+                    has_uv
+                    uses_alpha = True
+                    alpha_vertex_color = mesh.tessface_vertex_colors['alpha'].data
                 if not active_col_layer:
                     use_colors = False
                     has_vcol = False
@@ -384,7 +401,13 @@ def save_selected(filepath,
                     uv = uv.uv1, uv.uv2, uv.uv3, uv.uv4
                 if has_vcol:
                     col = active_col_layer[i]
-                    col = col.color1[:], col.color2[:], col.color3[:], col.color4[:]
+                    if bool(alpha_vertex_color):
+
+                        cola = alpha_vertex_color[i]
+                        #cola = col.color1[0], col.color2[0], col.color3[0], col.color4[0]
+                        col = col.color1[:] + (cola.color1[0],0), col.color2[:] + (cola.color2[0],0), col.color3[:] + (cola.color3[0],0), col.color4[:] + (cola.color4[0],0)
+                    else:
+                        col = col.color1[:] + (1,0), col.color2[:] + (1,0), col.color3[:] + (1,0), col.color4[:] + (1,0)
 
                 f_verts = f.vertices
 
@@ -402,7 +425,7 @@ def save_selected(filepath,
 
                     if has_vcol:
                         color = col[j]
-                        color = (color[0], color[1], color[2])
+                        color = (color[0], color[1], color[2], color[3])
                     key = normal_key, uvcoord_key, color
 
                     vdict_local = vdict[vidx]
@@ -418,9 +441,12 @@ def save_selected(filepath,
             
 
             for i, v in enumerate(ply_verts):
-                vertices_str += "{0:.4f}, {1:.4f}, {2:.4f}, ".format(*tuple(mesh_verts[v[0]].co[:]))  # co
+                vertices_str += "\n{0:.4f}, {1:.4f}, {2:.4f}, ".format(*tuple(mesh_verts[v[0]].co[:]))  # co
+                if use_uv_coords:
+                    vertices_str += "{0:.2f}, {1:.2f}, ".format(*tuple( [v[2][0], 1.0-v[2][1]] ))
                 if use_colors:
-                    vertices_str += "{0:.2f}, {1:.2f}, {2:.2f}, 1.0, ".format(*tuple( v[3] )) # col
+                    vertices_str += "{0:.2f}, {1:.2f}, {2:.2f}, {3:.2f}, ".format(*tuple( v[3] )) # col
+                
             for pf in ply_faces:
                 if len(pf) == 3:
                     vertex_indices_str += "{0}, {1}, {2}, ".format(*tuple([pf[0]+object_count,pf[1]+object_count,pf[2]+object_count]))
@@ -428,16 +454,48 @@ def save_selected(filepath,
                     vertex_indices_str += "{0}, {1}, {2}, {0}, {2}, {3}, ".format(*tuple([pf[0]+object_count,pf[1]+object_count,pf[2]+object_count,pf[3]+object_count]))
             object_count += len(ply_verts)
 
+            if use_uv_coords:
+                if obj.SAUSAGE_alpha_texture:
+                    uses_alpha = True
+                texture_objects += "\n\n{static_vertices:["+vertices_str[0:-2]+"],\n"+"static_indicies:["+vertex_indices_str[0:-2]+"],alpha:"+str(uses_alpha).lower()+"}, "
+            else:
+                vertex_objects += "\n\n{static_vertices:["+vertices_str[0:-2]+"],\n"+"static_indicies:["+vertex_indices_str[0:-2]+"],alpha:"+str(uses_alpha).lower()+"}, "
 
-    fw("{"+camera_str+"static_vertices:["+vertices_str[0:-2]+"],\n"+
-        "static_indicies:["+vertex_indices_str[0:-2]+"],\n"+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+    fw("{"+camera_str+
+        "vertex_objects:["+vertex_objects[0:-2]+"],\n\n"+
+        "texture_objects:["+texture_objects[0:-2]+"],\n\n"+
+
         "wire_vertices:"+wire_vertices_str+",\n"+
         "wire_indicies:"+wire_indicies_str+",\n"+
-        "collide_groups:["+collide_groups_str[0:-2]+"]}")
+        "collide_groups:["+collide_groups_str[0:-2]+"],\n"+
+        "spawn_points:["+spawn_points_str +"]}")
     file.close()
     print("writing %r done" % filepath)
 
     return {'FINISHED'}
+
+
+
+
+
+
+
+
 
 
 
@@ -457,16 +515,23 @@ def save(operator,
     obj = context.selected_objects
 
     objects = []
+    tex_objects = []
     wireframe_objects = []
     box2d_objects = []
+    spawn_points = []
 
     for oo in context.selected_objects:
         if oo.SAUSAGE_visible_object:
+            #if oo.type != 'CAMERA' and len(oo.data.uv_layers) > 0:
+            #    tex_objects.append(oo)
+            #else:
             objects.append(oo)
         if oo.SAUSAGE_wireframe_object:
             wireframe_objects.append(oo)
         if oo.SAUSAGE_physics_edges:
             box2d_objects.append(oo)
+        if oo.SAUSAGE_spawn_point:
+            spawn_points.append(oo)
 
     if global_matrix is None:
         from mathutils import Matrix
@@ -479,7 +544,7 @@ def save(operator,
 
 
 
-    ret = save_selected(filepath, objects, box2d_objects, wireframe_objects,
+    ret = save_selected(filepath, objects, box2d_objects, wireframe_objects, spawn_points,
                     use_normals=use_normals,
                     use_uv_coords=use_uv_coords,
                     use_colors=use_colors,
