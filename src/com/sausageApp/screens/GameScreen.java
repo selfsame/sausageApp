@@ -128,6 +128,25 @@ public class GameScreen
 
 
 
+
+
+
+
+        long endTime = System.nanoTime();
+
+        long duration = endTime - startTime;
+        scenario.game.profiler.addStat("\nGameScreen.render(): (ms) "+(int)(duration*1.0e-6));
+
+
+
+        scenario.render();
+
+        for(int i = 0; i < game.player_count; i++) {
+            Player player = game.players.get(i);
+            player.handleInput();
+            player.render();
+        }
+
         facebatch.begin();
         for(int i = 0; i < game.player_count; i++) {
             Player player = game.players.get(i);
@@ -139,23 +158,9 @@ public class GameScreen
 
         facebatch.end();
 
-
-
-        long endTime = System.nanoTime();
-
-        long duration = endTime - startTime;
-        scenario.game.profiler.addStat("\nGameScreen.render(): (ms) "+(int)(duration*1.0e-6));
-
         stage.act(Gdx.graphics.getDeltaTime());
+        Gdx.gl.glDisable(GL20.GL_DEPTH_TEST) ;
         stage.draw();
-
-        scenario.render();
-
-        for(int i = 0; i < game.player_count; i++) {
-            Player player = game.players.get(i);
-            player.handleInput();
-            player.render();
-        }
     }
 
     @Override
