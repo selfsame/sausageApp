@@ -114,19 +114,24 @@ public class Avatar {
     }
 
     public void drawFace(SpriteBatch batch, Body body){
-        Gdx.gl.glDisable(GL20.GL_DEPTH_TEST) ;
-        Gdx.gl.glEnable(GL20.GL_FRONT_AND_BACK) ;
-        batch.setProjectionMatrix(player.scenario.camera.combined);
 
-        Vec2 bv = player.scenario.B2S(body.getPosition());
+        float eye_height =   .04f;
+        float eye_width =   .08f;
+
+        Gdx.gl.glDisable(GL20.GL_DEPTH_TEST) ;
+        //Gdx.gl.glEnable(GL20.GL_FRONT_AND_BACK) ;
+        batch.setProjectionMatrix(player.scenario.camera.combined);
+        Vec2 screen_body = player.scenario.B2S(body.getPosition());
+        Vec2 bv = player.scenario.S2gl(screen_body);
         float br = body.getAngle();
         //Vec2 g = new Vec2((float)  Math.cos(-r)*16, (float) Math.sin(-r)*16);
-        eyes_sprite.setBounds(bv.x - un(12f) , player.scenario.SFlip(bv.y) ,un(24f),un(8f));
-        eyes_sprite.setOrigin(un(12f), 0f);
+        eyes_sprite.setBounds(bv.x - (eye_width / 2f)  , bv.y + 1.5f - (eye_height / 2f) ,.1f,eye_height);
+
+        eyes_sprite.setOrigin(.05f, eye_height/2f);
         eyes_sprite.setRotation((float) (Math.toDegrees(br)+90f)*-1f);
         eyes_sprite.draw(batch);
 
-        mouth_sprite.setBounds(bv.x-un(12f) , player.scenario.SFlip(bv.y+un(8f)) ,un(24f),un(8f));
+        mouth_sprite.setBounds(bv.x-un(12f) , player.scenario.SFlip(bv.y+un(8f)) ,.1f,.1f);
         mouth_sprite.setOrigin(un(12f), un(8f));
         mouth_sprite.setRotation((float) (Math.toDegrees(br)+90f)*-1f);
         mouth_sprite.draw(batch);

@@ -253,15 +253,13 @@ def save_selected(filepath,
                 loop = face.loops[iter]
                 ed = loop.edge 
                 if ed.smooth == False or make_line == True:
-
                     wire_vertices_str += "{0:.4f}, {1:.4f}, {2:.4f}, ".format(*tuple(loop.vert.co[:])) 
                     c = loop[color]
                     if c:
                         wire_vertices_str += "{0:.2f}, {1:.2f}, {2:.2f}, 1.0, ".format(*tuple( c )) # col
                     else:
                         wire_vertices_str += "0.0, 0.0, 0.0, 1.0, "
-                    
-                    
+                        
                     if make_line:
                         wire_indicies_str += "{0}, ".format(total_wire_verts-1)
                         wire_indicies_str += "{0}, ".format(total_wire_verts)

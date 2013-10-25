@@ -58,6 +58,8 @@ public class Scenario {
 
     private Texture tex;
 
+    public float RATIO = Gdx.graphics.getHeight()/Gdx.graphics.getWidth() ;
+
     public Scenario(myGame _game, GameScreen _game_screen) {
         gravity = new Vec2(.0f, 20.8f);
         world = new World(gravity);
@@ -69,8 +71,10 @@ public class Scenario {
         camera = new PerspectiveCamera( 46.596f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         //camera.translate(scene.camera[0], scene.camera[1], scene.camera[2]);
         //Gdx.graphics.setDisplayMode((int)Gdx.graphics.getWidth()/2,(int)Gdx.graphics.getHeight()/2, false);
-        camera.rotate(180f, 0f,1f,0f);
-        camera.position.set(scene.camera[0], scene.camera[1], -2f);
+
+        camera.rotate(0f, 0f,1f,0f);
+
+        camera.position.set(0f, 0f, -300f);
         //camera.lookAt(scene.camera[0]+10f, scene.camera[1], 0f);
         //camera.translate( 0f, .01f, 0f);
 
@@ -142,6 +146,8 @@ public class Scenario {
         game.profiler.addStat("World Step: (ms) "+(int)(duration*1.0e-6));
     }
 
+
+
     public Vec2 S2gl(Vec2 v){
         float SCALE = 4f;
         float y = (float)( (Gdx.graphics.getHeight()-(v.y*SCALE))  /(Gdx.graphics.getHeight()*2f)-1f) ;
@@ -175,7 +181,7 @@ public class Scenario {
             if (player_p.y > lby) { lby = player_p.y;}
            pp = pp.add(player_p);
         }
-        float RATIO = Gdx.graphics.getHeight()/Gdx.graphics.getWidth() ;
+
 
         float dist = new Vector2(ubx,uby*1.4f).dst2(lbx,lby*1.4f);
         pp = pp.mul(1f/(float)player_count);
@@ -203,7 +209,7 @@ public class Scenario {
         }
         float final_dist =  (float)(Math.sqrt((double)dist));
         if (final_dist < 3f){final_dist = 3f;}
-        camera.position.set(finalx, finaly, -final_dist);
+        camera.position.set(finalx, finaly, final_dist);
 
         //camera.lookAt(pp.x,pp.y+1f , 0f);
 
