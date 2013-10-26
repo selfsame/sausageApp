@@ -58,11 +58,14 @@ public class Scenario {
 
     private Texture tex;
 
+    private SausageContactListener contact_listener = new SausageContactListener();
+
     public float RATIO = Gdx.graphics.getHeight()/Gdx.graphics.getWidth() ;
 
     public Scenario(myGame _game, GameScreen _game_screen) {
         gravity = new Vec2(.0f, 20.8f);
         world = new World(gravity);
+        world.setContactListener(contact_listener);
         game = _game;
         game_screen = _game_screen;
         //Gdx.gl.glViewport(0,0,(int)Gdx.graphics.getWidth(), (int)Gdx.graphics.getHeight());
@@ -140,7 +143,7 @@ public class Scenario {
 
     public void step(float delta) {
         long startTime = System.nanoTime();
-        world.step(delta, 8, 6);
+        world.step(delta, 5, 3);
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
         game.profiler.addStat("World Step: (ms) "+(int)(duration*1.0e-6));
@@ -360,7 +363,7 @@ public class Scenario {
         circleF.shape = circleShape;
         circleF.density = 1.0f*density;
         circleF.restitution = .8f;
-        circleF.friction = .9f;
+        circleF.friction = .3f;
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.DYNAMIC;
         bodyDef.position.set(x, y);

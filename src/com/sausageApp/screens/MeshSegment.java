@@ -67,10 +67,10 @@ public class MeshSegment {
                 verticies.add( interpolation_left[i] ); // this is the pair_index, which is a weight for interpolation between prev and next.
                 verticies.add( interpolation_right[i] );
 
-                if (node_index % 2 == 23 ){
-                    verticies.add( .5f );
-                    verticies.add( .8f );
-                    verticies.add( .8f );
+                if  (false){ //(node_index == 1 || node_index == 18-2 ){
+                    verticies.add( .9f );
+                    verticies.add( .2f );
+                    verticies.add( .2f );
                     verticies.add( 1.0f );
                 } else {
                     verticies.add( player.color.r );
@@ -162,7 +162,7 @@ public class MeshSegment {
 
                         verticies.add( .2f );
                         verticies.add( .8f );
-                        verticies.add( .8f );
+                        verticies.add( .2f );
                         verticies.add( 1.0f );
                     }
 

@@ -29,7 +29,7 @@ public class WormMesh {
     public WormMesh(int _count, Player _player){
         segment_count = _count;
         player = _player;
-        for (int i=0;i<segment_count-1;i++){
+        for (int i=0;i<segment_count;i++){
 //            if (i==0){
 //                segments.add( new MeshSegment(i, verticies, indicies,true) );
 //            } else {
@@ -42,7 +42,7 @@ public class WormMesh {
 
 
     public Mesh CompileMesh(){
-        Mesh mesh = new Mesh(false, 512, 512,
+        Mesh mesh = new Mesh(false, verticies.size(), indicies.size(),
         new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
         new VertexAttribute(VertexAttributes.Usage.Color, 4, "a_color"),
         new VertexAttribute(VertexAttributes.Usage.Normal, 4, "a_normal"));
@@ -212,5 +212,85 @@ public class WormMesh {
                 + "}";
         return new ShaderProgram(vertexShader, fragmentShader);
     }
+
+
+
+
+    public Mesh CapMesh(){
+        Mesh mesh = new Mesh(false, 512, 512,
+                new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
+        float[] verts = new float[]{0.000000f,  -0.030000f, 0.000000f,
+                0.030000f,  -0.030000f, 0.000000f,
+                0.030000f,   0.030000f, 0.000000f,
+                -0.029544f,  -0.005209f, 0.000000f,
+                -0.029544f,   0.005209f, 0.000000f,
+                -0.049048f,  -0.014930f, 0.000000f,
+                -0.025981f,  -0.015000f, 0.000000f,
+                -0.025981f,   0.015000f, 0.000000f,
+                -0.019284f,  -0.022981f, 0.000000f,
+                -0.019284f,   0.022981f, 0.000000f,
+                -0.010261f,  -0.028191f, 0.000000f,
+                -0.010261f,   0.028191f, 0.000000f,
+                0.000000f,  -0.030000f, 0.000000f,
+                0.000000f,   0.030000f, 0.000000f,
+                -0.049048f,   0.014930f, 0.000000f};
+
+        short[] inds = new short[]{0 , 1, 2,
+                3 , 4, 5,
+                6 , 7, 4,
+                8 , 9, 7,
+                10,  11, 9,
+                12,  13, 11,
+                13,  0, 2,
+                3 , 6, 4,
+                6 , 8, 7,
+                8 , 10, 9,
+                10,  12, 11,
+                4 , 14, 5};
+
+        mesh.setVertices( verts );
+        mesh.setIndices( inds );
+        return mesh;
+    }
+
+    public ShaderProgram CapShader(){
+        String vertexShader =
+                "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
+
+                        + "uniform mat4 u_worldView; \n"
+                        + "uniform mat4 capmat; \n"
+                        + "uniform vec2 cap_pos;                           \n"
+                        + "uniform vec4 player_color;                           \n"
+                        + "varying vec4 v_color;                        \n"
+
+                        +" vec4 mod; \n"
+
+                        + "void main()                   \n"
+                        + "{                             \n"
+                        + "   v_color = player_color;                    \n"
+                        + "   mod = vec4(cap_pos.x, cap_pos.y, 0.0, 1.0);                    \n"
+                        + "   gl_Position =  u_worldView * (a_position * capmat + mod)  ;   \n"
+                        + "}                             \n";
+        String fragmentShader = "#ifdef GL_ES                \n"
+                + "precision mediump float;    \n"
+
+                + "#endif                      \n"
+                + "                      \n"
+                + "varying vec4 v_color;                       \n"
+
+                + "void main()                 \n"
+                + "{                           \n"
+                + "  gl_FragColor = v_color;    \n"
+
+                + "}";
+        return new ShaderProgram(vertexShader, fragmentShader);
+    }
+
+
+
+
+
+
+
 
 }

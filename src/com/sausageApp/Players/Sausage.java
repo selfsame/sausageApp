@@ -6,7 +6,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.sausageApp.screens.WormMesh;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
@@ -34,7 +37,7 @@ public class Sausage {
     public ArrayList<Link> sausage_links = new ArrayList<Link>();
     public Link head_link;
     public Link tail_link;
-    public int sausage_length = 18;
+    public int sausage_length = 22;
     private float L_DIST = 1.5f;
 
     private Scenario scenario;
@@ -42,6 +45,10 @@ public class Sausage {
     private ShaderProgram sausage_shader;
 
     private Mesh mesh;
+
+    private Mesh end_cap;
+    private ShaderProgram cap_shader;
+
 
     public ShapeRenderer shapeRenderer = new ShapeRenderer();
 
@@ -64,6 +71,7 @@ public class Sausage {
 
             Link new_link = new Link(sausage_bodies.get(i), this);
             sausage_links.add(new_link);
+            new_link.body.setUserData(new_link);
             if (i > 0) {
                new_link.prev = sausage_links.get(i-1);
                sausage_links.get(i-1).next = new_link;
@@ -109,6 +117,7 @@ public class Sausage {
 
 
         Body first = scenario.createDynamicCircle(x, y, radius*1.00f, 10f);
+
         Body prevBody = first;
         prevBody.m_angularDamping = 1.5f;
         sausage.add(prevBody);
@@ -116,6 +125,7 @@ public class Sausage {
 
         for (int i = 0; i < link_count; ++i) {
             Body next = scenario.createDynamicCircle(x+(radius*L_DIST)+(i*(radius*L_DIST)), y, radius*1.00f, 10f);
+
             next.m_angularDamping = .8f;
             next.m_linearDamping = .01f*i;
             Vec2 anchor = new Vec2(x+(i*(radius*L_DIST)), y);
@@ -129,24 +139,23 @@ public class Sausage {
 
     public void render(){
 
+        //probably need to not update links every single frame
+        for (int i=0;i<sausage_links.size();i++){
 
-
-
-
-
-        // hack for head
-
-//        Vec2 v1 = scenario.SFlip(scenario.B2S(sausage_bodies.get(sausage_bodies.size()-1).getPosition()));
-//
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.FilledCircle);
-//
-//        Gdx.gl20.glLineWidth(0f);
-//        shapeRenderer.setColor(player.color);
-//        if (!player.debug_draw_sausage_mesh_lines){
-//            shapeRenderer.filledCircle(v1.x, v1.y, scenario.P2S(SRADIUS)*1.3f);
-//        }
-//        shapeRenderer.end();
-
+            sausage_links.get(i).Update();
+            //Gdx.app.log("HEAD",": "+head_link.curve_potential);
+            //Gdx.app.log("TAIL",": "+tail_link.curve_potential);
+        }
+        float tot = 0f;
+        for (int i=sausage_links.size()/2;i>=0;i--){
+            tot += sausage_links.get(i).curvature;
+            sausage_links.get(i).curve_potential = tot / sausage_links.size() * 20f;
+        }
+        tot = 0f;
+        for (int i=sausage_links.size()/2;i<sausage_links.size();i++){
+            tot += sausage_links.get(i).curvature;
+            sausage_links.get(i).curve_potential = tot / sausage_links.size() * 20f;
+        }
 
         if (player.debug_draw_sausage_links){
             SimpleDraw();
@@ -168,6 +177,31 @@ public class Sausage {
         sausage_shader.end();
 
 
+        Gdx.gl20.glDisable(GL20.GL_BLEND);
+        cap_shader.begin();
+        cap_shader.setUniformMatrix("u_worldView", scenario.camera.combined);
+        cap_shader.setUniformf("player_color", player.color.r, player.color.g, player.color.b, 1.0f);
+
+
+        float angle = player.sausage.head_link.NextAngle() * (float)(180f/Math.PI) - 180f;
+        Quaternion rot = new Quaternion(new Vector3(0f,0f,1f), angle);
+        Matrix4 capmat = new Matrix4(rot);
+
+        Vector2 bv = gdx2gl((scenario.B2S(player.sausage.head.getPosition()))).mul(2f);
+        cap_shader.setUniformf("cap_pos", bv.x,bv.y);
+        cap_shader.setUniformMatrix("capmat", capmat);
+        end_cap.render(sausage_shader, GL20.GL_TRIANGLES);
+
+        angle = player.sausage.tail_link.PrevAngle() * (float)(180f/Math.PI) - 180f;
+        rot = new Quaternion(new Vector3(0f,0f,1f), angle);
+        capmat = new Matrix4(rot);
+
+        bv = gdx2gl((scenario.B2S(player.sausage.tail.getPosition()))).mul(2f);
+        cap_shader.setUniformf("cap_pos", bv.x,bv.y);
+        cap_shader.setUniformMatrix("capmat", capmat);
+        end_cap.render(sausage_shader, GL20.GL_TRIANGLES);
+
+        cap_shader.end();
 
 
 
@@ -189,29 +223,23 @@ public class Sausage {
 
 
         float[] nodes = new float[(sausage_length+4)*2];
-        //Vector2 nlp = gdx2gl((scenario.B2S(sausage_bodies.get(1).getPosition())));
+
         Vector2 lp = gdx2gl((scenario.B2S(sausage_bodies.get(0).getPosition())));
-        //Vector2 ilp = lp.sub(nlp);
+
         nodes[0] =  lp.x;
         nodes[1] = lp.y;
-        for(int i = 1; i < sausage_length+1; i++) {
+        for(int i = 1; i <= sausage_length+1; i++) {
             lp = gdx2gl((scenario.B2S(sausage_bodies.get(i-1).getPosition())));
             nodes[i*2] =  lp.x;
             nodes[i*2+1] =  lp.y;
         }
-        Vector2 nlp = gdx2gl((scenario.B2S(sausage_bodies.get(sausage_bodies.size()-2).getPosition())));
-        lp = gdx2gl((scenario.B2S(sausage_bodies.get(sausage_bodies.size()-1).getPosition())));
-        //Vector2 ilp = lp.sub(nlp);
-        nodes[(sausage_length)*2] =  lp.x;
-        nodes[(sausage_length)*2+1] = lp.y; // a used node
-        nodes[(sausage_length+1)*2] =  nodes[(sausage_length)*2]; //lp.x-.5f;
-        nodes[(sausage_length+1)*2+1] = nodes[(sausage_length)*2+1]; //lp.y;
-        nodes[(sausage_length+1)*2+2] =  lp.x;
-        nodes[(sausage_length+1)*2+3] = lp.y+.1f;
-        nodes[(sausage_length+1)*2+4] =  lp.x;
-        nodes[(sausage_length+1)*2+5] = lp.y+.1f;
 
-        sausage_shader.setUniform2fv("nodes", nodes, 0, (sausage_length+1)*2);
+        lp = gdx2gl((scenario.B2S(sausage_bodies.get(sausage_bodies.size()-1).getPosition())));
+
+        nodes[(sausage_length+1)*2] =  lp.x;
+        nodes[(sausage_length+1)*2+1] = lp.y; // a used node
+
+        sausage_shader.setUniform2fv("nodes", nodes, 0, (sausage_length+2)*2);
 
     }
 
@@ -223,20 +251,32 @@ public class Sausage {
         mesh = worm.CompileMesh();
         sausage_shader = worm.MakeShader();
 
+        end_cap = worm.CapMesh();
+        cap_shader = worm.CapShader();
+
     }
 
     public void SimpleDraw(){
-        Gdx.gl.glDisable(GL20.GL_DEPTH_TEST) ;
-        Gdx.gl.glEnable(GL20.GL_FRONT_AND_BACK) ;
+        //Gdx.gl.glDisable(GL20.GL_DEPTH_TEST) ;
+        //Gdx.gl.glEnable(GL20.GL_FRONT_AND_BACK) ;
         shapeRenderer.setProjectionMatrix(player.scenario.camera.combined);
-        shapeRenderer.translate(0f,0f,-1f);
+        //shapeRenderer.translate(0f,0f,-1f);
         for(int i = 0; i < sausage_links.size(); i++) {
-            Vec2 v1 = sausage_bodies.get(i).getPosition();
-            v1 = scenario.SFlip(scenario.B2S(v1));
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Circle);
 
-            shapeRenderer.setColor(0f, 1f, 0f, 1f);
-            shapeRenderer.circle(v1.x, v1.y, scenario.P2S(SRADIUS));
+
+
+            Vector2 v1 = gdx2gl((scenario.B2S(sausage_bodies.get(i).getPosition())));
+
+            float p = sausage_links.get(i).potential;
+            shapeRenderer.setColor(p, 1f-p, 0f, 1f);
+            if (sausage_links.get(i).reversing == true){
+                shapeRenderer.begin(ShapeRenderer.ShapeType.FilledCircle);
+                shapeRenderer.filledCircle(v1.x, v1.y, .012f, 12);
+            } else {
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Circle);
+                shapeRenderer.circle(v1.x, v1.y, .012f, 12);
+            }
+
             shapeRenderer.end();
         }
     }
