@@ -14,6 +14,8 @@ import com.sausageApp.screens.WormMesh;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.Filter;
+import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.joints.RevoluteJointDef;
 
@@ -37,8 +39,8 @@ public class Sausage {
     public ArrayList<Link> sausage_links = new ArrayList<Link>();
     public Link head_link;
     public Link tail_link;
-    public int sausage_length = 22;
-    private float L_DIST = 1.5f;
+    public int sausage_length = 18;
+    private float L_DIST = 1.2f;
 
     private Scenario scenario;
 
@@ -49,7 +51,7 @@ public class Sausage {
     private Mesh end_cap;
     private ShaderProgram cap_shader;
 
-
+    public float z_depth = 0f;
     public ShapeRenderer shapeRenderer = new ShapeRenderer();
 
     public FPSLogger FPS = new FPSLogger();
@@ -89,7 +91,32 @@ public class Sausage {
         return v1.sub(v2);
     }
 
+    public void setCategory(int val){
+        for (Body body: sausage_bodies) {
+            Fixture fixture = body.m_fixtureList;
+            Filter filter = fixture.getFilterData();
+            filter.categoryBits = val;
+            fixture.setFilterData(filter);
+        }
+    }
 
+    public void setMask(int val){
+        for (Body body: sausage_bodies) {
+            Fixture fixture = body.m_fixtureList;
+            Filter filter = fixture.getFilterData();
+            filter.maskBits = val;
+            fixture.setFilterData(filter);
+        }
+    }
+
+    public void setGroupIndex(int val){
+        for (Body body: sausage_bodies) {
+            Fixture fixture = body.m_fixtureList;
+            Filter filter = fixture.getFilterData();
+            filter.groupIndex = val;
+            fixture.setFilterData(filter);
+        }
+    }
 
     public ArrayList<Body> createSausageBodies(float x, float y, float radius, int link_count)    {
         x = scenario.P2B(x);
@@ -106,8 +133,8 @@ public class Sausage {
 
         RevoluteJointDef jd = new RevoluteJointDef();
         jd.collideConnected = false;
-        jd.upperAngle = .57079633f;
-        jd.lowerAngle = -.57079633f;
+        jd.upperAngle = .77079633f;
+        jd.lowerAngle = -.77079633f;
         jd.enableLimit = true;
         jd.maxMotorTorque = 20.0f;
 
@@ -116,19 +143,23 @@ public class Sausage {
         jd.enableMotor = true;
 
 
-        Body first = scenario.createDynamicCircle(x, y, radius*1.00f, 10f);
-
+        //Body first = scenario.createDynamicCircle(x, y, radius*1.00f, 10f);
+        Body first = scenario.createDynamicRect(x, y, radius*2.00f, radius*1.00f, 10f, .9f);
         Body prevBody = first;
         prevBody.m_angularDamping = 1.5f;
         sausage.add(prevBody);
 
 
         for (int i = 0; i < link_count; ++i) {
-            Body next = scenario.createDynamicCircle(x+(radius*L_DIST)+(i*(radius*L_DIST)), y, radius*1.00f, 10f);
-
+            //Body next = scenario.createDynamicCircle(x+(radius*L_DIST)+(i*(radius*L_DIST)), y, radius*1.00f, 10f);
+            float friction = .2f;
+            if (i >= link_count-1){
+                friction = .9f;
+            }
+            Body next = scenario.createDynamicRect(x+(radius*2f*L_DIST)+(i*(radius*2f*L_DIST)), y, radius*2.00f, radius*1.00f, 10f, friction);
             next.m_angularDamping = .8f;
             next.m_linearDamping = .01f*i;
-            Vec2 anchor = new Vec2(x+(i*(radius*L_DIST)), y);
+            Vec2 anchor = new Vec2(x+(i*(radius*2f*L_DIST)), y);
             jd.initialize(prevBody, next, anchor);
             scenario.world.createJoint(jd);
             sausage.add(next);
@@ -168,6 +199,7 @@ public class Sausage {
         sausage_shader.begin();
         UpdateMesh();
         sausage_shader.setUniformMatrix("u_worldView", scenario.camera.combined);
+        sausage_shader.setUniformf("z_depth", z_depth);
         if (player.debug_draw_sausage_mesh_lines){
             mesh.render(sausage_shader, GL20.GL_LINE_LOOP);
         } else {
@@ -179,6 +211,7 @@ public class Sausage {
 
         Gdx.gl20.glDisable(GL20.GL_BLEND);
         cap_shader.begin();
+        cap_shader.setUniformf("z_depth", z_depth);
         cap_shader.setUniformMatrix("u_worldView", scenario.camera.combined);
         cap_shader.setUniformf("player_color", player.color.r, player.color.g, player.color.b, 1.0f);
 

@@ -22,33 +22,24 @@ public class SausageContactListener implements org.jbox2d.callbacks.ContactListe
 
     public SausageContactListener(){}
 
+    public Contactable castUserData(Object obj){
+        Contactable o = null;
+        if (obj != null || !(obj instanceof String)) o = new AnonContact();
+        if (obj instanceof Link) o = (Link) obj;
+        if (obj instanceof SensorObject) o = (SensorObject) obj;
+        return o;
+    }
+
     public void beginContact(Contact contact){
-       WorldManifold manifold = new WorldManifold();
-       contact.getWorldManifold(manifold);
-       Vec2 n = manifold.normal;
-       Object a_data = contact.getFixtureA().getBody().getUserData();
-       Object b_data = contact.getFixtureB().getBody().getUserData();
-
-       if (a_data != null){
-          Link link = (Link)a_data;
-
-           if (b_data != null){
-               Link partner = (Link)b_data;
-               link.beginContact(n, partner);
-           } else {
-               link.beginContact(n);
-           }
-       }
-        if (b_data != null){
-            Link link = (Link)b_data;
-
-            if (a_data != null){
-                Link partner = (Link)a_data;
-                link.beginContact(n, partner);
-            } else {
-                link.beginContact(n);
-            }
-        }
+        WorldManifold manifold = new WorldManifold();
+        contact.getWorldManifold(manifold);
+        Vec2 n = manifold.normal;
+        Object a_data = contact.getFixtureA().getBody().getUserData();
+        Object b_data = contact.getFixtureB().getBody().getUserData();
+        Contactable a = castUserData(a_data);
+        Contactable b = castUserData(b_data);
+        a.beginContact(n, b);
+        b.beginContact(n, a);
     }
 
     public void endContact(Contact contact){
@@ -57,28 +48,13 @@ public class SausageContactListener implements org.jbox2d.callbacks.ContactListe
         Vec2 n = manifold.normal;
         Object a_data = contact.getFixtureA().getBody().getUserData();
         Object b_data = contact.getFixtureB().getBody().getUserData();
+        Contactable a = castUserData(a_data);
+        Contactable b = castUserData(b_data);
+        a.endContact(n, b);
+        b.endContact(n, a);
 
-        if (a_data != null){
-            Link link = (Link)a_data;
-
-            if (b_data != null){
-                Link partner = (Link)b_data;
-                link.endContact(n, partner);
-            } else {
-                link.endContact(n);
-            }
-        }
-        if (b_data != null){
-            Link link = (Link)b_data;
-
-            if (a_data != null){
-                Link partner = (Link)a_data;
-                link.endContact(n, partner);
-            } else {
-                link.endContact(n);
-            }
-        }
     }
+
 
     public void preSolve(Contact contact, Manifold oldManifold){
 

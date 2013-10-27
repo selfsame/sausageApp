@@ -9,6 +9,7 @@ package com.sausageApp.Simulation;
  */
 public class Collider {
     public float[] verts;
+    public int mask;
     public Collider(){
 
     }

@@ -34,3 +34,4 @@ public class Profiler {
         stats = "\n";
     }
 }
+

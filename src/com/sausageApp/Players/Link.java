@@ -3,6 +3,8 @@ package com.sausageApp.Players;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.sausageApp.Simulation.AnonContact;
+import com.sausageApp.Simulation.Contactable;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 
@@ -13,7 +15,7 @@ import org.jbox2d.dynamics.Body;
  * Time: 12:40 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Link {
+public class Link implements Contactable {
 
     public Body body;
 
@@ -55,7 +57,7 @@ public class Link {
 
     public float NextAngle(){
         if (HasNext()){
-            Vec2 heading = body.getPosition().sub( next.body.getPosition() );
+            Vec2 heading = body.getPosition().sub(next.body.getPosition());
             return (float)Math.atan2(heading.y, heading.x);
         } else {
             return 0f;
@@ -119,7 +121,7 @@ public class Link {
         Vec2 curve_mod = new Vec2(v.x *  curve_potential , v.y *  curve_potential  );
 
         Vec2 mod = new Vec2(potential*1f*v.x, potential*1f*v.y);
-        body.applyLinearImpulse(curve_mod.add(mod).mul(.5f), body.getWorldCenter());
+        body.applyLinearImpulse(mod.add(curve_mod), body.getWorldCenter());
 
 
 
@@ -148,39 +150,30 @@ public class Link {
 
     }
 
-    public void beginContact(Vec2 n){
-        Gdx.app.log("CONTACT", "("+n.x+", "+n.y+") ");
-        potential = 1f;
-        has_contact = true;
 
 
 
-    }
-    public void endContact(Vec2 n){
-        //Gdx.app.log("CONTACT", "("+n.x+", "+n.y+") ");
-        has_contact = false;
-    }
 
-    public void beginContact(Vec2 n, Link partner){
-        if (sausage == partner.sausage){
-            if (next == partner || prev == partner || partner == this){
-                return;
-            }
+    public void beginContact(Vec2 n, Contactable thing){
+       if (thing instanceof Link){
+           Link link = (Link)thing;
+           if (sausage == link.sausage) if (next == link || prev == link || link == this) return;
+           potential = 1f;
+           has_contact = true;
+       }
+        if (thing instanceof AnonContact) {
+            potential = 1f;
+            has_contact = false;
         }
-        Gdx.app.log("CONTACT", "("+n.x+", "+n.y+") ");
-        potential = 1f;
-        has_contact = true;
-
-
-
     }
-    public void endContact(Vec2 n, Link partner){
-        if (sausage == partner.sausage){
-            if (next == partner || prev == partner || partner == this){
-                return;
-            }
+    public void endContact(Vec2 n, Contactable thing){
+        if (thing instanceof Link ){
+            Link link = (Link)thing;
+            if (sausage == link.sausage) if (next == link || prev == link || link == this) return;
+            has_contact = false;
         }
-        has_contact = false;
+        if (thing instanceof AnonContact) has_contact = false;
     }
+
 
 }

@@ -66,6 +66,7 @@ public class WormMesh {
                 + "attribute vec4 a_normal ;   \n"
                         + "uniform mat4 u_worldView;"
                 + "uniform vec2 nodes[128];                           \n"
+                + "uniform float z_depth;  \n"
                 //+ "uniform float concavity[48];                           \n"
                 + "                       \n"
                 + "varying vec4 v_color;                        \n"
@@ -120,7 +121,7 @@ public class WormMesh {
 
                 //+ "   nspread = nspread - abs(1- v_concavity)*abs(a_position.y+1)*.003*a_position.x;                          \n"
 
-                + "   mod =   vec4(pos.x + nspread.x  , pos.y + nspread.y    ,0.0,a_position.w);                        \n"
+                + "   mod =   vec4(pos.x + nspread.x  , pos.y + nspread.y    ,z_depth,a_position.w);                        \n"
                 + "   gl_Position =  u_worldView * mod ;   \n"
                 + "}                             \n";
         String fragmentShader = "#ifdef GL_ES                \n"
@@ -152,6 +153,7 @@ public class WormMesh {
                         + "attribute vec4 a_color ;   \n"
                         + "uniform vec2 nodes[128];                           \n"
                         //+ "uniform float concavity[48];                           \n"
+
                         + "                       \n"
                         + "varying vec4 v_color;                        \n"
                         //+ "varying float v_concavity;                        \n"
@@ -219,21 +221,21 @@ public class WormMesh {
     public Mesh CapMesh(){
         Mesh mesh = new Mesh(false, 512, 512,
                 new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
-        float[] verts = new float[]{0.000000f,  -0.030000f, 0.000000f,
-                0.030000f,  -0.030000f, 0.000000f,
-                0.030000f,   0.030000f, 0.000000f,
-                -0.029544f,  -0.005209f, 0.000000f,
-                -0.029544f,   0.005209f, 0.000000f,
-                -0.049048f,  -0.014930f, 0.000000f,
-                -0.025981f,  -0.015000f, 0.000000f,
-                -0.025981f,   0.015000f, 0.000000f,
-                -0.019284f,  -0.022981f, 0.000000f,
-                -0.019284f,   0.022981f, 0.000000f,
-                -0.010261f,  -0.028191f, 0.000000f,
-                -0.010261f,   0.028191f, 0.000000f,
-                0.000000f,  -0.030000f, 0.000000f,
-                0.000000f,   0.030000f, 0.000000f,
-                -0.049048f,   0.014930f, 0.000000f};
+        float[] verts = new float[]{0.000000f, -0.030000f, 0.000000f,
+                0.039857f, -0.030000f, 0.000000f,
+                0.039857f, 0.030000f, 0.000000f,
+                -0.029544f, -0.005209f, 0.000000f,
+                -0.029544f, 0.005209f, 0.000000f,
+                -0.049048f, -0.014930f, 0.000000f,
+                -0.025981f, -0.015000f, 0.000000f,
+                -0.025981f, 0.015000f, 0.000000f,
+                -0.019284f, -0.022981f, 0.000000f,
+                -0.019284f, 0.022981f, 0.000000f,
+                -0.010261f, -0.028191f, 0.000000f,
+                -0.010261f, 0.028191f, 0.000000f,
+                0.000000f, -0.030000f, 0.000000f,
+                0.000000f, 0.030000f, 0.000000f,
+                -0.049048f, 0.014930f, 0.000000f};
 
         short[] inds = new short[]{0 , 1, 2,
                 3 , 4, 5,
@@ -258,6 +260,7 @@ public class WormMesh {
                 "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
 
                         + "uniform mat4 u_worldView; \n"
+                        + "uniform float z_depth;  \n"
                         + "uniform mat4 capmat; \n"
                         + "uniform vec2 cap_pos;                           \n"
                         + "uniform vec4 player_color;                           \n"
@@ -268,7 +271,7 @@ public class WormMesh {
                         + "void main()                   \n"
                         + "{                             \n"
                         + "   v_color = player_color;                    \n"
-                        + "   mod = vec4(cap_pos.x, cap_pos.y, 0.0, 1.0);                    \n"
+                        + "   mod = vec4(cap_pos.x, cap_pos.y, z_depth, 1.0);                    \n"
                         + "   gl_Position =  u_worldView * (a_position * capmat + mod)  ;   \n"
                         + "}                             \n";
         String fragmentShader = "#ifdef GL_ES                \n"

@@ -1,7 +1,12 @@
 package com.sausageApp.Simulation;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -20,6 +25,9 @@ import java.util.ArrayList;
 
 
 public class Scenario {
+
+    public final TweenManager tweenManager = new TweenManager();
+
     public Vec2 gravity;
     public World world;
     public ArrayList<StaticObject> statics = new ArrayList<StaticObject>();
@@ -46,40 +54,50 @@ public class Scenario {
     private ArrayList<Mesh> vertex_meshes_alpha = new ArrayList<Mesh>();
 
     float ticker = 0f;
-    public PerspectiveCamera camera;
+    public GameCamera camera;
+    public float default_view_dist = 3f;
+    public float view_dist = 3f;
 
     public myGame game;
     public GameScreen game_screen;
 
-    private ArrayList<SpawnPoint> spawn_points;
+    private ArrayList<Locus> spawn_points = new ArrayList<Locus>();
     private int spawn_index = 0;
 
     private ScenarioData scene;
 
     private Texture tex;
 
+    private Texture interface_sheet = new Texture("interface.png");
+    private TextureRegion O_button = new TextureRegion(interface_sheet, 0, 0, 16, 16);
+    private TextureRegion banner_1 = new TextureRegion(interface_sheet, 0, 32, 64, 16);
+    private SpriteBatch batch = new SpriteBatch();
+    private BitmapFont font = new BitmapFont();
+
+    public ArrayList<SensorObject> sensors = new ArrayList<SensorObject>();
+
     private SausageContactListener contact_listener = new SausageContactListener();
 
     public float RATIO = Gdx.graphics.getHeight()/Gdx.graphics.getWidth() ;
 
-    public Scenario(myGame _game, GameScreen _game_screen) {
+    public Scenario(myGame _game, GameScreen _game_screen, String filename) {
+
+        Tween.registerAccessor(GameCamera.class, new MoveableAccessor());
+
         gravity = new Vec2(.0f, 20.8f);
         world = new World(gravity);
         world.setContactListener(contact_listener);
         game = _game;
         game_screen = _game_screen;
         //Gdx.gl.glViewport(0,0,(int)Gdx.graphics.getWidth(), (int)Gdx.graphics.getHeight());
-        scene = json.fromJson(ScenarioData.class, Gdx.files.internal( "scenarios/level01.json" ));
+        scene = json.fromJson(ScenarioData.class, Gdx.files.internal( filename ));
         tex = new Texture(Gdx.files.internal("house_tex.png"));
-        camera = new PerspectiveCamera( 46.596f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        //camera.translate(scene.camera[0], scene.camera[1], scene.camera[2]);
+        camera = new GameCamera(46.596f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.position.set(0f, 0f, 60f);
         //Gdx.graphics.setDisplayMode((int)Gdx.graphics.getWidth()/2,(int)Gdx.graphics.getHeight()/2, false);
 
-        camera.rotate(0f, 0f,1f,0f);
 
-        camera.position.set(0f, 0f, -300f);
-        //camera.lookAt(scene.camera[0]+10f, scene.camera[1], 0f);
-        //camera.translate( 0f, .01f, 0f);
+
 
         ArrayList<VertexObject> vertex_objects = scene.vertex_objects;
         ArrayList<VertexObject> texture_objects = scene.texture_objects;
@@ -108,18 +126,19 @@ public class Scenario {
         wire_mesh = level_geo.CompileMesh(scene.wire_vertices, scene.wire_indicies);
         wire_shader = level_geo.MakeWireShader();
 
-        spawn_points = scene.spawn_points;
+        for (Locus locus: scene.locii) {
+            if (locus.usage.equals("PLAYER_SPAWN")){
+                spawn_points.add(locus);
+            }
+
+        }
 
         for (Collider group: scene.collide_groups) {
             float[] verts = group.verts;
             Vec2[] pbies = new Vec2[(int)verts.length/2];
-
             float[] phys_debug = new float[((int)verts.length/2)*7];
-            short[] phys_ind = new short[((int)verts.length/2)*2+2];
-
-
+            short[] phys_ind = new short[((int)verts.length)+2];
             for (int j = 0; j < (int)verts.length/2; j++) {
-
                 pbies[j] = S2B(gl2S(new Vec2(verts[j*2],verts[j*2+1])));
                 phys_debug[j*7] = verts[j*2];
                 phys_debug[j*7+1] = verts[j*2+1];
@@ -128,17 +147,19 @@ public class Scenario {
                 phys_debug[j*7+4] = 0f;
                 phys_debug[j*7+5] = 0f;
                 phys_debug[j*7+6] = 1f;
-
-                phys_ind[j*2] = (short)(j*2);
-                phys_ind[j*2+1] = (short)(j*2+1);
+                phys_ind[j*2] = (short)(j);
+                phys_ind[j*2+1] = (short)(j+1);
             }
-            phys_ind[verts.length/2] = 0;
-            phys_ind[verts.length/2+1] = 1;
+            phys_ind[verts.length] = (short)((verts.length/2) - 1);
+            phys_ind[(verts.length)+1] = (short)0;
             debug_mesh.add( level_geo.CompileMesh(phys_debug, phys_ind) );
-
-
-            createStaticChain( pbies);
+            createStaticChain( pbies, false, group.mask);
         }
+
+        for (SensorData group: scene.sensor_groups) {
+            sensors.add(new SensorObject(this, group));
+        }
+
     }
 
     public void step(float delta) {
@@ -168,6 +189,8 @@ public class Scenario {
 
     public void render(){
 
+        tweenManager.update(Gdx.graphics.getDeltaTime());
+
 
         ticker += .01f;
         int player_count = game.players.size();
@@ -190,112 +213,118 @@ public class Scenario {
         pp = pp.mul(1f/(float)player_count);
         Vector2 ppp = new Vector2(pp.x,pp.y);
         Vector2 difff = ppp.sub(new Vector2(camera.position.x, camera.position.y)).mul(1f);
-        //camera.near = 2f;
-        //camera.far = 200f;
-        //Vector3 up = camera.unproject(new Vector3(pp.x, pp.y, camera.position.z));
-        float finalx = camera.position.x;
-        float finaly = camera.position.y;
 
 
 
-        if ((camera.position.x-pp.x) > .5f){
-             finalx = pp.x+.5f;
-        }
-        if ((camera.position.x-pp.x) < -.5f){
-            finalx = pp.x-.5f;
-        }
-        if (((camera.position.y)-(pp.y)) > 2f+(.5f*RATIO)){
-            finaly = pp.y+2f+(.5f*RATIO);
-        }
-        if (((camera.position.y)-(pp.y)) < 1f+(.5f*RATIO)){
-            finaly = (pp.y+1f+(.5f*RATIO));
-        }
+
         float final_dist =  (float)(Math.sqrt((double)dist));
-        if (final_dist < 3f){final_dist = 3f;}
-        camera.position.set(finalx, finaly, final_dist);
+        if (final_dist < view_dist){final_dist = view_dist;}
+        //camera.position.set(finalx, finaly, final_dist);
+        Tween.to(camera, MoveableAccessor.POSITION_X, .2f).target(pp.x).start(tweenManager);
+        Tween.to(camera, MoveableAccessor.POSITION_Y, .2f).target(pp.y+1.5f).start(tweenManager);
+        Tween.to(camera, MoveableAccessor.POSITION_Z, .3f).target(final_dist).start(tweenManager);
 
-        //camera.lookAt(pp.x,pp.y+1f , 0f);
-
-        //camera.rotateAround(ppp, new Vector3(0f,1f,0f), 1f);
         camera.update();
 
+        if (game.players.get(0).debug_draw_level == true){
+
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            tex_shader.begin();
+            Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
+            Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+            tex.bind();
+            Gdx.gl.glDepthRangef(0f, 1f);
+            Gdx.gl.glDepthFunc(GL20.GL_LESS);
+            Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
+            tex_shader.setUniformMatrix("u_viewProj", camera.combined);
+            for (int i = 0; i<texture_meshes.size();i++){
+                texture_meshes.get(i).render(tex_shader, GL20.GL_TRIANGLES);
+            }
+            tex_shader.end();
 
 
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-        //Gdx.gl.glEnable(GL20.GL_BLEND) ;
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        //Gdx.gl20.glDisable(GL20.GL_BLEND);
-        tex_shader.begin();
-        Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
-        Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-        tex.bind();
-        Gdx.gl.glDepthRangef(0f, 1f);
-        Gdx.gl.glDepthFunc(GL20.GL_LESS);
+
+
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+            Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
+
+            //Gdx.gl20.glDisable(GL20.GL_BLEND);
+            level_shader.begin();
+            Gdx.gl.glDepthRangef(0f, 1f);
+            Gdx.gl.glDepthFunc(GL20.GL_LESS);
+            level_shader.setUniformMatrix("u_viewProj", camera.combined);
+            for (int i = 0; i<vertex_meshes.size();i++){
+                vertex_meshes.get(i).render(level_shader, GL20.GL_TRIANGLES);
+            }
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            for (int i = 0; i<vertex_meshes_alpha.size();i++){
+                vertex_meshes_alpha.get(i).render(level_shader, GL20.GL_TRIANGLES);
+            }
+            level_shader.end();
+
+            tex_shader.begin();
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            for (int i = 0; i<texture_meshes_alpha.size();i++){
+                texture_meshes_alpha.get(i).render(tex_shader, GL20.GL_TRIANGLES);
+            }
+            tex_shader.end();
+
+
+            wire_shader.begin();
+            //Gdx.gl.glEnable(GL20.GL_BLEND) ;
+            //Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            Gdx.gl20.glLineWidth(1f);
+            Gdx.gl.glPolygonOffset(1f, 2f);
+            Gdx.gl.glDepthRangef(0f, 100f);
+            Gdx.gl.glDepthFunc(GL20.GL_LESS);
+            Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
+            Gdx.gl20.glDisable(GL20.GL_BLEND);
+            wire_shader.setUniformMatrix("u_viewProj", camera.combined);
+            wire_mesh.render(wire_shader, GL20.GL_LINES);
+            Gdx.gl20.glDisable(GL20.GL_BLEND);
+            wire_shader.end();
+        }
+
+        if (game.players.get(0).debug_draw_static_chains == true){
+            Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+            level_shader.begin();
+            for (int i = 0; i<debug_mesh.size();i++){
+                level_shader.setUniformMatrix("u_viewProj", camera.combined);
+                debug_mesh.get(i).render(level_shader, GL20.GL_LINES);
+            }
+            level_shader.end();
+        }
+
+
+        Gdx.gl.glDisable(GL20.GL_DEPTH_TEST) ;
+
+        batch.begin();
+
+        batch.setProjectionMatrix(camera.combined);
+        for (SensorObject sensor: sensors) {
+            if (sensor.active){
+
+                batch.draw(banner_1, sensor.loc[0]-.12f , -sensor.loc[1] + ( (float)Math.sin((ticker+.02f)*5f))*.03f, .24f,.06f);
+                batch.draw(O_button, sensor.loc[0]-.03f , -sensor.loc[1] + ( (float)Math.sin(ticker*5f))*.04f, .06f,.06f);
+
+
+            }
+
+        }
+
+        batch.end();
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
-        tex_shader.setUniformMatrix("u_viewProj", camera.combined);
-        for (int i = 0; i<texture_meshes.size();i++){
-            texture_meshes.get(i).render(tex_shader, GL20.GL_TRIANGLES);
-        }
-        tex_shader.end();
-
-
-
-
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
-
-        //Gdx.gl20.glDisable(GL20.GL_BLEND);
-        level_shader.begin();
-        Gdx.gl.glDepthRangef(0f, 1f);
-        Gdx.gl.glDepthFunc(GL20.GL_LESS);
-        level_shader.setUniformMatrix("u_viewProj", camera.combined);
-        for (int i = 0; i<vertex_meshes.size();i++){
-            vertex_meshes.get(i).render(level_shader, GL20.GL_TRIANGLES);
-        }
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        for (int i = 0; i<vertex_meshes_alpha.size();i++){
-            vertex_meshes_alpha.get(i).render(level_shader, GL20.GL_TRIANGLES);
-        }
-        level_shader.end();
-
-        tex_shader.begin();
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        for (int i = 0; i<texture_meshes_alpha.size();i++){
-            texture_meshes_alpha.get(i).render(tex_shader, GL20.GL_TRIANGLES);
-        }
-        tex_shader.end();
-
-
-        wire_shader.begin();
-        //Gdx.gl.glEnable(GL20.GL_BLEND) ;
-        //Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        Gdx.gl20.glLineWidth(1f);
-        Gdx.gl.glPolygonOffset(1f, 2f);
-        Gdx.gl.glDepthRangef(0f, 100f);
-        Gdx.gl.glDepthFunc(GL20.GL_LESS);
-        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
-        Gdx.gl20.glDisable(GL20.GL_BLEND);
-        wire_shader.setUniformMatrix("u_viewProj", camera.combined);
-        //Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
-//        for (int i = 0; i<debug_mesh.size();i++){
-//            level_shader.setUniformMatrix("u_worldView", camera.combined);
-//            debug_mesh.get(i).render(level_shader, GL20.GL_LINE_LOOP);
-//        }
-        wire_mesh.render(wire_shader, GL20.GL_LINES);
-        Gdx.gl20.glDisable(GL20.GL_BLEND);
-        wire_shader.end();
-
-
 
 
     }
 
 
     public Vec2 GetSpawn(){
-        SpawnPoint using = spawn_points.get(spawn_index);
+        Locus using = spawn_points.get(spawn_index);
         spawn_index += 1;
-        return S2P(gl2S(new Vec2( using.pos[0], using.pos[1])));
+        return S2P(gl2S(new Vec2( using.pos[0], -using.pos[1])));
 
         //return new Vec2(10f,10f);
     }
@@ -364,6 +393,9 @@ public class Scenario {
         circleF.density = 1.0f*density;
         circleF.restitution = .8f;
         circleF.friction = .3f;
+        circleF.filter.categoryBits = 1;
+        circleF.filter.maskBits = 1;
+        //circleF.filter.groupIndex = 1;
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.DYNAMIC;
         bodyDef.position.set(x, y);
@@ -372,6 +404,27 @@ public class Scenario {
         body.m_angularDamping = .8f;
         body.m_linearDamping = .8f;
         body.createFixture(circleShape, 5.0f);
+        body.createFixture(circleF);
+        return body;
+    }
+
+    public Body createDynamicRect(float x, float y, float width, float height, float density, float friction) {
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.setAsBox(width, height);
+
+        FixtureDef circleF = new FixtureDef();
+        circleF.shape = polygonShape;
+        circleF.density = 1.0f*density;
+        circleF.restitution = .8f;
+        circleF.friction = friction;
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyType.DYNAMIC;
+        bodyDef.position.set(x, y);
+        bodyDef.allowSleep = false;
+        Body body = world.createBody(bodyDef);
+        body.m_angularDamping = .8f;
+        body.m_linearDamping = .8f;
+        body.createFixture(polygonShape, 5.0f);
         body.createFixture(circleF);
         return body;
     }
@@ -389,18 +442,27 @@ public class Scenario {
         return body;
     }
 
-    public Body createStaticChain(Vec2[] verticies) {
+    public Body createStaticChain(Vec2[] verticies, boolean is_sensor, int mask) {
         ChainShape chainShape = new ChainShape();
-        chainShape.createChain(verticies, verticies.length);
+        chainShape.createLoop(verticies, verticies.length);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.STATIC;
+
         bodyDef.position.set(0f, 0f);
 
         FixtureDef circleF = new FixtureDef();
         circleF.shape = chainShape;
         circleF.restitution = .8f;
         circleF.friction = .9f;
+
+        circleF.filter.categoryBits = (short)mask;
+        circleF.filter.maskBits = mask;
+        //circleF.filter.groupIndex = mask;
+
+        //Gdx.app.log("MASK:", ":"+circleF.filter.categoryBits);
+
+        circleF.isSensor = is_sensor;
 
         Body body = world.createBody(bodyDef);
         body.createFixture(circleF);

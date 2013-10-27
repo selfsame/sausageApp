@@ -35,28 +35,16 @@ public class SplashScreen
 
 // shader test
 
-    public ShaderProgram test_shader;
+
     public Mesh mesh;
-    private float time = 0.f;
+    public float ticker;
 
-    private JsonReader JSON = new JsonReader();
-    private Json json = new Json();
-    private float ticker = .0f;
 
-    ScenarioData scene = json.fromJson(ScenarioData.class, Gdx.files.internal( "scenarios/level01.json" ));
-    private Mesh level_mesh;
 
-    public SplashScreen(
-            myGame game )
+
+    public SplashScreen( myGame game )
     {
         super( game );
-
-
-
-
-
-
-
     }
 
     public void FindControllers(){

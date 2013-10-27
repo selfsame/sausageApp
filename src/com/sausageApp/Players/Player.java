@@ -7,6 +7,7 @@ import com.badlogic.gdx.controllers.mappings.Ouya;
 import com.badlogic.gdx.graphics.*;
 import com.sausageApp.Simulation.Scenario;
 import com.badlogic.gdx.controllers.Controller;
+import com.sausageApp.Simulation.SensorObject;
 import org.jbox2d.common.Vec2;
 import tv.ouya.console.api.OuyaController;
 
@@ -42,6 +43,8 @@ public class Player {
     public boolean debug_draw_sausage_links = false;
     public boolean debug_draw_sausage_mesh_lines = false;
     public boolean debug_draw_sausage_force = false;
+    public boolean debug_draw_static_chains = false;
+    public boolean debug_draw_level = true;
 
     public Player( Controller cont, Color col, int _uid){
         uid = _uid;
@@ -186,6 +189,21 @@ public class Player {
                 debug_draw_sausage_force = !debug_draw_sausage_force;
             }
 
+            if(Gdx.input.isKeyPressed(Input.Keys.NUM_4)){
+                debug_draw_level = !debug_draw_level;
+            }
+            if(Gdx.input.isKeyPressed(Input.Keys.NUM_5)){
+                debug_draw_static_chains = !debug_draw_static_chains;
+            }
+
+            if(Gdx.input.isKeyPressed(Input.Keys.O)){
+                for (SensorObject sensor: scenario.sensors) {
+                   if (sensor.active) if (sensor.player_contacts.get(this) > 0) {
+                       sensor.activate();
+                   }
+                }
+            }
+
 
         } else {
             float leftXAxis = controller.getAxis(Ouya.AXIS_LEFT_X);
@@ -214,6 +232,8 @@ public class Player {
 
 
     }
+
+
 
 }
 

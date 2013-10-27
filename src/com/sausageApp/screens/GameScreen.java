@@ -68,16 +68,17 @@ public class GameScreen
     public void show()
     {
         super.show();
-        scenario = new Scenario(game, this);
+        loadScenario("scenarios/level01.json");
 
+    }
 
-
+    public void loadScenario(String filename){
+        scenario = new Scenario(game, this, filename);
         spawn_points.add(new Vec2(100f,100f));
         spawn_points.add(new Vec2(300f,150f));
 
         for (int i = 0; i < game.players.size(); i++){
             game.players.get(i).SetScenario(scenario,spawn_points.get(game.players.get(i).uid));
-
         }
         SetupTouchpads();
     }

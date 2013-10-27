@@ -15,6 +15,7 @@ public class ScenarioData {
     public float[] wire_vertices = new float[]{};
     public short[] wire_indicies = new short[]{};
     public ArrayList<Collider> collide_groups = new ArrayList<Collider>();
-    public ArrayList<SpawnPoint> spawn_points = new ArrayList<SpawnPoint>();
+    public ArrayList<SensorData> sensor_groups = new ArrayList<SensorData>();
+    public ArrayList<Locus> locii = new ArrayList<Locus>();
 
 }
