@@ -32,13 +32,116 @@ from bpy_extras.io_utils import (ImportHelper,
                                  axis_conversion,
                                  )
 
-bpy.types.Object.SAUSAGE_physics_edges = bpy.props.BoolProperty()
-bpy.types.Object.SAUSAGE_visible_object = bpy.props.BoolProperty(default = True)
-bpy.types.Object.SAUSAGE_wireframe_object = bpy.props.BoolProperty()
-bpy.types.Object.SAUSAGE_spawn_point = bpy.props.BoolProperty()
-bpy.types.Object.SAUSAGE_alpha_texture = bpy.props.BoolProperty()
+bpy.types.Scene.SAUSAGE_scene_gravity = bpy.props.FloatProperty(default = 20.0)
 
 #bpy.types.MeshEdge.SAUSAGE_STATIC = bpy.props.BoolProperty()
+class SCENE_PT_hello( bpy.types.Panel ):
+
+    bl_label = "Sausage Scenario Settings"
+    bl_space_type = "PROPERTIES"
+    bl_region_type = "WINDOW"
+    bl_context = "scene"
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+
+        row = layout.row()
+        row.label(text="Sausage Scene")
+        row = layout.row()
+        row.prop( scene, "SAUSAGE_scene_gravity", text="game gravity" )
+
+
+bpy.types.Object.SAUSAGE_physics_edges = bpy.props.BoolProperty()
+bpy.types.Object.SAUSAGE_physics_dynamic = bpy.props.BoolProperty()
+bpy.types.Object.SAUSAGE_collision_mask = bpy.props.IntProperty(default = 0)
+bpy.types.Object.SAUSAGE_physics_friction = bpy.props.FloatProperty(default = 2.0)
+bpy.types.Object.SAUSAGE_physics_restitution = bpy.props.FloatProperty(default = 2.0)
+bpy.types.Object.SAUSAGE_physics_mass = bpy.props.FloatProperty(default = 10.0)
+bpy.types.Object.SAUSAGE_physics_type = EnumProperty(name="Physics Type",
+            items=(('circle', "circle", ""),
+                   ('rect', "rect", "")
+                   ),
+            default='circle'
+            )
+
+
+bpy.types.Object.SAUSAGE_visible_object = bpy.props.BoolProperty(default = True)
+bpy.types.Object.SAUSAGE_wireframe_object = bpy.props.BoolProperty()
+bpy.types.Object.SAUSAGE_alpha_texture = bpy.props.BoolProperty()
+bpy.types.Object.SAUSAGE_sensor_area = bpy.props.BoolProperty()
+bpy.types.Object.SAUSAGE_tag_name = bpy.props.StringProperty()
+bpy.types.Object.SAUSAGE_float = bpy.props.FloatProperty(default = 0.0)
+bpy.types.Object.SAUSAGE_int = bpy.props.IntProperty(default = 1)
+bpy.types.Object.SAUSAGE_sensor_usage = EnumProperty(name="Sensor Usage",
+            items=(('GENERIC', "generic", ""),
+                   ('PORTAL', "portal", ""),
+                   ('DEATH', "death", ""),
+                   ('MASK', "change mask", ""),
+                   ('CHANGEZ', "change player Z", ""),
+                   ('GRAVITY', "change gravity", ""),
+                   ('ZOOM', "camera zoom", ""),
+                   ('MESSAGE', "show message", "")
+                   ),
+            default='GENERIC'
+            )
+
+bpy.types.Object.SAUSAGE_locus = bpy.props.BoolProperty()
+bpy.types.Object.SAUSAGE_locus_usage = EnumProperty(name="Locus Usage",
+            items=(('PLAYER_SPAWN', "player spawn", ""),
+                   ('PICKUP_SPAWN', "pickup spawn", ""),
+                   ('GENERIC', "generic", "")
+                   ),
+            default='GENERIC'
+            )
+
+
+
+class SausageClass(bpy.types.PropertyGroup):
+    name = bpy.props.StringProperty(name="Test Prop", default="Unknown")
+ 
+bpy.utils.register_class(SausageClass)
+bpy.types.Object.SAUSAGE_class = bpy.props.CollectionProperty(type=SausageClass)
+bpy.types.Object.SAUSAGE_class_index = bpy.props.IntProperty(default=-1)
+ 
+
+class SAUSAGE_UL_class(bpy.types.UIList):
+
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
+        ob = data
+        sclass = item
+        if self.layout_type in {'DEFAULT', 'COMPACT'}:
+            layout.label(text=sclass.name if sclass.name else "", translate=False, icon_value=icon)
+
+        # 'GRID' layout type should be as compact as possible (typically a single icon!).
+        elif self.layout_type in {'GRID'}:
+            layout.alignment = 'CENTER'
+            layout.label(text="", icon_value=icon)
+
+bpy.utils.register_class(SAUSAGE_UL_class)
+
+class MY_LIST_OT_add(bpy.types.Operator):
+        bl_idname      = 'sausage_class.add'
+        bl_label       = "Add list item"
+        bl_description = "Add list item"
+ 
+        def invoke(self, context, event):
+                obj = context.active_object
+                obj.SAUSAGE_class.add()
+                return{'FINISHED'}
+class MY_LIST_OT_remove(bpy.types.Operator):
+        bl_idname      = 'sausage_class.remove'
+        bl_label       = "Add list item"
+        bl_description = "Add list item"
+ 
+        def invoke(self, context, event):
+                obj = context.active_object
+                obj.SAUSAGE_class.remove(obj.SAUSAGE_class_index)
+                return{'FINISHED'}
+
+
+
+
 
 class OBJECT_PT_hello( bpy.types.Panel ):
 
@@ -54,20 +157,85 @@ class OBJECT_PT_hello( bpy.types.Panel ):
         row = layout.row()
         row.label(text="Selected object: " + obj.name )
 
-        row = layout.row()
-        row.prop( obj, "SAUSAGE_visible_object", text="Visible" )
+        if obj.type == "EMPTY":
+            column = layout.column()
+            column.prop( obj, "SAUSAGE_locus", text="Locus")
+
+            if obj.SAUSAGE_locus == True:
+                box = layout.box()
+                box.prop( obj, "SAUSAGE_tag_name", text="Tag" )
+                box.prop( obj, "SAUSAGE_locus_usage", text="Usage" )
+                box.prop( obj, "SAUSAGE_int", text="Int" )
+                box.prop( obj, "SAUSAGE_float", text="Float" )
+        elif obj.type == "MESH":
+
+            row = layout.row()
+            row.prop( obj, "SAUSAGE_visible_object", text="Visible" )
+
+            row = layout.row()
+            row.prop( obj, "SAUSAGE_physics_dynamic", text="Box2D dynamic" )
+            if obj.SAUSAGE_physics_dynamic == True:
+                
+                row.prop( obj, "SAUSAGE_physics_type", text="" )
+                box = layout.box()
+                row = box.row()
+                col = row.column()
+                col.prop( obj, "SAUSAGE_int", text="mask" )
+                col.prop( obj.game, "radius", text="radius" )
+                col = row.column()
+                col.prop( obj, "SAUSAGE_physics_friction", text="friction" )
+                col.prop( obj, "SAUSAGE_physics_restitution", text="restitution" )
+                col.prop( obj, "SAUSAGE_physics_mass", text="mass" )
+
+
+            row = layout.row()
+            row.prop( obj, "SAUSAGE_physics_edges", text="Box2D EdgeShape" )
+
+            if obj.SAUSAGE_physics_edges == True:
+                box = layout.box()
+                box.prop( obj, "SAUSAGE_int", text="Collision Mask" )
+
+                
+
+            row = layout.row()
+            row.prop( obj, "SAUSAGE_wireframe_object", text="Render as wireframe" )
+
+            row = layout.row()
+            row.prop( obj, "SAUSAGE_alpha_texture", text="Alpha texture" )
+
+            column = layout.column()
+            column.prop( obj, "SAUSAGE_sensor_area", text="Sensor Area")
+
+
+
+            if obj.SAUSAGE_sensor_area == True:
+                box = layout.box()
+                box.prop( obj, "SAUSAGE_tag_name", text="Tag" )
+                box.prop( obj, "SAUSAGE_sensor_usage", text="Usage" )
+                box.prop( obj, "SAUSAGE_int", text="Int" )
+                box.prop( obj, "SAUSAGE_float", text="Float" )
 
         row = layout.row()
-        row.prop( obj, "SAUSAGE_physics_edges", text="Box2D EdgeShape" )
-
+        row.separator()
         row = layout.row()
-        row.prop( obj, "SAUSAGE_wireframe_object", text="Render as wireframe" )
-
+        row.label(text="game classes", icon="SOLID" )
         row = layout.row()
-        row.prop( obj, "SAUSAGE_spawn_point", text="Spawn point" )
+        side = row.split(.9)
+        left = side.column()
+        left.template_list("SAUSAGE_UL_class", "SAUSAGE_class_UI_LIST", obj, 'SAUSAGE_class', obj, 'SAUSAGE_class_index', rows=2)
 
-        row = layout.row()
-        row.prop( obj, "SAUSAGE_alpha_texture", text="Alpha texture" )
+        right = side.column()
+        right.operator('sausage_class.add', text="", icon="ZOOMIN")
+        
+        if obj.SAUSAGE_class_index >= 0:
+            sclass = obj.SAUSAGE_class[obj.SAUSAGE_class_index]
+            right.operator('sausage_class.remove', text="", icon="ZOOMOUT")
+            
+            left.prop( sclass, "name", text="name" )
+        #col.operator('my_list.add', text="", icon="ZOOMIN")
+
+
+
 
  
 
@@ -149,14 +317,17 @@ class ExportSausageScenario(bpy.types.Operator, ExportHelper):
 
         keywords = self.as_keywords(ignore=("axis_forward",
                                             "axis_up",
-                                            "global_scale",
                                             "check_existing",
                                             "filter_glob",
                                             ))
         global_matrix = axis_conversion(to_forward=self.axis_forward,
                                         to_up=self.axis_up,
                                         ).to_4x4() * Matrix.Scale(self.global_scale, 4)
+        unscaled_matrix = axis_conversion(to_forward=self.axis_forward,
+                                        to_up=self.axis_up,
+                                        ).to_4x4() 
         keywords["global_matrix"] = global_matrix
+        keywords["unscaled_matrix"] = unscaled_matrix
 
         filepath = self.filepath
         filepath = bpy.path.ensure_ext(filepath, self.filename_ext)

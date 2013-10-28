@@ -98,6 +98,10 @@ public class SensorObject implements Contactable{
         if (usage.equals("CHANGEZ")){
             player.sausage.z_depth = fmod;
         }
+        if (usage.equals("GRAVITY")){
+
+            player.scenario.world.setGravity( new Vec2(0f,fmod) );
+        }
     }
 
     public void activate(){

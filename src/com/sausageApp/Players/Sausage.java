@@ -188,7 +188,7 @@ public class Sausage {
             sausage_links.get(i).curve_potential = tot / sausage_links.size() * 20f;
         }
 
-        if (player.debug_draw_sausage_links){
+        if (player.debug_draw_sausage_links == false){
             SimpleDraw();
         }
 
@@ -301,12 +301,13 @@ public class Sausage {
             Vector2 v1 = gdx2gl((scenario.B2S(sausage_bodies.get(i).getPosition())));
 
             float p = sausage_links.get(i).potential;
-            shapeRenderer.setColor(p, 1f-p, 0f, 1f);
+            float c = sausage_links.get(i).curve_potential;
+            shapeRenderer.setColor(p, c, 0f, 1f);
             if (sausage_links.get(i).reversing == true){
-                shapeRenderer.begin(ShapeRenderer.ShapeType.FilledCircle);
-                shapeRenderer.filledCircle(v1.x, v1.y, .012f, 12);
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                shapeRenderer.circle(v1.x, v1.y, .012f, 12);
             } else {
-                shapeRenderer.begin(ShapeRenderer.ShapeType.Circle);
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
                 shapeRenderer.circle(v1.x, v1.y, .012f, 12);
             }
 

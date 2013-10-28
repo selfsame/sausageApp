@@ -54,7 +54,7 @@ public class WormMesh {
         for (int i=0;i<indicies.size();i++){
             inds[i] = indicies.get(i);
         }
-        mesh.setVertices( verts );
+        mesh.setVertices( verts, 0, verticies.size() );
         mesh.setIndices( inds );
         return mesh;
     }

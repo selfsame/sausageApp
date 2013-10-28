@@ -153,29 +153,29 @@ public class Player {
         Vec2 left_linV = sausage.head.getLinearVelocity();
         if (desktop) {
             if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)){
-                sausage.tail_link.applyLinearImpulse(new Vec2(-FORCE, 0f), propigation, true, true, .7f);
+                sausage.tail_link.applyLinearImpulse(new Vec2(-FORCE, 0f), propigation, true, true, .75f);
             }
             if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
-                sausage.tail_link.applyLinearImpulse(new Vec2(FORCE, 0f), propigation, true, true, .7f);
+                sausage.tail_link.applyLinearImpulse(new Vec2(FORCE, 0f), propigation, true, true, .75f);
             }
             if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)){
-                sausage.tail_link.applyLinearImpulse(new Vec2(0, -FORCE), propigation, true, true, .7f);
+                sausage.tail_link.applyLinearImpulse(new Vec2(0, -FORCE), propigation, true, true, .75f);
             }
             if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)){
-                sausage.tail_link.applyLinearImpulse(new Vec2(0, FORCE), propigation, true, true, .7f);
+                sausage.tail_link.applyLinearImpulse(new Vec2(0, FORCE), propigation, true, true, .75f);
             }
 
             if(Gdx.input.isKeyPressed(Input.Keys.A)){
-                sausage.head_link.applyLinearImpulse(new Vec2(-FORCE, 0f), propigation, false, true, .7f);
+                sausage.head_link.applyLinearImpulse(new Vec2(-FORCE, 0f), propigation, false, true, .75f);
             }
             if(Gdx.input.isKeyPressed(Input.Keys.D)){
-                sausage.head_link.applyLinearImpulse(new Vec2(FORCE, 0f), propigation, false, true, .7f);
+                sausage.head_link.applyLinearImpulse(new Vec2(FORCE, 0f), propigation, false, true, .75f);
             }
             if(Gdx.input.isKeyPressed(Input.Keys.W)){
-                sausage.head_link.applyLinearImpulse(new Vec2(0, -FORCE), propigation, false, true, .7f);
+                sausage.head_link.applyLinearImpulse(new Vec2(0, -FORCE), propigation, false, true, .75f);
             }
             if(Gdx.input.isKeyPressed(Input.Keys.S)){
-                sausage.head_link.applyLinearImpulse(new Vec2(0, FORCE), propigation, false, true, .7f);
+                sausage.head_link.applyLinearImpulse(new Vec2(0, FORCE), propigation, false, true, .75f);
             }
 
             //debug options

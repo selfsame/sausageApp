@@ -22,6 +22,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class Scenario {
@@ -30,19 +31,21 @@ public class Scenario {
 
     public Vec2 gravity;
     public World world;
-    public ArrayList<StaticObject> statics = new ArrayList<StaticObject>();
-    public ArrayList<Body> dynamics = new ArrayList<Body>();
-    public ArrayList<Vec2> dynamic_sizes = new ArrayList<Vec2>();
 
-    private JsonReader JSON = new JsonReader();
+    public HashMap<String, GameObject> object_map = new HashMap<String, GameObject>();
+    public ArrayList<DynamicObject> dynamics = new ArrayList<DynamicObject>();
+
+    public ArrayList<StaticObject> statics = new ArrayList<StaticObject>();
+
+
     private Json json = new Json();
 
     private ShaderProgram level_shader;
-    private Mesh level_mesh;
+
 
     private ShaderProgram tex_shader;
-    private ArrayList<Mesh> texture_meshes = new ArrayList<Mesh>();
-    private ArrayList<Mesh> texture_meshes_alpha = new ArrayList<Mesh>();
+    private ArrayList<GameObject> texture_meshes = new ArrayList<GameObject>();
+    private ArrayList<GameObject> texture_meshes_alpha = new ArrayList<GameObject>();
 
     private ShaderProgram wire_shader;
     private Mesh wire_mesh;
@@ -50,8 +53,8 @@ public class Scenario {
     private ShaderProgram debug_shader;
     private ArrayList<Mesh> debug_mesh = new ArrayList<Mesh>();
 
-    private ArrayList<Mesh> vertex_meshes = new ArrayList<Mesh>();
-    private ArrayList<Mesh> vertex_meshes_alpha = new ArrayList<Mesh>();
+    private ArrayList<GameObject> vertex_meshes = new ArrayList<GameObject>();
+    private ArrayList<GameObject> vertex_meshes_alpha = new ArrayList<GameObject>();
 
     float ticker = 0f;
     public GameCamera camera;
@@ -83,17 +86,20 @@ public class Scenario {
     public Scenario(myGame _game, GameScreen _game_screen, String filename) {
 
         Tween.registerAccessor(GameCamera.class, new MoveableAccessor());
+        Tween.registerAccessor(GameObject.class, new GameObjectAccessor());
 
-        gravity = new Vec2(.0f, 20.8f);
+        scene = json.fromJson(ScenarioData.class, Gdx.files.internal( filename ));
+
+        gravity = new Vec2(.0f, scene.gravity);
         world = new World(gravity);
         world.setContactListener(contact_listener);
         game = _game;
         game_screen = _game_screen;
         //Gdx.gl.glViewport(0,0,(int)Gdx.graphics.getWidth(), (int)Gdx.graphics.getHeight());
-        scene = json.fromJson(ScenarioData.class, Gdx.files.internal( filename ));
+
         tex = new Texture(Gdx.files.internal("house_tex.png"));
         camera = new GameCamera(46.596f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.set(0f, 0f, 60f);
+        camera.position.set(0f, 0f, 40f);
         //Gdx.graphics.setDisplayMode((int)Gdx.graphics.getWidth()/2,(int)Gdx.graphics.getHeight()/2, false);
 
 
@@ -103,24 +109,29 @@ public class Scenario {
         ArrayList<VertexObject> texture_objects = scene.texture_objects;
         LevelMeshCompiler level_geo = new LevelMeshCompiler();
 
-        for (int i=0;i<vertex_objects.size();i++){
-            if (vertex_objects.get(i).alpha == false){
-                vertex_meshes.add(level_geo.CompileMesh(vertex_objects.get(i).static_vertices, vertex_objects.get(i).static_indicies));
+        for (VertexObject obj: scene.vertex_objects) {
+            GameObject game_obj = new GameObject(obj, level_geo);
+            object_map.put(game_obj.name, game_obj);
+            if (game_obj.alpha == false){
+                vertex_meshes.add(game_obj);
             } else {
-                vertex_meshes_alpha.add(level_geo.CompileMesh(vertex_objects.get(i).static_vertices, vertex_objects.get(i).static_indicies));
+                vertex_meshes_alpha.add(game_obj);
             }
         }
+
         level_shader = level_geo.MakeShader();
 
 
-
-        for (int i=0;i<texture_objects.size();i++){
-            if (texture_objects.get(i).alpha == false){
-                texture_meshes.add(level_geo.CompileTexMesh(texture_objects.get(i).static_vertices, texture_objects.get(i).static_indicies));
+        for (VertexObject obj: scene.texture_objects) {
+            GameObject game_obj = new GameObject(obj, level_geo);
+            object_map.put(game_obj.name, game_obj);
+            if (game_obj.alpha == false){
+                texture_meshes.add(game_obj);
             } else {
-                texture_meshes_alpha.add(level_geo.CompileTexMesh(texture_objects.get(i).static_vertices, texture_objects.get(i).static_indicies));
+                texture_meshes_alpha.add(game_obj);
             }
         }
+
         tex_shader = level_geo.MakeTexShader();
 
         wire_mesh = level_geo.CompileMesh(scene.wire_vertices, scene.wire_indicies);
@@ -160,6 +171,20 @@ public class Scenario {
             sensors.add(new SensorObject(this, group));
         }
 
+        for (DynamicData data: scene.dynamic_objects) {
+            DynamicObject d = new DynamicObject(this, data);
+            dynamics.add(d);
+        }
+
+        Tween.to(object_map.get("Lamp"), GameObjectAccessor.POSITION_Y, .3f).targetRelative(.1f).repeatYoyo(100, 0f).start(tweenManager);
+
+        Tween.to(object_map.get("Lamp"), GameObjectAccessor.SCALE_XYZ, .1f).delay(.3f).target(1f,1f,.5f).repeatYoyo(100, .2f).start(tweenManager);
+
+        Tween.to(object_map.get("Cloud"), GameObjectAccessor.POSITION_X, 40f).targetRelative(-50f).repeatYoyo(10, .2f).start(tweenManager);
+        Tween.to(object_map.get("Cloud.001"), GameObjectAccessor.POSITION_X, 40f).targetRelative(-50f).repeatYoyo(10, .2f).start(tweenManager);
+        Tween.to(object_map.get("Cloud.002"), GameObjectAccessor.POSITION_X, 50f).targetRelative(-30f).repeatYoyo(10, .2f).start(tweenManager);
+        Tween.to(object_map.get("Cloud.003"), GameObjectAccessor.POSITION_X, 30f).targetRelative(-10f).repeatYoyo(10, .2f).start(tweenManager);
+        Tween.to(object_map.get("Cloud.004"), GameObjectAccessor.POSITION_X, 30f).targetRelative(10f).repeatYoyo(10, .2f).start(tweenManager);
     }
 
     public void step(float delta) {
@@ -185,11 +210,22 @@ public class Scenario {
         return new Vec2( x, y );
     }
 
-
+    public void update(){
+        tweenManager.update(Gdx.graphics.getDeltaTime());
+        for (DynamicObject obj: dynamics) {
+            obj.update();
+        }
+    }
 
     public void render(){
+        update();
+        float[] b = scene.background;
+        Gdx.gl.glClearColor(b[0], b[1], b[2], 1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
 
-        tweenManager.update(Gdx.graphics.getDeltaTime());
+
+
 
 
         ticker += .01f;
@@ -238,8 +274,11 @@ public class Scenario {
             Gdx.gl.glDepthFunc(GL20.GL_LESS);
             Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
             tex_shader.setUniformMatrix("u_viewProj", camera.combined);
-            for (int i = 0; i<texture_meshes.size();i++){
-                texture_meshes.get(i).render(tex_shader, GL20.GL_TRIANGLES);
+            for (GameObject obj: texture_meshes) {
+                //tex_shader.setUniformf("u_position", obj.position.x,obj.position.y,obj.position.z,1f);
+                //tex_shader.setUniformf("u_scale", obj.scale.x,obj.scale.y,obj.scale.z,1f);
+                tex_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
+                obj.mesh.render(tex_shader, GL20.GL_TRIANGLES);
             }
             tex_shader.end();
 
@@ -254,20 +293,30 @@ public class Scenario {
             Gdx.gl.glDepthRangef(0f, 1f);
             Gdx.gl.glDepthFunc(GL20.GL_LESS);
             level_shader.setUniformMatrix("u_viewProj", camera.combined);
-            for (int i = 0; i<vertex_meshes.size();i++){
-                vertex_meshes.get(i).render(level_shader, GL20.GL_TRIANGLES);
+
+            for (GameObject obj: vertex_meshes) {
+                //level_shader.setUniformf("u_position", obj.position.x,obj.position.y,obj.position.z,1f);
+                //level_shader.setUniformf("u_scale", obj.scale.x,obj.scale.y,obj.scale.z,1f);
+                level_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
+                obj.mesh.render(level_shader, GL20.GL_TRIANGLES);
             }
             Gdx.gl.glEnable(GL20.GL_BLEND);
-            Gdx.gl.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
-            for (int i = 0; i<vertex_meshes_alpha.size();i++){
-                vertex_meshes_alpha.get(i).render(level_shader, GL20.GL_TRIANGLES);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            for (GameObject obj: vertex_meshes_alpha) {
+                //level_shader.setUniformf("u_position", obj.position.x,obj.position.y,obj.position.z,1f);
+                //level_shader.setUniformf("u_scale", obj.scale.x,obj.scale.y,obj.scale.z,1f);
+                level_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
+                obj.mesh.render(level_shader, GL20.GL_TRIANGLES);
             }
             level_shader.end();
 
             tex_shader.begin();
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-            for (int i = 0; i<texture_meshes_alpha.size();i++){
-                texture_meshes_alpha.get(i).render(tex_shader, GL20.GL_TRIANGLES);
+            for (GameObject obj: texture_meshes_alpha) {
+                //tex_shader.setUniformf("u_position", obj.position.x,obj.position.y,obj.position.z,1f);
+                //tex_shader.setUniformf("u_scale", obj.scale.x,obj.scale.y,obj.scale.z,1f);
+                tex_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
+                obj.mesh.render(tex_shader, GL20.GL_TRIANGLES);
             }
             tex_shader.end();
 

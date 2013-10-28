@@ -1,12 +1,3 @@
 Manifest-Version: 1.0
-Class-Path: gdx-controllers.jar gdx-natives.jar gdx-backend-lwjgl.jar 
- gdx-controllers-desktop.jar gdx-backend-lwjgl-natives.jar gdx-control
- lers-desktop-natives.jar gdx-controllers-desktop-sources.jar gdx.jar 
- ouya-sdk.jar gdx-natives.jar gdx-controllers.jar jbox2d-library-2.2.1
- .1.jar gdx-controllers-sources.jar jbox2d-library-2.2.1.1-javadoc.jar
-  jbox2d-library-2.2.1.1-sources.jar gdx.jar ouya-sdk.jar gdx-natives.
- jar gdx-controllers.jar jbox2d-library-2.2.1.1.jar gdx-controllers-so
- urces.jar jbox2d-library-2.2.1.1-javadoc.jar jbox2d-library-2.2.1.1-s
- ources.jar
 Main-Class: DesktopStarter
 

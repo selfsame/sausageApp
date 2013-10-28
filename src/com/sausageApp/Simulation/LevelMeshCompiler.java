@@ -28,7 +28,8 @@ public class LevelMeshCompiler {
         Mesh mesh = new Mesh(false, verticies.length*7,indicies.length,
                 new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
                 new VertexAttribute(VertexAttributes.Usage.Color, 4, "a_color"));
-        mesh.setVertices( verticies );
+
+        mesh.setVertices( verticies, 0, verticies.length*7 );
         mesh.setIndices( indicies );
         return mesh;
     }
@@ -41,7 +42,7 @@ public class LevelMeshCompiler {
                 new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
                 new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"),
                 new VertexAttribute(VertexAttributes.Usage.Color, 4, "a_color"));
-        mesh.setVertices( verticies );
+        mesh.setVertices( verticies, 0, verticies.length*7 );
         mesh.setIndices( indicies );
         return mesh;
     }
@@ -53,10 +54,13 @@ public class LevelMeshCompiler {
                         + "attribute vec4 a_color ;   \n"
                         + "varying vec4 v_color ;   \n"
                         + "uniform mat4 u_viewProj;"
+                        //+ "uniform vec4 u_scale;"
+                        //+ "uniform vec4 u_position;"
+                        + "uniform mat4 u_obj_mat4;"
                         + "void main()                   \n"
                         + "{  v_color = a_color;                           \n"
 
-                        + "   gl_Position =   u_viewProj * a_position;   \n"
+                        + "    gl_Position =   u_viewProj *   ( u_obj_mat4  * a_position)      ;   \n"
                         + "}                             \n";
         String fragmentShader = "#ifdef GL_ES                \n"
                 + "precision mediump float;    \n"
@@ -76,11 +80,14 @@ public class LevelMeshCompiler {
                         + "attribute vec2 a_texCoords ;   \n"
                         + "varying vec4 v_color ;   \n"
                         + "varying vec2 v_texCoords ;   \n"
+                        //+ "uniform vec4 u_scale;"
+                        //+ "uniform vec4 u_position;"
+                        + "uniform mat4 u_obj_mat4;"
                         + "uniform mat4 u_viewProj;"
                         + "void main()                   \n"
                         + "{  v_color = a_color;                           \n"
                         + "   v_texCoords = a_texCoords;  \n"
-                        + "   gl_Position =   u_viewProj * a_position;   \n"
+                        + "   gl_Position =   u_viewProj *   ( u_obj_mat4  * a_position)    ;   \n"
                         + "}                             \n";
         String fragmentShader = "#ifdef GL_ES                \n"
                 + "precision mediump float;    \n"

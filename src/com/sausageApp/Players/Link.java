@@ -3,6 +3,7 @@ package com.sausageApp.Players;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.sausageApp.Simulation.AnonContact;
 import com.sausageApp.Simulation.Contactable;
 import org.jbox2d.common.Vec2;
@@ -23,7 +24,7 @@ public class Link implements Contactable {
     public Link prev = null;
     public Sausage sausage;
     public boolean reversing = false;
-    public float potential = 0f;
+    public float potential = 1f;
     public float curvature = 0f;
     public float curve_potential = 0f;
 
@@ -35,8 +36,8 @@ public class Link implements Contactable {
     }
 
     public void Update(){
-        if (has_contact == false && potential > .4){
-            potential *= .97f;
+        if (has_contact == false && potential > .4f){
+            potential *= .98f;
             reversing = false;
         }
         if (HasNext() && HasPrev()){
@@ -118,10 +119,11 @@ public class Link implements Contactable {
 
 
 
-        Vec2 curve_mod = new Vec2(v.x *  curve_potential , v.y *  curve_potential  );
+        Vector2 curve_mod = new Vector2(v.x*.8f*curve_potential , v.y*.8f*curve_potential  );
 
-        Vec2 mod = new Vec2(potential*1f*v.x, potential*1f*v.y);
-        body.applyLinearImpulse(mod.add(curve_mod), body.getWorldCenter());
+        Vector2 mod = new Vector2( potential*(.5f*v.x),  potential*(.5f*v.y));
+        Vector2 result = mod.add(curve_mod);
+        body.applyLinearImpulse( new Vec2(v.x, v.y), body.getWorldCenter());
 
 
 
@@ -163,7 +165,7 @@ public class Link implements Contactable {
        }
         if (thing instanceof AnonContact) {
             potential = 1f;
-            has_contact = false;
+
         }
     }
     public void endContact(Vec2 n, Contactable thing){
