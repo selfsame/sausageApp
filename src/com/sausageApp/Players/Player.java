@@ -5,9 +5,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.mappings.Ouya;
 import com.badlogic.gdx.graphics.*;
-import com.sausageApp.Simulation.Scenario;
 import com.badlogic.gdx.controllers.Controller;
-import com.sausageApp.Simulation.SensorObject;
+import com.sausageApp.Game.State;
+import com.sausageApp.Game.Units;
+import com.sausageApp.Scene.SensorObject;
 import org.jbox2d.common.Vec2;
 import tv.ouya.console.api.OuyaController;
 
@@ -21,6 +22,8 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 public class Player {
+    public State state = State.getInstance();
+    private Units units = new Units();
 
     public int uid;
     public boolean desktop = false;
@@ -31,7 +34,6 @@ public class Player {
     public Sausage sausage;
 
     public boolean in_lobby = true;
-    public Scenario scenario;
 
     public float FORCE = 4f;
     public int propigation = 10;
@@ -74,7 +76,7 @@ public class Player {
             long endTime = System.nanoTime();
 
             long duration = endTime - startTime;
-            scenario.game.profiler.addStat("\nSausage "+uid+": (ms) "+(int)(duration*1.0e-6));
+            state.game.profiler.addStat("\nSausage "+uid+": (ms) "+(int)(duration*1.0e-6));
 
             for (int i = 0; i < party.size(); i++){
                 party.get(i).render();
@@ -106,17 +108,10 @@ public class Player {
 
 
 
-    public void SetScenario(Scenario scen, Vec2 spawn){
+    public void newScene(){
         in_lobby = false;
-        scenario = scen;
-        sausage = new Sausage(this, scenario);
+        sausage = new Sausage(this);
         propigation = sausage.sausage_length/2;
-
-//        party.add(new Sausage(this, scenario));
-//        party.add(new Sausage(this, scenario));
-//        party.add(new Sausage(this, scenario));
-//        party.add(new Sausage(this, scenario));
-
 
     }
 
@@ -197,7 +192,7 @@ public class Player {
             }
 
             if(Gdx.input.isKeyPressed(Input.Keys.O)){
-                for (SensorObject sensor: scenario.sensors) {
+                for (SensorObject sensor: state.scene.sensors) {
                    if (sensor.active) if (sensor.player_contacts.get(this) > 0) {
                        sensor.activate();
                    }
@@ -225,8 +220,11 @@ public class Player {
 
 
         }
-        float touch_left_x = scenario.game_screen.touchpad.getKnobPercentX();
-        float touch_left_y = scenario.game_screen.touchpad.getKnobPercentY();
+
+        // Needs to be some sort of Interface Solution
+
+        //float touch_left_x = game.game_screen.touchpad.getKnobPercentX();
+        //float touch_left_y = game.game_screen.touchpad.getKnobPercentY();
         //sausage.head_link.applyLinearImpulse(new Vec2(-touch_left_x*FORCE*1.5f, 0f), 4, false, true, .7f);
         //sausage.head_link.applyLinearImpulse(new Vec2(0f, touch_left_y *FORCE*1.5f), 4, false, true, .7f);
 

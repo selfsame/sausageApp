@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class myGame extends Game{
 
-
+    public State state = State.getInstance();
 
     public ArrayList<Player> players = new ArrayList<Player>();
     public Map<Controller, Player> player_map = new HashMap<Controller, Player>();
@@ -50,9 +50,11 @@ public class myGame extends Game{
 
     @Override
     public void create() {
+        profiler = new Profiler();
+        state.game = this;
         player_colors.add(new Color(.8f,.5f, .5f, 1f));
         player_colors.add(new Color(.8f, .8f, .2f, 1f));
-        profiler = new Profiler();
+
         setScreen(getSplashScreen());
     }
 

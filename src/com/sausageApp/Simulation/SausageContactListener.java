@@ -1,9 +1,8 @@
 package com.sausageApp.Simulation;
 
-import com.badlogic.gdx.Gdx;
 import com.sausageApp.Players.Link;
+import com.sausageApp.Scene.SensorObject;
 import org.jbox2d.callbacks.ContactImpulse;
-import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
 import org.jbox2d.collision.WorldManifold;
 import org.jbox2d.common.Vec2;

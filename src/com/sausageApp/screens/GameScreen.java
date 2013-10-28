@@ -1,33 +1,18 @@
 package com.sausageApp.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.sausageApp.Game.State;
+import com.sausageApp.Game.Units;
 import com.sausageApp.Game.myGame;
 import com.sausageApp.Players.Player;
-import com.sausageApp.Simulation.Scenario;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-import com.badlogic.gdx.math.CatmullRomSpline;
 
 
 
@@ -39,11 +24,7 @@ public class GameScreen
         AbstractScreen
 {
 
-    private Scenario scenario;
-
-    private float last_x = 0f;
-    private float last_y = 0f;
-    private float r = 0f;
+    public State state = State.getInstance();
 
     private Stage stage;
     private SpriteBatch facebatch = new SpriteBatch();
@@ -52,8 +33,9 @@ public class GameScreen
     private Skin touchpadSkin;
     private Drawable touchBackground;
     private Drawable touchKnob;
+    private Units units = new Units();
 
-    public ArrayList<Vec2> spawn_points = new ArrayList<Vec2>();
+
 
 
 
@@ -68,20 +50,12 @@ public class GameScreen
     public void show()
     {
         super.show();
-        loadScenario("scenarios/level01.json");
+        state.setScene("scenarios/level01.json");
 
-    }
-
-    public void loadScenario(String filename){
-        scenario = new Scenario(game, this, filename);
-        spawn_points.add(new Vec2(100f,100f));
-        spawn_points.add(new Vec2(300f,150f));
-
-        for (int i = 0; i < game.players.size(); i++){
-            game.players.get(i).SetScenario(scenario,spawn_points.get(game.players.get(i).uid));
-        }
         SetupTouchpads();
     }
+
+
 
     public void SetupTouchpads(){
         //Create a touchpad skin
@@ -99,9 +73,9 @@ public class GameScreen
         touchpadStyle.background = touchBackground;
         touchpadStyle.knob = touchKnob;
         //Create new TouchPad with the created style
-        touchpad = new Touchpad(scenario.P2S(10f), touchpadStyle);
+        touchpad = new Touchpad(units.P2S(10f), touchpadStyle);
         //setBounds(x,y,width,height)
-        touchpad.setBounds(scenario.P2S(15f), scenario.P2S(15f), scenario.P2S(128f), scenario.P2S(128f));
+        touchpad.setBounds(units.P2S(15f), units.P2S(15f), units.P2S(128f), units.P2S(128f));
 
         //Create a Stage and add TouchPad
         stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, batch);
@@ -115,32 +89,20 @@ public class GameScreen
             float delta )
     {
         long startTime = System.nanoTime();
-
         super.render( delta );
-
-        scenario.step( .018f );
 
         Gdx.gl.glClearColor(.1f, .2f, .2f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
 
-
-
-
-
-
-
-
-
-
         long endTime = System.nanoTime();
 
         long duration = endTime - startTime;
-        scenario.game.profiler.addStat("\nGameScreen.render(): (ms) "+(int)(duration*1.0e-6));
+        game.profiler.addStat("\nGameScreen.render(): (ms) "+(int)(duration*1.0e-6));
 
 
 
-        scenario.render();
+        state.update(delta);
 
         for(int i = 0; i < game.player_count; i++) {
             Player player = game.players.get(i);
@@ -155,7 +117,6 @@ public class GameScreen
         }
 
 
-        for (int i = 0; i < scenario.statics.size(); i++) scenario.statics.get(i).render(facebatch);
 
         facebatch.end();
 

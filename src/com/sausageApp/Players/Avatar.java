@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.sausageApp.Game.State;
+import com.sausageApp.Game.Units;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 
@@ -20,6 +22,8 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 public class Avatar {
+    public State state = State.getInstance();
+    private Units units = new Units();
 
     private Texture backdrop_texture = new Texture("portrait_back.png");
     private Texture avatar_texture = new Texture("avatar.png");
@@ -110,7 +114,7 @@ public class Avatar {
     }
 
     public float un(float a){
-        return player.scenario.P2S(a);
+        return units.P2S(a);
     }
 
     public void drawFace(SpriteBatch batch, Body body){
@@ -120,9 +124,9 @@ public class Avatar {
 
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST) ;
         //Gdx.gl.glEnable(GL20.GL_FRONT_AND_BACK) ;
-        batch.setProjectionMatrix(player.scenario.camera.combined);
-        Vec2 screen_body = player.scenario.B2S(body.getPosition());
-        Vec2 bv = player.scenario.S2gl(screen_body);
+        batch.setProjectionMatrix(state.scene.camera.combined);
+        Vec2 screen_body = units.B2S(body.getPosition());
+        Vec2 bv = units.S2gl(screen_body);
         float br = body.getAngle();
         //Vec2 g = new Vec2((float)  Math.cos(-r)*16, (float) Math.sin(-r)*16);
         eyes_sprite.setBounds(bv.x - (eye_width / 2f)  , bv.y + 1.5f - (eye_height / 2f) ,eye_width, eye_height);
@@ -131,7 +135,7 @@ public class Avatar {
         eyes_sprite.setRotation((float) (Math.toDegrees(br)+90f)*-1f);
         eyes_sprite.draw(batch);
 
-        mouth_sprite.setBounds(bv.x-un(12f) , player.scenario.SFlip(bv.y+un(8f)) ,.1f,.1f);
+        mouth_sprite.setBounds(bv.x-un(12f) , units.SFlip(bv.y+un(8f)) ,.1f,.1f);
         mouth_sprite.setOrigin(un(12f), un(8f));
         mouth_sprite.setRotation((float) (Math.toDegrees(br)+90f)*-1f);
         mouth_sprite.draw(batch);

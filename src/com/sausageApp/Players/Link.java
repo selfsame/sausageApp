@@ -4,6 +4,8 @@ package com.sausageApp.Players;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.sausageApp.Game.State;
+import com.sausageApp.Game.Units;
 import com.sausageApp.Simulation.AnonContact;
 import com.sausageApp.Simulation.Contactable;
 import org.jbox2d.common.Vec2;
@@ -17,7 +19,8 @@ import org.jbox2d.dynamics.Body;
  * To change this template use File | Settings | File Templates.
  */
 public class Link implements Contactable {
-
+    public State state = State.getInstance();
+    private Units units = new Units();
     public Body body;
 
     public Link next = null;
@@ -81,7 +84,7 @@ public class Link implements Contactable {
     }
 
     public void DebugLinearImpulse(Vec2 v){
-        Vec2 b = sausage.player.scenario.SFlip(sausage.player.scenario.B2S(  body.getWorldCenter() ));
+        Vec2 b = units.SFlip(units.B2S(  body.getWorldCenter() ));
 
         sausage.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 

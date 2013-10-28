@@ -3,40 +3,30 @@ package com.sausageApp.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.controllers.mappings.Ouya;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
+import com.sausageApp.Game.State;
 import com.sausageApp.Game.myGame;
-import com.sausageApp.Players.Avatar;
 import com.sausageApp.Players.Player;
-import com.sausageApp.Simulation.LevelMeshCompiler;
-import com.sausageApp.Simulation.ScenarioData;
 import tv.ouya.console.api.OuyaController;
 
 public class SplashScreen
         extends
         AbstractScreen
 {
-    private Texture splashTexture;
-    private TextureRegion splashTextureRegion;
+    public State state = State.getInstance();
+
+
     private Stage stage;
 
-// shader test
 
-
-    public Mesh mesh;
     public float ticker;
 
 
@@ -90,10 +80,7 @@ public class SplashScreen
         button.setSize(Gdx.graphics.getWidth()*.2f, Gdx.graphics.getWidth()*.1f);
         stage.addActor( button );
 
-        // load the splash image and create the texture region
-        splashTexture = new Texture( "splash.jpg" );
-        splashTexture.setFilter( TextureFilter.Linear, TextureFilter.Linear );
-        splashTextureRegion = new TextureRegion( splashTexture, 0, 0, 512, 512 );
+
 
         button.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -158,8 +145,6 @@ public class SplashScreen
     @Override
     public void dispose()
     {
-
-        splashTexture.dispose();
         stage.dispose();
         super.dispose();
     }

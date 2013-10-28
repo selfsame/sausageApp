@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.sausageApp.Game.State;
+import com.sausageApp.Game.Units;
 import com.sausageApp.screens.WormMesh;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
@@ -21,7 +23,7 @@ import org.jbox2d.dynamics.joints.RevoluteJointDef;
 
 import java.util.ArrayList;
 
-import com.sausageApp.Simulation.Scenario;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,6 +33,8 @@ import com.sausageApp.Simulation.Scenario;
  * To change this template use File | Settings | File Templates.
  */
 public class Sausage {
+    public State state = State.getInstance();
+    private Units units = new Units();
 
     public Player player;
     public ArrayList<Body> sausage_bodies;
@@ -42,7 +46,7 @@ public class Sausage {
     public int sausage_length = 18;
     private float L_DIST = 1.2f;
 
-    private Scenario scenario;
+
 
     private ShaderProgram sausage_shader;
 
@@ -58,12 +62,12 @@ public class Sausage {
 
     public float SRADIUS = 7.5f;
 
-    public Sausage(Player _player, Scenario _scenario){
+    public Sausage(Player _player){
 
         player = _player;
         player.FORCE = .2f*sausage_length;
-        scenario = _scenario;
-        Vec2 spawn = scenario.GetSpawn();
+
+        Vec2 spawn = state.box.GetSpawn();
         sausage_bodies = createSausageBodies(spawn.x, spawn.y, SRADIUS, sausage_length);
         head = sausage_bodies.get(0);
         tail = sausage_bodies.get(sausage_length);
@@ -119,9 +123,9 @@ public class Sausage {
     }
 
     public ArrayList<Body> createSausageBodies(float x, float y, float radius, int link_count)    {
-        x = scenario.P2B(x);
-        y = scenario.P2B(y);
-        radius = scenario.P2B(radius);
+        x = units.P2B(x);
+        y = units.P2B(y);
+        radius = units.P2B(radius);
         ArrayList<Body> sausage = new ArrayList<Body>();
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(0.1f, 0.8f);
@@ -144,7 +148,7 @@ public class Sausage {
 
 
         //Body first = scenario.createDynamicCircle(x, y, radius*1.00f, 10f);
-        Body first = scenario.createDynamicRect(x, y, radius*2.00f, radius*1.00f, 10f, .9f);
+        Body first = state.box.createDynamicRect(x, y, radius*2.00f, radius*1.00f, 10f, .9f);
         Body prevBody = first;
         prevBody.m_angularDamping = 1.5f;
         sausage.add(prevBody);
@@ -156,12 +160,12 @@ public class Sausage {
             if (i >= link_count-1){
                 friction = .9f;
             }
-            Body next = scenario.createDynamicRect(x+(radius*2f*L_DIST)+(i*(radius*2f*L_DIST)), y, radius*2.00f, radius*1.00f, 10f, friction);
+            Body next = state.box.createDynamicRect(x+(radius*2f*L_DIST)+(i*(radius*2f*L_DIST)), y, radius*2.00f, radius*1.00f, 10f, friction);
             next.m_angularDamping = .8f;
             next.m_linearDamping = .01f*i;
             Vec2 anchor = new Vec2(x+(i*(radius*2f*L_DIST)), y);
             jd.initialize(prevBody, next, anchor);
-            scenario.world.createJoint(jd);
+            state.box.world.createJoint(jd);
             sausage.add(next);
             prevBody = next;
         }
@@ -198,7 +202,7 @@ public class Sausage {
         Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
         sausage_shader.begin();
         UpdateMesh();
-        sausage_shader.setUniformMatrix("u_worldView", scenario.camera.combined);
+        sausage_shader.setUniformMatrix("u_worldView", state.scene.camera.combined);
         sausage_shader.setUniformf("z_depth", z_depth);
         if (player.debug_draw_sausage_mesh_lines){
             mesh.render(sausage_shader, GL20.GL_LINE_LOOP);
@@ -212,7 +216,7 @@ public class Sausage {
         Gdx.gl20.glDisable(GL20.GL_BLEND);
         cap_shader.begin();
         cap_shader.setUniformf("z_depth", z_depth);
-        cap_shader.setUniformMatrix("u_worldView", scenario.camera.combined);
+        cap_shader.setUniformMatrix("u_worldView", state.scene.camera.combined);
         cap_shader.setUniformf("player_color", player.color.r, player.color.g, player.color.b, 1.0f);
 
 
@@ -220,7 +224,7 @@ public class Sausage {
         Quaternion rot = new Quaternion(new Vector3(0f,0f,1f), angle);
         Matrix4 capmat = new Matrix4(rot);
 
-        Vector2 bv = gdx2gl((scenario.B2S(player.sausage.head.getPosition()))).mul(2f);
+        Vector2 bv = gdx2gl((units.B2S(player.sausage.head.getPosition()))).mul(2f);
         cap_shader.setUniformf("cap_pos", bv.x,bv.y);
         cap_shader.setUniformMatrix("capmat", capmat);
         end_cap.render(sausage_shader, GL20.GL_TRIANGLES);
@@ -229,7 +233,7 @@ public class Sausage {
         rot = new Quaternion(new Vector3(0f,0f,1f), angle);
         capmat = new Matrix4(rot);
 
-        bv = gdx2gl((scenario.B2S(player.sausage.tail.getPosition()))).mul(2f);
+        bv = gdx2gl((units.B2S(player.sausage.tail.getPosition()))).mul(2f);
         cap_shader.setUniformf("cap_pos", bv.x,bv.y);
         cap_shader.setUniformMatrix("capmat", capmat);
         end_cap.render(sausage_shader, GL20.GL_TRIANGLES);
@@ -257,17 +261,17 @@ public class Sausage {
 
         float[] nodes = new float[(sausage_length+4)*2];
 
-        Vector2 lp = gdx2gl((scenario.B2S(sausage_bodies.get(0).getPosition())));
+        Vector2 lp = gdx2gl((units.B2S(sausage_bodies.get(0).getPosition())));
 
         nodes[0] =  lp.x;
         nodes[1] = lp.y;
         for(int i = 1; i <= sausage_length+1; i++) {
-            lp = gdx2gl((scenario.B2S(sausage_bodies.get(i-1).getPosition())));
+            lp = gdx2gl((units.B2S(sausage_bodies.get(i-1).getPosition())));
             nodes[i*2] =  lp.x;
             nodes[i*2+1] =  lp.y;
         }
 
-        lp = gdx2gl((scenario.B2S(sausage_bodies.get(sausage_bodies.size()-1).getPosition())));
+        lp = gdx2gl((units.B2S(sausage_bodies.get(sausage_bodies.size()-1).getPosition())));
 
         nodes[(sausage_length+1)*2] =  lp.x;
         nodes[(sausage_length+1)*2+1] = lp.y; // a used node
@@ -292,13 +296,13 @@ public class Sausage {
     public void SimpleDraw(){
         //Gdx.gl.glDisable(GL20.GL_DEPTH_TEST) ;
         //Gdx.gl.glEnable(GL20.GL_FRONT_AND_BACK) ;
-        shapeRenderer.setProjectionMatrix(player.scenario.camera.combined);
+        shapeRenderer.setProjectionMatrix(state.scene.camera.combined);
         //shapeRenderer.translate(0f,0f,-1f);
         for(int i = 0; i < sausage_links.size(); i++) {
 
 
 
-            Vector2 v1 = gdx2gl((scenario.B2S(sausage_bodies.get(i).getPosition())));
+            Vector2 v1 = gdx2gl((units.B2S(sausage_bodies.get(i).getPosition())));
 
             float p = sausage_links.get(i).potential;
             float c = sausage_links.get(i).curve_potential;
