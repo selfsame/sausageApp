@@ -11,9 +11,11 @@ import org.jbox2d.common.Vec2;
  * To change this template use File | Settings | File Templates.
  */
 public class Units {
-    public float RATIO = Gdx.graphics.getHeight()/Gdx.graphics.getWidth() ;
+    public float RATIO = (float)Gdx.graphics.getHeight()/(float)Gdx.graphics.getWidth() ;
 
-    public Units(){}
+    public Units(){
+        RATIO = (float)Gdx.graphics.getHeight()/(float)Gdx.graphics.getWidth() ;
+    }
     public Vec2 S2gl(Vec2 v){
         float SCALE = 4f;
         float y = (float)( (Gdx.graphics.getHeight()-(v.y*SCALE))  /(Gdx.graphics.getHeight()*2f)-1f) ;
@@ -22,9 +24,22 @@ public class Units {
     }
 
     public Vec2 gl2S(Vec2 v){
+        float SCALE = 4f;
         float y = (float)(((-1f*v.y)+1f)/2f)*(Gdx.graphics.getHeight()) ;
         float x = (float)((v.x+1f)/2f)*(Gdx.graphics.getWidth()) ;
         return new Vec2( x, y );
+    }
+
+    public float S2gl(float f){
+        float SCALE = 4f;
+        f = (float)((f*SCALE)/(Gdx.graphics.getWidth()*2f)-1f) ;
+        return f;
+    }
+
+    public float gl2S(float f){
+
+        float x = (float)((f+1f)/2f)*(Gdx.graphics.getWidth()) ;
+        return f;
     }
 
     // 1024 576

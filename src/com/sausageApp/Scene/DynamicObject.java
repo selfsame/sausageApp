@@ -34,7 +34,9 @@ public class DynamicObject extends DynamicData{
         restitution = data.restitution;
         mass = data.mass;
         classes = data.classes;
-        body = state.box.createDynamicCircle(position.x, position.y, radius, mass);
+        Vec2 m = units.S2B(units.gl2S(new Vec2(position.x,-position.y  )   ));
+        float h =  units.S2B(units.gl2S(radius));
+        body = state.box.createDynamicCircle(position.x,-position.y, 2f*(radius/.03f), mass);
 
         if (scene.object_map.containsKey(name)){
            visuals.add(scene.object_map.get(name));
@@ -45,7 +47,9 @@ public class DynamicObject extends DynamicData{
     public void update(){
         Vec2 p = body.getPosition();
         for (GameObject g : visuals){
-            g.setPosition(new Vector3(p.x,p.y,position.z));
+            //Vec2 m = units.S2gl( units.B2S(p));
+            //float h = units.S2gl( units.B2S(position.z));
+            g.setPosition(new Vector3(p.x*.1f,-p.y*.1f,0f));
         }
 
     }

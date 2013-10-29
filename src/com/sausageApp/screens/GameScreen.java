@@ -50,7 +50,7 @@ public class GameScreen
     public void show()
     {
         super.show();
-        state.setScene("scenarios/level01.json");
+        state.setScene("scenarios/video_games.json");
 
         SetupTouchpads();
     }

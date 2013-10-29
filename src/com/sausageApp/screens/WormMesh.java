@@ -139,7 +139,8 @@ public class WormMesh {
                 + "vec4 col = v_normal; "
                 + "mask = (v_color.x * v_color.x) - ( v_color.y) ;"
                 //+ "  if(mask*v_concavity > 0) col = vec4(0.0,0.0,0.0,1.0); \n"
-                + "  if(mask*v_concavity > 0.0) discard;" //vec4(.1,.2,.2,1.0); "//discard; \n"    (.1f, .2f, .2f, 1f)
+                + "  if(mask*v_concavity > 0.0) discard;"
+                //+ "  if(mask > 0.0) col = vec4(1.0,0.0,0.0,1.0); "//discard;" //vec4(.1,.2,.2,1.0); "//discard; \n"    (.1f, .2f, .2f, 1f)
 
                 + "  gl_FragColor = col;    \n"
 

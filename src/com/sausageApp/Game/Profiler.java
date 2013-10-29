@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * To change this template use File | Settings | File Templates.
  */
 public class Profiler {
-
+    private Units units = new Units();
     private SpriteBatch spritebatch;
     private BitmapFont font;
 
@@ -28,7 +28,7 @@ public class Profiler {
     public void render(){
 
         spritebatch.begin();
-        font.drawMultiLine(spritebatch, "FPS: "+((int)(1f/ Gdx.graphics.getDeltaTime()))+stats, 20f, Gdx.graphics.getHeight()-10f);
+        font.drawMultiLine(spritebatch, "FPS: "+((int)(1f/ Gdx.graphics.getDeltaTime()))+"\nRATIO:"+units.RATIO+stats, 20f, Gdx.graphics.getHeight()-10f);
         spritebatch.end();
 
         stats = "\n";

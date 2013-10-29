@@ -140,7 +140,7 @@ public class Sausage {
         jd.upperAngle = .77079633f;
         jd.lowerAngle = -.77079633f;
         jd.enableLimit = true;
-        jd.maxMotorTorque = 20.0f;
+        jd.maxMotorTorque = 10.0f;
 
         jd.motorSpeed = 0f;
 
@@ -160,7 +160,7 @@ public class Sausage {
             if (i >= link_count-1){
                 friction = .9f;
             }
-            Body next = state.box.createDynamicRect(x+(radius*2f*L_DIST)+(i*(radius*2f*L_DIST)), y, radius*2.00f, radius*1.00f, 10f, friction);
+            Body next = state.box.createDynamicRect(x+(radius*2f*L_DIST)+(i*(radius*2f*L_DIST)), y, radius*2.00f, radius*.6f, 10f, friction);
             next.m_angularDamping = .8f;
             next.m_linearDamping = .01f*i;
             Vec2 anchor = new Vec2(x+(i*(radius*2f*L_DIST)), y);
@@ -247,7 +247,8 @@ public class Sausage {
 
 
     public Vector2 gdx2gl(Vec2 v){
-        float y = (float) (Gdx.graphics.getHeight()-v.y)/Gdx.graphics.getHeight()*2f-1f ;
+        //float y = (float) ( (Gdx.graphics.getHeight()-v.y)/Gdx.graphics.getHeight()*2f-1f )*units.RATIO  ;
+        float y = (float) (Gdx.graphics.getHeight() - v.y)/Gdx.graphics.getHeight()*2f-1f ;
         float x = (float) v.x/Gdx.graphics.getWidth()*2f-1f ;
         return new Vector2( x, y );
     };

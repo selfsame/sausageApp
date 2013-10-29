@@ -10,32 +10,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/sausageApp/Simulation/Box.java" />
-      <change type="DELETED" beforePath="C:\Users\jparker\Desktop\PROJECTS\sausage_party\sausageApp\src\com\sausageApp\Simulation\Scenario.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\jparker\Desktop\PROJECTS\sausage_party\sausageApp\src\com\sausageApp\Simulation\StaticObject.java" afterPath="" />
-      <change type="MOVED" beforePath="C:\Users\jparker\Desktop\PROJECTS\sausage_party\sausageApp\src\com\sausageApp\Simulation\Collider.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Scene/Collider.java" />
-      <change type="MOVED" beforePath="C:\Users\jparker\Desktop\PROJECTS\sausage_party\sausageApp\src\com\sausageApp\Simulation\DynamicData.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Scene/DynamicData.java" />
-      <change type="MOVED" beforePath="C:\Users\jparker\Desktop\PROJECTS\sausage_party\sausageApp\src\com\sausageApp\Simulation\DynamicObject.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Scene/DynamicObject.java" />
-      <change type="MOVED" beforePath="C:\Users\jparker\Desktop\PROJECTS\sausage_party\sausageApp\src\com\sausageApp\Simulation\GameCamera.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Scene/GameCamera.java" />
-      <change type="MOVED" beforePath="C:\Users\jparker\Desktop\PROJECTS\sausage_party\sausageApp\src\com\sausageApp\Simulation\GameObject.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Scene/GameObject.java" />
-      <change type="MOVED" beforePath="C:\Users\jparker\Desktop\PROJECTS\sausage_party\sausageApp\src\com\sausageApp\Simulation\GameObjectAccessor.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/TweenAccessors/GameObjectAccessor.java" />
-      <change type="MOVED" beforePath="C:\Users\jparker\Desktop\PROJECTS\sausage_party\sausageApp\src\com\sausageApp\Simulation\LevelMeshCompiler.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Scene/LevelMeshCompiler.java" />
-      <change type="MOVED" beforePath="C:\Users\jparker\Desktop\PROJECTS\sausage_party\sausageApp\src\com\sausageApp\Simulation\Locus.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Scene/Locus.java" />
-      <change type="MOVED" beforePath="C:\Users\jparker\Desktop\PROJECTS\sausage_party\sausageApp\src\com\sausageApp\Simulation\MoveableAccessor.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/TweenAccessors/MoveableAccessor.java" />
-      <change type="MOVED" beforePath="C:\Users\jparker\Desktop\PROJECTS\sausage_party\sausageApp\src\com\sausageApp\Simulation\ScenarioData.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Scene/SceneData.java" />
-      <change type="MOVED" beforePath="C:\Users\jparker\Desktop\PROJECTS\sausage_party\sausageApp\src\com\sausageApp\Simulation\SensorData.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Scene/SensorData.java" />
-      <change type="MOVED" beforePath="C:\Users\jparker\Desktop\PROJECTS\sausage_party\sausageApp\src\com\sausageApp\Simulation\SensorObject.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Scene/SensorObject.java" />
-      <change type="MOVED" beforePath="C:\Users\jparker\Desktop\PROJECTS\sausage_party\sausageApp\src\com\sausageApp\Simulation\StaticData.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Scene/StaticData.java" />
-      <change type="MOVED" beforePath="C:\Users\jparker\Desktop\PROJECTS\sausage_party\sausageApp\src\com\sausageApp\Simulation\VertexObject.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Scene/VertexObject.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Players/Avatar.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Players/Avatar.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/Desktop_jar.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/Desktop_jar.xml" />
+      <change type="DELETED" beforePath="C:\Users\jplur\Desktop\dev\sausageApp\Android\assets\scenarios\house_party_02.json" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\jplur\Desktop\dev\sausageApp\Android\assets\scenarios\level01_old.json" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\jplur\Desktop\dev\sausageApp\Android\assets\scenarios\level_test.json" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/blends/house_party_02.blend1" afterPath="$PROJECT_DIR$/blends/house_party_02.blend1" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/blends/house_party_02.blend2" afterPath="$PROJECT_DIR$/blends/house_party_02.blend2" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/blends/house_party_02.blend" afterPath="$PROJECT_DIR$/blends/house_party_02.blend" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/blends/video_games.blend1" afterPath="$PROJECT_DIR$/blends/video_games.blend1" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/blends/video_games.blend2" afterPath="$PROJECT_DIR$/blends/video_games.blend2" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/blends/video_games.blend" afterPath="$PROJECT_DIR$/blends/video_games.blend" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Simulation/Box.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Simulation/Box.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Desktop/src/DesktopStarter.java" afterPath="$PROJECT_DIR$/Desktop/src/DesktopStarter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Scene/DynamicObject.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Scene/DynamicObject.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/screens/GameScreen.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/screens/GameScreen.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Players/Link.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Players/Link.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Scene/LevelMeshCompiler.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Scene/LevelMeshCompiler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Players/Player.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Players/Player.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Game/Profiler.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Game/Profiler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Players/Sausage.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Players/Sausage.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Simulation/SausageContactListener.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Simulation/SausageContactListener.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/screens/SplashScreen.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/screens/SplashScreen.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Game/myGame.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Game/myGame.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/Game/Units.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/Game/Units.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sausageApp/screens/WormMesh.java" afterPath="$PROJECT_DIR$/src/com/sausageApp/screens/WormMesh.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Android/assets/scenarios/level01.json" afterPath="$PROJECT_DIR$/Android/assets/scenarios/level01.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Android/assets/scenarios/penguins.json" afterPath="$PROJECT_DIR$/Android/assets/scenarios/penguins.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Android/assets/scenarios/video_games.json" afterPath="$PROJECT_DIR$/Android/assets/scenarios/video_games.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="sausageApp.iws" />
@@ -56,7 +52,7 @@
     <file path="/StaticCreator.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380835628205" ignored="false" />
     <file path="/WorldCreator.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380835295667" ignored="false" />
     <file path="/Scenario.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1382988094721" ignored="false" />
-    <file path="/Dummy.txt" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1382994833689" ignored="false" />
+    <file path="/Dummy.txt" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1383001362559" ignored="false" />
     <file path="/Player.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1382994511217" ignored="false" />
     <file path="/ScenarioData.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1382977366049" ignored="false" />
     <file path="/StaticObject.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1381086360399" ignored="false" />
@@ -64,8 +60,8 @@
     <file path="/JsonScenario.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380898059690" ignored="false" />
     <file path="/Avatar.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1382989156339" ignored="false" />
     <file path="/InputListenerImpl.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380912292652" ignored="false" />
-    <file path="/Sausage.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1382993703088" ignored="false" />
-    <file path="/Profiler.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1380982789843" ignored="false" />
+    <file path="/Sausage.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1383070405288" ignored="false" />
+    <file path="/Profiler.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1383069714656" ignored="false" />
     <file path="/Link.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1382993791427" ignored="false" />
     <file path="/WormTri.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1381115536320" ignored="false" />
     <file path="/MeshSegment.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1382754262668" ignored="false" />
@@ -88,11 +84,11 @@
     <file path="/GameObject.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1382932623156" ignored="false" />
     <file path="/GameObjectAccessor.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1382932910987" ignored="false" />
     <file path="/DynamicData.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1382960785380" ignored="false" />
-    <file path="/DynamicObject.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1382995973079" ignored="false" />
+    <file path="/DynamicObject.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1383068047789" ignored="false" />
     <file path="/Scene.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1382996013300" ignored="false" />
     <file path="/State.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1382995913663" ignored="false" />
-    <file path="/Units.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1382982476294" ignored="false" />
-    <file path="/Box.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1382995724140" ignored="false" />
+    <file path="/Units.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1383069794849" ignored="false" />
+    <file path="/Box.java" changelist="61c5ddcf-83bf-4a8f-b7b4-b1805c19f7e8" time="1383002689406" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,43 +149,30 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Box.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Simulation/Box.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="33" column="33" selection-start="948" selection-end="948" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="DynamicObject.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Scene/DynamicObject.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="39" column="64" selection-start="1211" selection-end="1211" vertical-scroll-proportion="0.0">
+            <state line="36" column="77" selection-start="1103" selection-end="1103" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#599#607#0" expanded="true" />
-                <element signature="e#668#680#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SceneData.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Scene/SceneData.java">
+      <file leaf-file-name="DesktopStarter.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Desktop/src/DesktopStarter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="14" selection-start="75" selection-end="75" vertical-scroll-proportion="0.0">
+            <state line="16" column="22" selection-start="564" selection-end="564" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="State.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Game/State.java">
+      <file leaf-file-name="LevelMeshCompiler.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Scene/LevelMeshCompiler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="38" column="0" selection-start="920" selection-end="920" vertical-scroll-proportion="0.0">
+            <state line="75" column="18" selection-start="3080" selection-end="3080" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -198,16 +181,36 @@
       <file leaf-file-name="myGame.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Game/myGame.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="52" column="34" selection-start="1264" selection-end="1264" vertical-scroll-proportion="0.0">
+            <state line="25" column="13" selection-start="617" selection-end="617" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SplashScreen.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/screens/SplashScreen.java">
+      <file leaf-file-name="Units.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Game/Units.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="146" column="5" selection-start="3931" selection-end="3931" vertical-scroll-proportion="0.0">
+            <state line="13" column="89" selection-start="357" selection-end="357" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Sausage.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Sausage.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="263" column="87" selection-start="8602" selection-end="8602" vertical-scroll-proportion="0.5260586">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Profiler.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Game/Profiler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="30" column="92" selection-start="794" selection-end="794" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -216,34 +219,25 @@
       <file leaf-file-name="GameScreen.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/sausageApp/screens/GameScreen.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="104" column="0" selection-start="2863" selection-end="2863" vertical-scroll-proportion="0.0">
+            <state line="52" column="45" selection-start="1156" selection-end="1156" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Link.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Link.java">
+      <file leaf-file-name="DynamicData.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Scene/DynamicData.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="169" column="62" selection-start="4795" selection-end="4795" vertical-scroll-proportion="0.0">
+            <state line="11" column="13" selection-start="227" selection-end="227" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Player.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Player.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="113" column="39" selection-start="3109" selection-end="3109" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Scene.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Scene.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Scene/Scene.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="29" column="48" selection-start="849" selection-end="849" vertical-scroll-proportion="0.39719626">
+            <state line="120" column="60" selection-start="4420" selection-end="4420" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -267,30 +261,30 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/com/sausageApp/Scene/ScenarioData.java" />
-        <option value="$PROJECT_DIR$/src/com/sausageApp/Simulation/Scenario.java" />
-        <option value="$PROJECT_DIR$/src/com/sausageApp/Game/Units.java" />
-        <option value="$PROJECT_DIR$/src/com/sausageApp/screens/GameScreen.java" />
-        <option value="$PROJECT_DIR$/src/com/sausageApp/Scene/SensorObject.java" />
-        <option value="$PROJECT_DIR$/src/com/sausageApp/Players/Avatar.java" />
-        <option value="$PROJECT_DIR$/src/com/sausageApp/Players/Sausage.java" />
         <option value="$PROJECT_DIR$/src/com/sausageApp/Players/Link.java" />
         <option value="$PROJECT_DIR$/src/com/sausageApp/Scene/StaticObject.java" />
         <option value="$PROJECT_DIR$/src/com/sausageApp/screens/SplashScreen.java" />
-        <option value="$PROJECT_DIR$/src/com/sausageApp/Players/Player.java" />
         <option value="$PROJECT_DIR$/src/com/sausageApp/Game/myGame.java" />
-        <option value="$PROJECT_DIR$/src/com/sausageApp/Simulation/Box.java" />
         <option value="$PROJECT_DIR$/src/com/sausageApp/Game/State.java" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/Players/Player.java" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/Simulation/Box.java" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/Scene/LevelMeshCompiler.java" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/screens/WormMesh.java" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/screens/GameScreen.java" />
         <option value="$PROJECT_DIR$/src/com/sausageApp/Scene/DynamicObject.java" />
         <option value="$PROJECT_DIR$/src/com/sausageApp/Scene/Scene.java" />
+        <option value="$PROJECT_DIR$/Desktop/src/DesktopStarter.java" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/Game/Units.java" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/Game/Profiler.java" />
+        <option value="$PROJECT_DIR$/src/com/sausageApp/Players/Sausage.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="450" />
-    <option name="y" value="9" />
-    <option name="width" value="1471" />
-    <option name="height" value="1160" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -334,6 +328,8 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -608,23 +604,21 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="GenerateAntBuildDialog.generateIdeaHomeProperty" value="false" />
-    <property name="SHOW_ALL_PROCESSES" value="false" />
     <property name="project.structure.last.edited" value="Artifacts" />
-    <property name="jdk.selected.JAVA_MODULE" value="Android 4.3 Platform" />
-    <property name="project.structure.proportion" value="0.15" />
+    <property name="SHOW_ALL_PROCESSES" value="false" />
     <property name="OverrideImplement.combined" value="true" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="jdk.selected.JAVA_MODULE" value="Android 4.3 Platform" />
     <property name="options.splitter.main.proportions" value="0.3" />
-    <property name="GenerateAntBuildDialog.generateSingleFile" value="false" />
-    <property name="MemberChooser.sorted" value="false" />
     <property name="recentsLimit" value="5" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/libs/ouya-sdk.jar!/" />
+    <property name="MemberChooser.sorted" value="false" />
+    <property name="GenerateAntBuildDialog.generateSingleFile" value="false" />
     <property name="GenerateAntBuildDialog.inclineRuntiemClasspath" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/libs/ouya-sdk.jar!/" />
     <property name="GenerateAntBuildDialog.outputFileNameProperty" value="sausageapp" />
     <property name="DEBUGGABLE_DEVICE" value="014E37840E019015" />
     <property name="DEBUGGABLE_PROCESS" value="com.example.Android" />
@@ -636,13 +630,13 @@
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="GoToFile.includeJavaFiles" value="false" />
     <property name="options.lastSelected" value="preferences.keymap" />
-    <property name="project.structure.side.proportion" value="0.2" />
     <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
+    <property name="project.structure.side.proportion" value="0.2" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
     <property name="GenerateAntBuildDialog.backupFiles" value="true" />
-    <property name="options.searchVisible" value="true" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
@@ -685,6 +679,19 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method />
+    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -710,19 +717,6 @@
       <envs />
       <properties />
       <listeners />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -871,33 +865,33 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="450" y="9" width="1471" height="1160" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32748538" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2224429" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22135706" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2497332" sideWeight="0.6925315" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3971079" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19688542" sideWeight="0.5" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.314258" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17686318" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31368187" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.0" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32865497" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2497332" sideWeight="0.71190214" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20014195" sideWeight="0.7104478" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39961204" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28955224" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20010673" sideWeight="0.71190214" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2880979" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="IntelliHeap" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32982457" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="JProfiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.52389383" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39961204" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -969,101 +963,24 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Scene/LevelMeshCompiler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="13" selection-start="396" selection-end="396" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/TweenAccessors/MoveableAccessor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="13" selection-start="252" selection-end="252" vertical-scroll-proportion="0.02681388">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Game/Units.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="11" selection-start="356" selection-end="356" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Scene/SensorObject.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="4" selection-start="550" selection-end="630" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#876#893#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Avatar.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="37" selection-start="864" selection-end="864" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Sausage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="0" selection-start="1055" selection-end="1139" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Link.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="169" column="62" selection-start="4795" selection-end="4795" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/sausageApp/screens/SplashScreen.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="146" column="5" selection-start="3931" selection-end="3931" vertical-scroll-proportion="0.0">
+        <state line="121" column="78" selection-start="3609" selection-end="3609" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Player.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="113" column="39" selection-start="3109" selection-end="3109" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Game/myGame.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="52" column="34" selection-start="1264" selection-end="1264" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/screens/GameScreen.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="104" column="0" selection-start="2863" selection-end="2863" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Scene/SceneData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="14" selection-start="75" selection-end="75" vertical-scroll-proportion="0.0">
+        <state line="220" column="15" selection-start="7577" selection-end="7577" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Simulation/Box.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="33" selection-start="948" selection-end="948" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="80" column="51" selection-start="2856" selection-end="2856" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1074,20 +991,90 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/screens/MeshSegment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="13" selection-start="268" selection-end="268" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/screens/WormMesh.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="142" column="78" selection-start="7569" selection-end="7569" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/screens/GameScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="52" column="45" selection-start="1156" selection-end="1156" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Scene/DynamicData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="13" selection-start="227" selection-end="227" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Scene/DynamicObject.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="64" selection-start="1211" selection-end="1211" vertical-scroll-proportion="0.0">
+        <state line="36" column="77" selection-start="1103" selection-end="1103" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#599#607#0" expanded="true" />
-            <element signature="e#668#680#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Scene/Scene.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="48" selection-start="849" selection-end="849" vertical-scroll-proportion="0.39719626">
+        <state line="120" column="60" selection-start="4420" selection-end="4420" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Desktop/src/DesktopStarter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="22" selection-start="564" selection-end="564" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Scene/LevelMeshCompiler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="75" column="18" selection-start="3080" selection-end="3080" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Game/myGame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="13" selection-start="617" selection-end="617" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Game/Profiler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="92" selection-start="794" selection-end="794" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Game/Units.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="89" selection-start="357" selection-end="357" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sausageApp/Players/Sausage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="263" column="87" selection-start="8602" selection-end="8602" vertical-scroll-proportion="0.5260586">
           <folding />
         </state>
       </provider>

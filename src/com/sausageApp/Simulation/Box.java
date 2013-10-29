@@ -64,7 +64,7 @@ public class Box {
 
     public void step(float delta) {
         long startTime = System.nanoTime();
-        world.step(delta, 5, 3);
+        world.step(delta, 20, 40);
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
         //game.profiler.addStat("World Step: (ms) "+(int)(duration*1.0e-6));

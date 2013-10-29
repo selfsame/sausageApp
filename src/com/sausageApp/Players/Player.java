@@ -191,11 +191,11 @@ public class Player {
                 debug_draw_static_chains = !debug_draw_static_chains;
             }
 
-            if(Gdx.input.isKeyPressed(Input.Keys.O)){
+            if(Gdx.input.isKeyPressed(Input.Keys.O) ){
                 for (SensorObject sensor: state.scene.sensors) {
-                   if (sensor.active) if (sensor.player_contacts.get(this) > 0) {
-                       sensor.activate();
-                   }
+                    if (sensor.active) if (sensor.player_contacts.get(this) > 0) {
+                        sensor.activate();
+                    }
                 }
             }
 
@@ -206,20 +206,29 @@ public class Player {
             float rightXAxis = controller.getAxis(Ouya.AXIS_RIGHT_X);
             float rightYAxis = controller.getAxis(Ouya.AXIS_RIGHT_Y);
             if (leftXAxis > 0.0 || leftXAxis < 0.0){
-                sausage.tail_link.applyLinearImpulse(new Vec2(leftXAxis*(FORCE), 0f), propigation, true, true, .7f);
+                sausage.tail_link.applyLinearImpulse(new Vec2(leftXAxis*(FORCE)*1.3f, 0f), propigation, true, true, .75f);
             }
             if (leftYAxis > 0.0 || leftYAxis < 0.0){
-                sausage.tail_link.applyLinearImpulse(new Vec2(0f, leftYAxis*(FORCE)), propigation, true, true, .7f);
+                sausage.tail_link.applyLinearImpulse(new Vec2(0f, leftYAxis*(FORCE)*1.3f), propigation, true, true, .75f);
             }
             if (rightXAxis > 0.0 || rightXAxis < 0.0){
-                sausage.head_link.applyLinearImpulse(new Vec2(rightXAxis*FORCE, 0f), propigation, false, true, .7f);
+                sausage.head_link.applyLinearImpulse(new Vec2(rightXAxis*FORCE*1.3f, 0f), propigation, false, true, .75f);
             }
             if (rightYAxis > 0.0 || rightYAxis < 0.0){
-                sausage.head_link.applyLinearImpulse(new Vec2(0f, rightYAxis*FORCE), propigation, false, true, .7f);
+                sausage.head_link.applyLinearImpulse(new Vec2(0f, rightYAxis*FORCE*1.3f), propigation, false, true, .75f);
             }
 
+            if(controller.getButton(OuyaController.BUTTON_O)){
+                for (SensorObject sensor: state.scene.sensors) {
+                    if (sensor.active) if (sensor.player_contacts.get(this) > 0) {
+                        sensor.activate();
+                    }
+                }
+            }
 
         }
+
+
 
         // Needs to be some sort of Interface Solution
 

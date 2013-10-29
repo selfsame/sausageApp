@@ -54,11 +54,12 @@ public class LevelMeshCompiler {
                         + "attribute vec4 a_color ;   \n"
                         + "varying vec4 v_color ;   \n"
                         + "uniform mat4 u_viewProj;"
+                        + "varying mat4 v_viewProj;"
                         //+ "uniform vec4 u_scale;"
                         //+ "uniform vec4 u_position;"
-                        + "uniform mat4 u_obj_mat4;"
+                        + "uniform mat4 u_obj_mat4; "
                         + "void main()                   \n"
-                        + "{  v_color = a_color;                           \n"
+                        + "{  v_color = a_color; v_viewProj = u_viewProj;                           \n"
 
                         + "    gl_Position =   u_viewProj *   ( u_obj_mat4  * a_position)      ;   \n"
                         + "}                             \n";
@@ -66,8 +67,13 @@ public class LevelMeshCompiler {
                 + "precision mediump float;    \n"
                 + "#endif                      \n"
                 + "varying vec4 v_color;                       \n"
+                + "varying mat4 v_viewProj;"
+                +"vec4 fogcolor;  "
                 + "void main()                 \n"
                 + "{                           \n"
+                //+ "v_color = vec4(v_color.r/gl_FragCoord.x, v_color.g, gl_FragCoord.z, 1.0);"
+                //+" fogcolor = vec4(.5,.6,.55,1.0); "
+                //+" v_color =   v_viewProj  * v_color * cos(gl_FragCoord.z)     ;"
                 + "  gl_FragColor = v_color;    \n"
                 + "}";
         return new ShaderProgram(vertexShader, fragmentShader);
