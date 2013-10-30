@@ -14,8 +14,8 @@ public class DesktopStarter {
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = "Title";
         cfg.useGL20 = true;
-        cfg.width = 1480;
-        cfg.height = 580;
+        cfg.width = 1580;
+        cfg.height = 980;
         new LwjglApplication(new com.sausageApp.Game.myGame(), cfg);
 
 

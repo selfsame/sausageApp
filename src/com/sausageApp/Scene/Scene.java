@@ -1,5 +1,7 @@
 package com.sausageApp.Scene;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -11,6 +13,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Json;
 import com.sausageApp.Game.State;
 import com.sausageApp.Game.Units;
+import com.sausageApp.TweenAccessors.GameObjectAccessor;
+import com.sausageApp.TweenAccessors.MoveableAccessor;
 import org.jbox2d.common.Vec2;
 
 import java.util.ArrayList;
@@ -23,6 +27,8 @@ public class Scene {
 
     public State state = State.getInstance();
     private Units units = new Units();
+
+    public final TweenManager tweenManager = new TweenManager();
 
     private SceneData scene_data;
     private Json json = new Json();
@@ -37,18 +43,12 @@ public class Scene {
     private ShaderProgram wire_shader;
     private Mesh wire_mesh;
 
-    private ShaderProgram debug_shader;
-    private ArrayList<Mesh> debug_mesh = new ArrayList<Mesh>();
-
     private ArrayList<GameObject> vertex_meshes = new ArrayList<GameObject>();
     private ArrayList<GameObject> vertex_meshes_alpha = new ArrayList<GameObject>();
 
-    // this should be somewhere global like myGame
-    private Texture interface_sheet = new Texture("interface.png");
-    private TextureRegion O_button = new TextureRegion(interface_sheet, 0, 0, 16, 16);
-    private TextureRegion banner_1 = new TextureRegion(interface_sheet, 0, 32, 64, 16);
-    private SpriteBatch batch = new SpriteBatch();
-    private BitmapFont font = new BitmapFont();
+
+
+
 
     public HashMap<String, GameObject> object_map = new HashMap<String, GameObject>();
     public ArrayList<DynamicObject> dynamics = new ArrayList<DynamicObject>();
@@ -62,6 +62,8 @@ public class Scene {
     //public Scenario scenario;
 
     public Scene(String filename){
+        Tween.registerAccessor(GameCamera.class, new MoveableAccessor());
+        Tween.registerAccessor(GameObject.class, new GameObjectAccessor());
         scene_data = json.fromJson(SceneData.class, Gdx.files.internal( filename ));
         gravity = new Vec2(.0f, scene_data.gravity);
         state.newBox(gravity);
@@ -113,7 +115,7 @@ public class Scene {
             float[] verts = group.verts;
             Vec2[] pbies = new Vec2[(int)verts.length/2];
             for (int j = 0; j < (int)verts.length/2; j++) {
-                pbies[j] = units.S2B(units.gl2S(new Vec2(verts[j * 2], verts[j * 2 + 1])));
+                pbies[j] = units.S2B(units.unAspect(units.gl2S(new Vec2(verts[j * 2], verts[j * 2 + 1]))));
             }
             state.box.createStaticChain(pbies, false, group.mask);
         }
@@ -126,9 +128,18 @@ public class Scene {
             DynamicObject d = new DynamicObject(this, data);
             dynamics.add(d);
         }
+
+        Tween.to(object_map.get("Lamp"), GameObjectAccessor.POSITION_Y, .3f).targetRelative(.1f).repeatYoyo(100, 0f).start(tweenManager);
+        Tween.to(object_map.get("Lamp"), GameObjectAccessor.SCALE_XYZ, .1f).delay(.3f).target(1f,1f,.5f).repeatYoyo(100, .2f).start(tweenManager);
+        Tween.to(object_map.get("Cloud"), GameObjectAccessor.POSITION_X, 40f).targetRelative(-50f).repeatYoyo(10, .2f).start(tweenManager);
+        Tween.to(object_map.get("Cloud.001"), GameObjectAccessor.POSITION_X, 40f).targetRelative(-50f).repeatYoyo(10, .2f).start(tweenManager);
+        Tween.to(object_map.get("Cloud.002"), GameObjectAccessor.POSITION_X, 50f).targetRelative(-30f).repeatYoyo(10, .2f).start(tweenManager);
+        Tween.to(object_map.get("Cloud.003"), GameObjectAccessor.POSITION_X, 30f).targetRelative(-10f).repeatYoyo(10, .2f).start(tweenManager);
+        Tween.to(object_map.get("Cloud.004"), GameObjectAccessor.POSITION_X, 30f).targetRelative(10f).repeatYoyo(10, .2f).start(tweenManager);
     }
 
     public void render(float delta){
+        tweenManager.update(Gdx.graphics.getDeltaTime());
 
         float[] b = scene_data.background;
         Gdx.gl.glClearColor(b[0], b[1], b[2], 1f);
@@ -202,17 +213,9 @@ public class Scene {
 
 
 
-        Gdx.gl.glDisable(GL20.GL_DEPTH_TEST) ;
-        batch.begin();
-        batch.setProjectionMatrix(camera.combined);
-        for (SensorObject sensor: sensors) {
-            if (sensor.active){
-                batch.draw(banner_1, sensor.loc[0]-.12f , -sensor.loc[1] + ( (float)Math.sin((delta+.02f)*5f))*.03f, .24f,.06f);
-                batch.draw(O_button, sensor.loc[0]-.03f , -sensor.loc[1] + ( (float)Math.sin(delta*5f))*.04f, .06f,.06f);
-            }
-        }
-        batch.end();
-        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
+
+
+        state.ui.render(delta);
 
 
     }

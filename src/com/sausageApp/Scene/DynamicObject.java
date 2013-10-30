@@ -1,5 +1,6 @@
 package com.sausageApp.Scene;
 
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.sausageApp.Game.State;
 import com.sausageApp.Game.Units;
@@ -34,9 +35,9 @@ public class DynamicObject extends DynamicData{
         restitution = data.restitution;
         mass = data.mass;
         classes = data.classes;
-        Vec2 m = units.S2B(units.gl2S(new Vec2(position.x,-position.y  )   ));
+        Vec2 m = units.unAspect(units.S2B(units.gl2S(new Vec2(position.x, -position.y))));
         float h =  units.S2B(units.gl2S(radius));
-        body = state.box.createDynamicCircle(position.x,-position.y, 2f*(radius/.03f), mass);
+        body = state.box.createDynamicCircle(m.x,m.y, 2f*(radius/.12f), mass, friction, restitution);
 
         if (scene.object_map.containsKey(name)){
            visuals.add(scene.object_map.get(name));
@@ -46,10 +47,13 @@ public class DynamicObject extends DynamicData{
 
     public void update(){
         Vec2 p = body.getPosition();
+        float r = body.getAngle();
         for (GameObject g : visuals){
-            //Vec2 m = units.S2gl( units.B2S(p));
+            Vec2 m = units.applyAspect(units.S2gl(units.B2S(p)));
             //float h = units.S2gl( units.B2S(position.z));
-            g.setPosition(new Vector3(p.x*.1f,-p.y*.1f,0f));
+            g.setRotation(new Quaternion(0f, 0f, 1f, r) );
+            g.setPosition(new Vector3(m.x,m.y,0f));
+
         }
 
     }

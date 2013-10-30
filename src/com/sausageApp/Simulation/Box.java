@@ -24,7 +24,7 @@ public class Box {
     public State state = State.getInstance();
     private Units units = new Units();
 
-    public final TweenManager tweenManager = new TweenManager();
+
 
     public World world;
 
@@ -42,8 +42,7 @@ public class Box {
 
     public Box(Vec2 gravity) {
 
-        Tween.registerAccessor(GameCamera.class, new MoveableAccessor());
-        Tween.registerAccessor(GameObject.class, new GameObjectAccessor());
+
 
 
 
@@ -53,13 +52,7 @@ public class Box {
 
 
 
-//        Tween.to(scene.object_map.get("Lamp"), GameObjectAccessor.POSITION_Y, .3f).targetRelative(.1f).repeatYoyo(100, 0f).start(tweenManager);
-//        Tween.to(scene.object_map.get("Lamp"), GameObjectAccessor.SCALE_XYZ, .1f).delay(.3f).target(1f,1f,.5f).repeatYoyo(100, .2f).start(tweenManager);
-//        Tween.to(scene.object_map.get("Cloud"), GameObjectAccessor.POSITION_X, 40f).targetRelative(-50f).repeatYoyo(10, .2f).start(tweenManager);
-//        Tween.to(scene.object_map.get("Cloud.001"), GameObjectAccessor.POSITION_X, 40f).targetRelative(-50f).repeatYoyo(10, .2f).start(tweenManager);
-//        Tween.to(scene.object_map.get("Cloud.002"), GameObjectAccessor.POSITION_X, 50f).targetRelative(-30f).repeatYoyo(10, .2f).start(tweenManager);
-//        Tween.to(scene.object_map.get("Cloud.003"), GameObjectAccessor.POSITION_X, 30f).targetRelative(-10f).repeatYoyo(10, .2f).start(tweenManager);
-//        Tween.to(scene.object_map.get("Cloud.004"), GameObjectAccessor.POSITION_X, 30f).targetRelative(10f).repeatYoyo(10, .2f).start(tweenManager);
+
     }
 
     public void step(float delta) {
@@ -75,7 +68,7 @@ public class Box {
 
 
     public void update(float delta){
-        tweenManager.update(Gdx.graphics.getDeltaTime());
+
         for (DynamicObject obj: state.scene.dynamics) {
             obj.update();
         }
@@ -90,7 +83,7 @@ public class Box {
         float lbx = -99999f;
         float lby = -99999f;
         for (int i=0;i<player_count;i++){
-            Vec2 player_p = units.S2gl(units.B2S(state.game.players.get(i).sausage.head.getPosition()));
+            Vec2 player_p = units.applyAspect(units.S2gl(units.B2S(state.game.players.get(i).sausage.head.getPosition())));
             if (player_p.x < ubx) { ubx = player_p.x;}
             if (player_p.y < uby) { uby = player_p.y;}
             if (player_p.x > lbx) { lbx = player_p.x;}
@@ -104,9 +97,9 @@ public class Box {
         float final_dist =  (float)(Math.sqrt((double)dist));
         if (final_dist < state.scene.view_dist){final_dist = state.scene.view_dist;}
 
-        Tween.to(state.scene.camera, MoveableAccessor.POSITION_X, .2f).target(pp.x).start(tweenManager);
-        Tween.to(state.scene.camera, MoveableAccessor.POSITION_Y, .2f).target(pp.y+1.5f).start(tweenManager);
-        Tween.to(state.scene.camera, MoveableAccessor.POSITION_Z, .3f).target(final_dist).start(tweenManager);
+        Tween.to(state.scene.camera, MoveableAccessor.POSITION_X, .2f).target(pp.x).start(state.scene.tweenManager);
+        Tween.to(state.scene.camera, MoveableAccessor.POSITION_Y, .2f).target(pp.y).start(state.scene.tweenManager);
+        Tween.to(state.scene.camera, MoveableAccessor.POSITION_Z, .3f).target(final_dist).start(state.scene.tweenManager);
     }
 
     public Vec2 GetSpawn(){
@@ -123,13 +116,17 @@ public class Box {
 
 
     public Body createDynamicCircle(float x, float y, float radius, float density) {
+        return createDynamicCircle(x, y, radius, density, .3f, .8f);
+    }
+
+    public Body createDynamicCircle(float x, float y, float radius, float density, float friction, float restitution) {
         CircleShape circleShape = new CircleShape();
         circleShape.m_radius = radius;
         FixtureDef circleF = new FixtureDef();
         circleF.shape = circleShape;
         circleF.density = 1.0f*density;
-        circleF.restitution = .8f;
-        circleF.friction = .3f;
+        circleF.restitution = restitution;
+        circleF.friction = friction;
         circleF.filter.categoryBits = 1;
         circleF.filter.maskBits = 1;
         //circleF.filter.groupIndex = 1;
@@ -139,7 +136,7 @@ public class Box {
         bodyDef.allowSleep = false;
         Body body = world.createBody(bodyDef);
         body.m_angularDamping = .8f;
-        body.m_linearDamping = .8f;
+        body.m_linearDamping = 4f;
         body.createFixture(circleShape, 5.0f);
         body.createFixture(circleF);
         return body;

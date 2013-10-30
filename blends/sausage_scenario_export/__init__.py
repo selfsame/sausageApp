@@ -51,18 +51,19 @@ class SCENE_PT_hello( bpy.types.Panel ):
         row = layout.row()
         row.prop( scene, "SAUSAGE_scene_gravity", text="game gravity" )
 
-
+bpy.types.Object.SAUSAGE_box2d = bpy.props.BoolProperty()
 bpy.types.Object.SAUSAGE_physics_edges = bpy.props.BoolProperty()
 bpy.types.Object.SAUSAGE_physics_dynamic = bpy.props.BoolProperty()
 bpy.types.Object.SAUSAGE_collision_mask = bpy.props.IntProperty(default = 0)
-bpy.types.Object.SAUSAGE_physics_friction = bpy.props.FloatProperty(default = 2.0)
-bpy.types.Object.SAUSAGE_physics_restitution = bpy.props.FloatProperty(default = 2.0)
+bpy.types.Object.SAUSAGE_physics_friction = bpy.props.FloatProperty(default = .2)
+bpy.types.Object.SAUSAGE_physics_restitution = bpy.props.FloatProperty(default = .2)
 bpy.types.Object.SAUSAGE_physics_mass = bpy.props.FloatProperty(default = 10.0)
 bpy.types.Object.SAUSAGE_physics_type = EnumProperty(name="Physics Type",
             items=(('circle', "circle", ""),
-                   ('rect', "rect", "")
+                   ('rect', "rect", ""),
+                   ('polygon', "polygon", "")
                    ),
-            default='circle'
+            default='polygon'
             )
 
 
@@ -73,6 +74,9 @@ bpy.types.Object.SAUSAGE_sensor_area = bpy.props.BoolProperty()
 bpy.types.Object.SAUSAGE_tag_name = bpy.props.StringProperty()
 bpy.types.Object.SAUSAGE_float = bpy.props.FloatProperty(default = 0.0)
 bpy.types.Object.SAUSAGE_int = bpy.props.IntProperty(default = 1)
+bpy.types.Object.SAUSAGE_string = bpy.props.StringProperty()
+bpy.types.Object.SAUSAGE_sensor_enter = bpy.props.BoolProperty(default = True)
+bpy.types.Object.SAUSAGE_sensor_exit = bpy.props.BoolProperty()
 bpy.types.Object.SAUSAGE_sensor_usage = EnumProperty(name="Sensor Usage",
             items=(('GENERIC', "generic", ""),
                    ('PORTAL', "portal", ""),
@@ -81,7 +85,8 @@ bpy.types.Object.SAUSAGE_sensor_usage = EnumProperty(name="Sensor Usage",
                    ('CHANGEZ', "change player Z", ""),
                    ('GRAVITY', "change gravity", ""),
                    ('ZOOM', "camera zoom", ""),
-                   ('MESSAGE', "show message", "")
+                   ('MESSAGE', "show message", ""),
+                   ('GAME', "game", "")
                    ),
             default='GENERIC'
             )
@@ -165,35 +170,36 @@ class OBJECT_PT_hello( bpy.types.Panel ):
                 box = layout.box()
                 box.prop( obj, "SAUSAGE_tag_name", text="Tag" )
                 box.prop( obj, "SAUSAGE_locus_usage", text="Usage" )
-                box.prop( obj, "SAUSAGE_int", text="Int" )
-                box.prop( obj, "SAUSAGE_float", text="Float" )
+                box.prop( obj, "SAUSAGE_int", text="int" )
+                box.prop( obj, "SAUSAGE_float", text="float" )
+                box.prop( obj, "SAUSAGE_string", text="string" )
         elif obj.type == "MESH":
 
             row = layout.row()
             row.prop( obj, "SAUSAGE_visible_object", text="Visible" )
 
+            
+            
             row = layout.row()
-            row.prop( obj, "SAUSAGE_physics_dynamic", text="Box2D dynamic" )
-            if obj.SAUSAGE_physics_dynamic == True:
-                
+            row.prop( obj, "SAUSAGE_box2d", text="Box2D" )
+            if obj.SAUSAGE_box2d == True:
                 row.prop( obj, "SAUSAGE_physics_type", text="" )
                 box = layout.box()
                 row = box.row()
+                
                 col = row.column()
                 col.prop( obj, "SAUSAGE_int", text="mask" )
-                col.prop( obj.game, "radius", text="radius" )
-                col = row.column()
                 col.prop( obj, "SAUSAGE_physics_friction", text="friction" )
                 col.prop( obj, "SAUSAGE_physics_restitution", text="restitution" )
                 col.prop( obj, "SAUSAGE_physics_mass", text="mass" )
+                col = row.column()
+                col.prop( obj, "SAUSAGE_physics_dynamic", text="Box2D dynamic" )
+                if obj.SAUSAGE_physics_type == 'circle':
+                    col.prop( obj.game, "radius", text="radius" )
 
+            
 
-            row = layout.row()
-            row.prop( obj, "SAUSAGE_physics_edges", text="Box2D EdgeShape" )
-
-            if obj.SAUSAGE_physics_edges == True:
-                box = layout.box()
-                box.prop( obj, "SAUSAGE_int", text="Collision Mask" )
+            
 
                 
 
@@ -210,10 +216,17 @@ class OBJECT_PT_hello( bpy.types.Panel ):
 
             if obj.SAUSAGE_sensor_area == True:
                 box = layout.box()
+                
+                row = box.row()
+                row.label(text="trigger on")
+                row.prop( obj, "SAUSAGE_sensor_enter", text="enter" )
+                row.prop( obj, "SAUSAGE_sensor_exit", text="exit" )
+
                 box.prop( obj, "SAUSAGE_tag_name", text="Tag" )
                 box.prop( obj, "SAUSAGE_sensor_usage", text="Usage" )
                 box.prop( obj, "SAUSAGE_int", text="Int" )
                 box.prop( obj, "SAUSAGE_float", text="Float" )
+                box.prop( obj, "SAUSAGE_string", text="string" )
 
         row = layout.row()
         row.separator()

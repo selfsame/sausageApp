@@ -140,7 +140,13 @@ public class Player {
 
 
     public void handleInput(){
+        int _propigation = propigation;
+        float _FORCE = FORCE;
+        if (state.scene != null) if (Math.abs(state.scene.gravity.y) < 3f){
+            _propigation = 1;
+            _FORCE = FORCE*.1f;
 
+        }
         if (in_lobby){
             return;
         }
@@ -148,29 +154,29 @@ public class Player {
         Vec2 left_linV = sausage.head.getLinearVelocity();
         if (desktop) {
             if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)){
-                sausage.tail_link.applyLinearImpulse(new Vec2(-FORCE, 0f), propigation, true, true, .75f);
+                sausage.tail_link.applyLinearImpulse(new Vec2(-_FORCE, 0f), _propigation, true, true, .75f);
             }
             if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
-                sausage.tail_link.applyLinearImpulse(new Vec2(FORCE, 0f), propigation, true, true, .75f);
+                sausage.tail_link.applyLinearImpulse(new Vec2(_FORCE, 0f), _propigation, true, true, .75f);
             }
             if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)){
-                sausage.tail_link.applyLinearImpulse(new Vec2(0, -FORCE), propigation, true, true, .75f);
+                sausage.tail_link.applyLinearImpulse(new Vec2(0, -_FORCE), _propigation, true, true, .75f);
             }
             if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)){
-                sausage.tail_link.applyLinearImpulse(new Vec2(0, FORCE), propigation, true, true, .75f);
+                sausage.tail_link.applyLinearImpulse(new Vec2(0, _FORCE), _propigation, true, true, .75f);
             }
 
             if(Gdx.input.isKeyPressed(Input.Keys.A)){
-                sausage.head_link.applyLinearImpulse(new Vec2(-FORCE, 0f), propigation, false, true, .75f);
+                sausage.head_link.applyLinearImpulse(new Vec2(-_FORCE, 0f), _propigation, false, true, .75f);
             }
             if(Gdx.input.isKeyPressed(Input.Keys.D)){
-                sausage.head_link.applyLinearImpulse(new Vec2(FORCE, 0f), propigation, false, true, .75f);
+                sausage.head_link.applyLinearImpulse(new Vec2(_FORCE, 0f), _propigation, false, true, .75f);
             }
             if(Gdx.input.isKeyPressed(Input.Keys.W)){
-                sausage.head_link.applyLinearImpulse(new Vec2(0, -FORCE), propigation, false, true, .75f);
+                sausage.head_link.applyLinearImpulse(new Vec2(0, -_FORCE), _propigation, false, true, .75f);
             }
             if(Gdx.input.isKeyPressed(Input.Keys.S)){
-                sausage.head_link.applyLinearImpulse(new Vec2(0, FORCE), propigation, false, true, .75f);
+                sausage.head_link.applyLinearImpulse(new Vec2(0, _FORCE), _propigation, false, true, .75f);
             }
 
             //debug options
@@ -192,11 +198,8 @@ public class Player {
             }
 
             if(Gdx.input.isKeyPressed(Input.Keys.O) ){
-                for (SensorObject sensor: state.scene.sensors) {
-                    if (sensor.active) if (sensor.player_contacts.get(this) > 0) {
-                        sensor.activate();
-                    }
-                }
+                state.scenario.playerInput(this, Input.Keys.O);
+
             }
 
 
@@ -206,16 +209,16 @@ public class Player {
             float rightXAxis = controller.getAxis(Ouya.AXIS_RIGHT_X);
             float rightYAxis = controller.getAxis(Ouya.AXIS_RIGHT_Y);
             if (leftXAxis > 0.0 || leftXAxis < 0.0){
-                sausage.tail_link.applyLinearImpulse(new Vec2(leftXAxis*(FORCE)*1.3f, 0f), propigation, true, true, .75f);
+                sausage.tail_link.applyLinearImpulse(new Vec2(leftXAxis*(_FORCE)*1.3f, 0f), _propigation, true, true, .75f);
             }
             if (leftYAxis > 0.0 || leftYAxis < 0.0){
-                sausage.tail_link.applyLinearImpulse(new Vec2(0f, leftYAxis*(FORCE)*1.3f), propigation, true, true, .75f);
+                sausage.tail_link.applyLinearImpulse(new Vec2(0f, leftYAxis*(_FORCE)*1.3f), _propigation, true, true, .75f);
             }
             if (rightXAxis > 0.0 || rightXAxis < 0.0){
-                sausage.head_link.applyLinearImpulse(new Vec2(rightXAxis*FORCE*1.3f, 0f), propigation, false, true, .75f);
+                sausage.head_link.applyLinearImpulse(new Vec2(rightXAxis*_FORCE*1.3f, 0f), _propigation, false, true, .75f);
             }
             if (rightYAxis > 0.0 || rightYAxis < 0.0){
-                sausage.head_link.applyLinearImpulse(new Vec2(0f, rightYAxis*FORCE*1.3f), propigation, false, true, .75f);
+                sausage.head_link.applyLinearImpulse(new Vec2(0f, rightYAxis*_FORCE*1.3f), _propigation, false, true, .75f);
             }
 
             if(controller.getButton(OuyaController.BUTTON_O)){

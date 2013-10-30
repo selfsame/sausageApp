@@ -353,6 +353,9 @@ def save_selected(filepath,
         loc = obj.location*global_matrix
 
         loopset = ('{tag: "'+ obj.SAUSAGE_tag_name +'", usage: "'+ obj.SAUSAGE_sensor_usage +'", '+ ("loc:[{0:.4f}, {1:.4f}, {2:.4f}], ".format(*tuple( loc ))) + 
+            "enter:"+str(obj.SAUSAGE_sensor_enter).lower()+", "+
+            "exit:"+str(obj.SAUSAGE_sensor_exit).lower()+", "+
+            "istring: \""+str(obj.SAUSAGE_string) +"\", "+
             "imod: "+str(obj.SAUSAGE_int) + ", fmod: "+str(obj.SAUSAGE_float) +', verts:[')
         
 
@@ -615,14 +618,16 @@ def save(operator,
             objects.append(oo)
         if oo.SAUSAGE_wireframe_object:
             wireframe_objects.append(oo)
-        if oo.SAUSAGE_physics_edges:
-            box2d_objects.append(oo)
+        
         if oo.SAUSAGE_locus:
             locii.append(oo)
         if oo.SAUSAGE_sensor_area:
             sensors.append(oo)
-        if oo.SAUSAGE_physics_dynamic:
-            dynamics.append(oo)
+        if oo.SAUSAGE_box2d or oo.SAUSAGE_physics_edges:
+            if oo.SAUSAGE_physics_dynamic == False:
+                box2d_objects.append(oo)
+            else:
+                dynamics.append(oo)
 
     if global_matrix is None:
         from mathutils import Matrix

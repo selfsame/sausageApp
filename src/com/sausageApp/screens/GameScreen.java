@@ -12,11 +12,8 @@ import com.sausageApp.Game.State;
 import com.sausageApp.Game.Units;
 import com.sausageApp.Game.myGame;
 import com.sausageApp.Players.Player;
-
-
-
-
-
+import com.sausageApp.Scenario.DefaultScenario;
+import com.sausageApp.Scenario.Scenario;
 
 
 public class GameScreen
@@ -50,7 +47,8 @@ public class GameScreen
     public void show()
     {
         super.show();
-        state.setScene("scenarios/video_games.json");
+        state.setScene("scenarios/level01.json");
+        state.setScenario(new DefaultScenario());
 
         SetupTouchpads();
     }

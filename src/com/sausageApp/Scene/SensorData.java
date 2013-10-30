@@ -13,8 +13,11 @@ import com.badlogic.gdx.math.Vector3;
 public class SensorData {
     public String tag;
     public String usage;
+    public boolean enter;
+    public boolean exit;
     public float fmod;
     public int imod;
+    public String istring;
     public float[] loc = new float[]{};
     public float[] verts = new float[]{};
     public SensorData(){}

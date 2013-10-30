@@ -42,11 +42,9 @@ public class GameObject {
         scale = new Vector3(data.scale[0], data.scale[1], data.scale[2] );
         rotation = new Quaternion( data.quaternion[1], data.quaternion[2], (float) (data.quaternion[3]), (float) (data.quaternion[0]));
 
-        smat = new Matrix4().scl(scale);
-        rmat = new Matrix4().rotate(rotation);
-        tmat = new Matrix4().translate(position);
 
-        local_mat4 = tmat.mul(rmat).mul(smat);
+
+        UpdateMatrix();
 
 
 
@@ -73,7 +71,8 @@ public class GameObject {
         return rotation;
     }
     public void setRotation(Quaternion q){
-        rotation = q;
+        //rotation = rotation.setEulerAngles(0f,0f, q.z);
+        UpdateMatrix();
     }
 
     public Vector3 getPosition(){

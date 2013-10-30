@@ -19,7 +19,9 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.joints.DistanceJoint;
 import org.jbox2d.dynamics.joints.RevoluteJointDef;
+import org.jbox2d.dynamics.joints.RopeJoint;
 
 import java.util.ArrayList;
 
@@ -136,6 +138,9 @@ public class Sausage {
         fd.friction = 0.2f;
 
         RevoluteJointDef jd = new RevoluteJointDef();
+        //DistanceJoint jd = new DistanceJoint();
+
+
         jd.collideConnected = false;
         jd.upperAngle = .77079633f;
         jd.lowerAngle = -.77079633f;
@@ -165,6 +170,7 @@ public class Sausage {
             next.m_linearDamping = .01f*i;
             Vec2 anchor = new Vec2(x+(i*(radius*2f*L_DIST)), y);
             jd.initialize(prevBody, next, anchor);
+
             state.box.world.createJoint(jd);
             sausage.add(next);
             prevBody = next;
@@ -192,7 +198,7 @@ public class Sausage {
             sausage_links.get(i).curve_potential = tot / sausage_links.size() * 20f;
         }
 
-        if (player.debug_draw_sausage_links == false){
+        if (player.debug_draw_sausage_links == true){
             SimpleDraw();
         }
 
@@ -224,7 +230,7 @@ public class Sausage {
         Quaternion rot = new Quaternion(new Vector3(0f,0f,1f), angle);
         Matrix4 capmat = new Matrix4(rot);
 
-        Vector2 bv = gdx2gl((units.B2S(player.sausage.head.getPosition()))).mul(2f);
+        Vec2 bv = units.applyAspect(units.S2gl((units.B2S(player.sausage.head.getPosition())))).mul(2f);
         cap_shader.setUniformf("cap_pos", bv.x,bv.y);
         cap_shader.setUniformMatrix("capmat", capmat);
         end_cap.render(sausage_shader, GL20.GL_TRIANGLES);
@@ -233,7 +239,7 @@ public class Sausage {
         rot = new Quaternion(new Vector3(0f,0f,1f), angle);
         capmat = new Matrix4(rot);
 
-        bv = gdx2gl((units.B2S(player.sausage.tail.getPosition()))).mul(2f);
+        bv = units.applyAspect(units.S2gl((units.B2S(player.sausage.tail.getPosition())))).mul(2f);
         cap_shader.setUniformf("cap_pos", bv.x,bv.y);
         cap_shader.setUniformMatrix("capmat", capmat);
         end_cap.render(sausage_shader, GL20.GL_TRIANGLES);
@@ -245,14 +251,6 @@ public class Sausage {
     }
 
 
-
-    public Vector2 gdx2gl(Vec2 v){
-        //float y = (float) ( (Gdx.graphics.getHeight()-v.y)/Gdx.graphics.getHeight()*2f-1f )*units.RATIO  ;
-        float y = (float) (Gdx.graphics.getHeight() - v.y)/Gdx.graphics.getHeight()*2f-1f ;
-        float x = (float) v.x/Gdx.graphics.getWidth()*2f-1f ;
-        return new Vector2( x, y );
-    };
-
     public Vector2 Normal(Vector2 v1, Vector2 v2){
         return new Vector2( -(v2.y-v1.y), v2.x-v1.x );
     }
@@ -262,17 +260,17 @@ public class Sausage {
 
         float[] nodes = new float[(sausage_length+4)*2];
 
-        Vector2 lp = gdx2gl((units.B2S(sausage_bodies.get(0).getPosition())));
+        Vec2 lp = units.applyAspect(units.S2gl((units.B2S(sausage_bodies.get(0).getPosition()))));
 
         nodes[0] =  lp.x;
         nodes[1] = lp.y;
         for(int i = 1; i <= sausage_length+1; i++) {
-            lp = gdx2gl((units.B2S(sausage_bodies.get(i-1).getPosition())));
+            lp = units.applyAspect(units.S2gl((units.B2S(sausage_bodies.get(i - 1).getPosition()))));
             nodes[i*2] =  lp.x;
             nodes[i*2+1] =  lp.y;
         }
 
-        lp = gdx2gl((units.B2S(sausage_bodies.get(sausage_bodies.size()-1).getPosition())));
+        lp = units.applyAspect(units.S2gl((units.B2S(sausage_bodies.get(sausage_bodies.size() - 1).getPosition()))));
 
         nodes[(sausage_length+1)*2] =  lp.x;
         nodes[(sausage_length+1)*2+1] = lp.y; // a used node
@@ -303,7 +301,7 @@ public class Sausage {
 
 
 
-            Vector2 v1 = gdx2gl((units.B2S(sausage_bodies.get(i).getPosition())));
+            Vec2 v1 = units.applyAspect(units.S2gl((units.B2S(sausage_bodies.get(i).getPosition()))));
 
             float p = sausage_links.get(i).potential;
             float c = sausage_links.get(i).curve_potential;

@@ -47,6 +47,7 @@ public class Link implements Contactable {
             curvature = (float)Math.abs(Math.PI - (float)Math.abs(PrevAngle() - NextAngle()));
             curvature = curvature / (float)Math.PI;
         }
+        body.setLinearVelocity(body.getLinearVelocity().mul(.99f));
     }
 
     public Boolean HasNext(){

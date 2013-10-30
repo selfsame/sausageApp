@@ -27,6 +27,9 @@ public class SensorObject implements Contactable {
     public String usage;
     public float fmod;
     public int imod;
+    public String istring;
+    public boolean enter;
+    public boolean exit;
     public float[] loc;
     public float[] verts = new float[]{};
     public HashMap<Player,Integer> player_contacts = new HashMap<Player, Integer>();
@@ -38,12 +41,15 @@ public class SensorObject implements Contactable {
         usage = data.usage;
         fmod = data.fmod;
         imod = data.imod;
+        istring = data.istring;
+        enter = data.enter;
+        exit = data.exit;
         verts = data.verts;
         loc = data.loc;
 
         Vec2[] pbies = new Vec2[(int)verts.length/2];
         for (int j = 0; j < (int)verts.length/2; j++) {
-            pbies[j] = units.S2B(units.gl2S(new Vec2(verts[j * 2], verts[j * 2 + 1])));
+            pbies[j] = units.unAspect(units.S2B(units.gl2S(new Vec2(verts[j * 2], verts[j * 2 + 1]))));
         }
 
         body = state.box.createStaticChain( pbies, true, 1);
@@ -57,11 +63,10 @@ public class SensorObject implements Contactable {
             Player p = link.sausage.player;
             if (!player_contacts.containsKey(p) || player_contacts.get(p) <= 0){
                 player_contacts.put(p, 1);
-                Gdx.app.log("BEGIN", "PLAYER CONTACT");
-                if (usage.equals("PORTAL")){
-                    active = true;
-                }
-                trigger(p);
+
+                active = true;
+
+                if (enter) state.scenario.enterSensor(this,p);
             } else {
                 player_contacts.put(p,player_contacts.get(p)+1);
             }
@@ -78,6 +83,7 @@ public class SensorObject implements Contactable {
                 int count = player_contacts.get(p);
                 player_contacts.put(p, count - 1);
                 if (count-1 <= 0){
+                    if (exit) state.scenario.exitSensor(this,p);
                     //Gdx.app.log("END", "PLAYER CONTACT");
                     active = false;
                 }
@@ -106,9 +112,7 @@ public class SensorObject implements Contactable {
     }
 
     public void activate(){
-        if (usage.equals("PORTAL")){
-            state.setScene("scenarios/"+tag);
-        }
+
 
 
     }

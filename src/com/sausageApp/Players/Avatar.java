@@ -123,13 +123,12 @@ public class Avatar {
         float eye_width =   .05f;
 
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST) ;
-        //Gdx.gl.glEnable(GL20.GL_FRONT_AND_BACK) ;
         batch.setProjectionMatrix(state.scene.camera.combined);
         Vec2 screen_body = units.B2S(body.getPosition());
-        Vec2 bv = units.S2gl(screen_body);
+        Vec2 bv = units.applyAspect(units.S2gl(screen_body));
         float br = body.getAngle();
-        //Vec2 g = new Vec2((float)  Math.cos(-r)*16, (float) Math.sin(-r)*16);
-        eyes_sprite.setBounds(bv.x - (eye_width / 2f)  , bv.y + 1.5f - (eye_height / 2f) ,eye_width, eye_height);
+
+        eyes_sprite.setBounds(bv.x - (eye_width / 2f)  , bv.y  - (eye_height / 2f) ,eye_width, eye_height);
 
         eyes_sprite.setOrigin(eye_width/2f, eye_height/2f);
         eyes_sprite.setRotation((float) (Math.toDegrees(br)+90f)*-1f);
