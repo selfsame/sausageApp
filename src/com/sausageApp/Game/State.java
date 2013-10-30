@@ -1,10 +1,11 @@
 package com.sausageApp.Game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.sausageApp.Scenario.Scenario;
 import com.sausageApp.Scene.Scene;
 import com.sausageApp.Simulation.Box;
-import org.jbox2d.common.Vec2;
+
 
 /**
 The definitive assortment of instances currently running
@@ -33,7 +34,7 @@ public class State {
         if (scenario != null) scenario.update(delta);
 
     }
-    public void newBox(Vec2 gravity){
+    public void newBox(Vector2 gravity){
         if (box != null){
             box.dispose();
         }

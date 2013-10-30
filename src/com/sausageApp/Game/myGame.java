@@ -35,6 +35,7 @@ public class myGame extends Game{
     public Profiler profiler;
 
     public Screen current_screen;
+    public GameScreen game_screen = null;
 
     public SplashScreen getSplashScreen()
     {
@@ -45,7 +46,8 @@ public class myGame extends Game{
 
     public GameScreen getGameScreen()
     {
-        return new GameScreen( this );
+        game_screen = new GameScreen( this );
+        return game_screen;
     }
 
     @Override

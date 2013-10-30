@@ -6,16 +6,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.sausageApp.Game.State;
 import com.sausageApp.Game.Units;
 import com.sausageApp.TweenAccessors.GameObjectAccessor;
 import com.sausageApp.TweenAccessors.MoveableAccessor;
-import org.jbox2d.common.Vec2;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,7 +53,7 @@ public class Scene {
     public ArrayList<SensorObject> sensors = new ArrayList<SensorObject>();
     public ArrayList<Locus> spawn_points = new ArrayList<Locus>();
 
-    public Vec2 gravity;
+    public Vector2 gravity;
     public GameCamera camera;
     public float default_view_dist = 3f;
     public float view_dist = 3f;
@@ -65,7 +63,7 @@ public class Scene {
         Tween.registerAccessor(GameCamera.class, new MoveableAccessor());
         Tween.registerAccessor(GameObject.class, new GameObjectAccessor());
         scene_data = json.fromJson(SceneData.class, Gdx.files.internal( filename ));
-        gravity = new Vec2(.0f, scene_data.gravity);
+        gravity = new Vector2(.0f, scene_data.gravity);
         state.newBox(gravity);
         tex = new Texture(Gdx.files.internal("house_tex.png"));
         camera = new GameCamera(46.596f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -99,7 +97,7 @@ public class Scene {
 
         tex_shader = level_geo.MakeTexShader();
 
-        wire_mesh = level_geo.CompileMesh(scene_data.wire_vertices, scene_data.wire_indicies);
+        wire_mesh = level_geo.CompileMesh(scene_data.wire_vertices.clone(), scene_data.wire_indicies.clone());
         wire_shader = level_geo.MakeWireShader();
 
         for (Locus locus: scene_data.locii) {
@@ -112,10 +110,10 @@ public class Scene {
         // WARNING need to make these Body containing objects safe
 
         for (Collider group: scene_data.collide_groups) {
-            float[] verts = group.verts;
-            Vec2[] pbies = new Vec2[(int)verts.length/2];
+            float[] verts = group.verts.clone();
+            Vector2[] pbies = new Vector2[(int)verts.length/2];
             for (int j = 0; j < (int)verts.length/2; j++) {
-                pbies[j] = units.S2B(units.unAspect(units.gl2S(new Vec2(verts[j * 2], verts[j * 2 + 1]))));
+                pbies[j] = units.S2B(units.unAspect(units.gl2S(new Vector2(verts[j * 2], verts[j * 2 + 1]))));
             }
             state.box.createStaticChain(pbies, false, group.mask);
         }

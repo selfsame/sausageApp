@@ -10,18 +10,12 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.sausageApp.Game.State;
 import com.sausageApp.Game.Units;
 import com.sausageApp.screens.WormMesh;
-import org.jbox2d.collision.shapes.PolygonShape;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.Filter;
-import org.jbox2d.dynamics.Fixture;
-import org.jbox2d.dynamics.FixtureDef;
-import org.jbox2d.dynamics.joints.DistanceJoint;
-import org.jbox2d.dynamics.joints.RevoluteJointDef;
-import org.jbox2d.dynamics.joints.RopeJoint;
+
 
 import java.util.ArrayList;
 
@@ -45,7 +39,7 @@ public class Sausage {
     public ArrayList<Link> sausage_links = new ArrayList<Link>();
     public Link head_link;
     public Link tail_link;
-    public int sausage_length = 18;
+    public int sausage_length = 14;
     private float L_DIST = 1.2f;
 
 
@@ -69,7 +63,7 @@ public class Sausage {
         player = _player;
         player.FORCE = .2f*sausage_length;
 
-        Vec2 spawn = state.box.GetSpawn();
+        Vector2 spawn = state.box.GetSpawn();
         sausage_bodies = createSausageBodies(spawn.x, spawn.y, SRADIUS, sausage_length);
         head = sausage_bodies.get(0);
         tail = sausage_bodies.get(sausage_length);
@@ -80,6 +74,7 @@ public class Sausage {
             Link new_link = new Link(sausage_bodies.get(i), this);
             sausage_links.add(new_link);
             new_link.body.setUserData(new_link);
+
             if (i > 0) {
                new_link.prev = sausage_links.get(i-1);
                sausage_links.get(i-1).next = new_link;
@@ -91,35 +86,36 @@ public class Sausage {
         DefineShaders();
     }
 
-    public Vec2 VBetween(Body b1,Body b2){
-        Vec2 v1 = b1.getPosition();
-        Vec2 v2 = b2.getPosition();
+    public Vector2 VBetween(Body b1,Body b2){
+        Vector2 v1 = b1.getPosition();
+        Vector2 v2 = b2.getPosition();
         return v1.sub(v2);
     }
 
     public void setCategory(int val){
         for (Body body: sausage_bodies) {
-            Fixture fixture = body.m_fixtureList;
+            Fixture fixture = body.getFixtureList().first();
+
             Filter filter = fixture.getFilterData();
-            filter.categoryBits = val;
+            filter.categoryBits = (short) val;
             fixture.setFilterData(filter);
         }
     }
 
     public void setMask(int val){
         for (Body body: sausage_bodies) {
-            Fixture fixture = body.m_fixtureList;
+            Fixture fixture = body.getFixtureList().first();
             Filter filter = fixture.getFilterData();
-            filter.maskBits = val;
+            filter.maskBits = (short) val;
             fixture.setFilterData(filter);
         }
     }
 
     public void setGroupIndex(int val){
         for (Body body: sausage_bodies) {
-            Fixture fixture = body.m_fixtureList;
+            Fixture fixture = body.getFixtureList().first();
             Filter filter = fixture.getFilterData();
-            filter.groupIndex = val;
+            filter.groupIndex = (short)val;
             fixture.setFilterData(filter);
         }
     }
@@ -155,7 +151,7 @@ public class Sausage {
         //Body first = scenario.createDynamicCircle(x, y, radius*1.00f, 10f);
         Body first = state.box.createDynamicRect(x, y, radius*2.00f, radius*1.00f, 10f, .9f);
         Body prevBody = first;
-        prevBody.m_angularDamping = 1.5f;
+        prevBody.setAngularDamping(1.5f);
         sausage.add(prevBody);
 
 
@@ -166,9 +162,9 @@ public class Sausage {
                 friction = .9f;
             }
             Body next = state.box.createDynamicRect(x+(radius*2f*L_DIST)+(i*(radius*2f*L_DIST)), y, radius*2.00f, radius*.6f, 10f, friction);
-            next.m_angularDamping = .8f;
-            next.m_linearDamping = .01f*i;
-            Vec2 anchor = new Vec2(x+(i*(radius*2f*L_DIST)), y);
+            next.setAngularDamping(.8f);
+            next.setLinearDamping(.01f * i);
+            Vector2 anchor = new Vector2(x+(i*(radius*2f*L_DIST)), y);
             jd.initialize(prevBody, next, anchor);
 
             state.box.world.createJoint(jd);
@@ -230,7 +226,7 @@ public class Sausage {
         Quaternion rot = new Quaternion(new Vector3(0f,0f,1f), angle);
         Matrix4 capmat = new Matrix4(rot);
 
-        Vec2 bv = units.applyAspect(units.S2gl((units.B2S(player.sausage.head.getPosition())))).mul(2f);
+        Vector2 bv = units.applyAspect(units.S2gl((units.B2S(player.sausage.head.getPosition())))).mul(2f);
         cap_shader.setUniformf("cap_pos", bv.x,bv.y);
         cap_shader.setUniformMatrix("capmat", capmat);
         end_cap.render(sausage_shader, GL20.GL_TRIANGLES);
@@ -260,7 +256,7 @@ public class Sausage {
 
         float[] nodes = new float[(sausage_length+4)*2];
 
-        Vec2 lp = units.applyAspect(units.S2gl((units.B2S(sausage_bodies.get(0).getPosition()))));
+        Vector2 lp = units.applyAspect(units.S2gl((units.B2S(sausage_bodies.get(0).getPosition()))));
 
         nodes[0] =  lp.x;
         nodes[1] = lp.y;
@@ -301,7 +297,7 @@ public class Sausage {
 
 
 
-            Vec2 v1 = units.applyAspect(units.S2gl((units.B2S(sausage_bodies.get(i).getPosition()))));
+            Vector2 v1 = units.applyAspect(units.S2gl((units.B2S(sausage_bodies.get(i).getPosition()))));
 
             float p = sausage_links.get(i).potential;
             float c = sausage_links.get(i).curve_potential;

@@ -1,11 +1,11 @@
 package com.sausageApp.Scene;
 
 import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.sausageApp.Game.State;
 import com.sausageApp.Game.Units;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
 
 import java.util.ArrayList;
 
@@ -35,8 +35,7 @@ public class DynamicObject extends DynamicData{
         restitution = data.restitution;
         mass = data.mass;
         classes = data.classes;
-        Vec2 m = units.unAspect(units.S2B(units.gl2S(new Vec2(position.x, -position.y))));
-        float h =  units.S2B(units.gl2S(radius));
+        Vector2 m = units.unAspect(units.S2B(units.gl2S(new Vector2(position.x, -position.y))));
         body = state.box.createDynamicCircle(m.x,m.y, 2f*(radius/.12f), mass, friction, restitution);
 
         if (scene.object_map.containsKey(name)){
@@ -46,10 +45,10 @@ public class DynamicObject extends DynamicData{
     }
 
     public void update(){
-        Vec2 p = body.getPosition();
+        Vector2 p = body.getPosition();
         float r = body.getAngle();
         for (GameObject g : visuals){
-            Vec2 m = units.applyAspect(units.S2gl(units.B2S(p)));
+            Vector2 m = units.applyAspect(units.S2gl(units.B2S(p)));
             //float h = units.S2gl( units.B2S(position.z));
             g.setRotation(new Quaternion(0f, 0f, 1f, r) );
             g.setPosition(new Vector3(m.x,m.y,0f));

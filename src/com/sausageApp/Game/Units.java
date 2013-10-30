@@ -2,7 +2,6 @@ package com.sausageApp.Game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import org.jbox2d.common.Vec2;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,18 +17,12 @@ public class Units {
         RATIO = (float)Gdx.graphics.getHeight()/(float)Gdx.graphics.getWidth() ;
     }
 
-    public Vec2 applyAspect(Vec2 v){
-        return new Vec2(v.x, (v.y+ .63f)*RATIO );
-    }
     public Vector2 applyAspect(Vector2 v){
-        return new Vector2(v.x, v.y*RATIO);
+        return new Vector2(v.x, (v.y)*RATIO + (1f-RATIO));
     }
 
-    public Vec2 unAspect(Vec2 v){
-        return new Vec2(v.x, v.y/RATIO);
-    }
     public Vector2 unAspect(Vector2 v){
-        return new Vector2(v.x, v.y/RATIO);
+        return new Vector2(v.x, (v.y)/RATIO);
     }
 
     public Vector2 S2gl(Vector2 v){
@@ -39,22 +32,11 @@ public class Units {
     }
 
     public Vector2 gl2S(Vector2 v){
-        float y = (float)(((-1f*v.y)+1f)/2f)*(Gdx.graphics.getHeight()) ;
+        float y = (float)(((-1f*v.y+1f))/2f)*(Gdx.graphics.getHeight()) ;
         float x = (float)((v.x+1f)/2f)*(Gdx.graphics.getWidth()) ;
         return new Vector2( x, y );
     }
 
-    public Vec2 S2gl(Vec2 v){
-        float y = (float) (Gdx.graphics.getHeight() - v.y)/Gdx.graphics.getHeight()*2f-1f ;
-        float x = (float) v.x/Gdx.graphics.getWidth()*2f-1f ;
-        return new Vec2( x, y );
-    }
-
-    public Vec2 gl2S(Vec2 v){
-        float y = (float)(((-1f*v.y)+1f)/2f)*(Gdx.graphics.getHeight()) ;
-        float x = (float)((v.x+1f)/2f)*(Gdx.graphics.getWidth()) ;
-        return new Vec2( x, y );
-    }
 
 
 
@@ -77,9 +59,7 @@ public class Units {
     public float P2B(float a){
         return a/PHYSICS_SCALE;
     }
-    public Vec2 P2B(Vec2 v){
-        return new Vec2(P2B(v.x), P2B(v.y));
-    }
+
     public Vector2 P2B(Vector2 v){
         return new Vector2(P2B(v.x), P2B(v.y));
     }
@@ -87,9 +67,7 @@ public class Units {
     public float P2S(float a){
         return a / (1024f/Gdx.graphics.getWidth()) ;
     }
-    public Vec2 P2S(Vec2 v){
-        return new Vec2(P2S(v.x), P2S(v.y));
-    }
+
     public Vector2 P2S(Vector2 v){
         return new Vector2(P2S(v.x), P2S(v.y));
     }
@@ -97,9 +75,7 @@ public class Units {
     public float B2P(float a){
         return a*PHYSICS_SCALE;
     }
-    public Vec2 B2P(Vec2 v){
-        return new Vec2(B2P(v.x), B2P(v.y));
-    }
+
     public Vector2 B2P(Vector2 v){
         return new Vector2(B2P(v.x), B2P(v.y));
     }
@@ -107,9 +83,7 @@ public class Units {
     public float B2S(float a){
         return P2S(B2P(a));
     }
-    public Vec2 B2S(Vec2 v){
-        return new Vec2(B2S(v.x), B2S(v.y));
-    }
+
     public Vector2 B2S(Vector2 v){
         return new Vector2(B2S(v.x), B2S(v.y));
     }
@@ -117,9 +91,7 @@ public class Units {
     public float S2P(float a){
         return (1024f/Gdx.graphics.getWidth()) * a ;
     }
-    public Vec2 S2P(Vec2 v){
-        return new Vec2(S2P(v.x), S2P(v.y));
-    }
+
     public Vector2 S2P(Vector2 v){
         return new Vector2(S2P(v.x), S2P(v.y));
     }
@@ -127,9 +99,7 @@ public class Units {
     public float S2B(float a){
         return P2B(S2P(a));
     }
-    public Vec2 S2B(Vec2 v){
-        return new Vec2(S2B(v.x), S2B(v.y));
-    }
+
     public Vector2 S2B(Vector2 v){
         return new Vector2(S2B(v.x), S2B(v.y));
     }
@@ -137,9 +107,7 @@ public class Units {
     public float SFlip(float a){
         return Gdx.graphics.getHeight() - a;
     }
-    public Vec2 SFlip(Vec2 v){
-        return new Vec2(v.x, SFlip(v.y));
-    }
+
     public Vector2 SFlip(Vector2 v){
         return new Vector2(v.x, SFlip(v.y));
     }

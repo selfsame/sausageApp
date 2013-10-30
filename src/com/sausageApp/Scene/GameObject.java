@@ -15,12 +15,12 @@ import com.sausageApp.Scene.VertexObject;
  * To change this template use File | Settings | File Templates.
  */
 public class GameObject {
-    public String name;
+    public String name = null;
     public boolean texture;
 
     public Matrix4 local_mat4 = null;
-    public float[] static_vertices = new float[]{};
-    public short[] static_indicies = new short[]{};
+    public float[] static_vertices = null;
+    public short[] static_indicies = null;
     public boolean alpha;
     public Mesh mesh = null;
 
@@ -47,11 +47,10 @@ public class GameObject {
         UpdateMatrix();
 
 
-
         alpha = data.alpha;
         texture = data.texture;
-        static_vertices = data.static_vertices;
-        static_indicies = data.static_indicies;
+        static_vertices = data.static_vertices.clone();
+        static_indicies = data.static_indicies.clone();
         if (texture){
             mesh = meshCompiler.CompileTexMesh(static_vertices, static_indicies);
         } else {

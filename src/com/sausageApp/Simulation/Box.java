@@ -1,22 +1,19 @@
 package com.sausageApp.Simulation;
 
 import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenManager;
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
 import com.sausageApp.Game.State;
 import com.sausageApp.Game.Units;
-import com.sausageApp.Game.myGame;
+
 
 import com.sausageApp.Scene.*;
-import com.sausageApp.TweenAccessors.GameObjectAccessor;
 import com.sausageApp.TweenAccessors.MoveableAccessor;
-import com.sausageApp.screens.GameScreen;
-import org.jbox2d.collision.shapes.ChainShape;
-import org.jbox2d.collision.shapes.CircleShape;
-import org.jbox2d.collision.shapes.PolygonShape;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.*;
+
+
+
+
 
 // handles a Box2d simulation.
 
@@ -27,7 +24,6 @@ public class Box {
 
 
     public World world;
-
     private int spawn_index = 0;
 
 
@@ -40,14 +36,14 @@ public class Box {
 
 
 
-    public Box(Vec2 gravity) {
+    public Box(Vector2 gravity) {
 
 
 
 
 
 
-        world = new World(gravity);
+        world = new World(gravity, true);
         world.setContactListener(contact_listener);
 
 
@@ -77,13 +73,13 @@ public class Box {
 
         // The camera stuff can really be in an acestor of all scenarios, in case it needs to get overriden
         int player_count = state.game.players.size();
-        Vec2 pp = new Vec2(0f,0f);
+        Vector2 pp = new Vector2(0f,0f);
         float ubx = 99999f;
         float uby = 99999f;
         float lbx = -99999f;
         float lby = -99999f;
         for (int i=0;i<player_count;i++){
-            Vec2 player_p = units.applyAspect(units.S2gl(units.B2S(state.game.players.get(i).sausage.head.getPosition())));
+            Vector2 player_p = units.applyAspect(units.S2gl(units.B2S(state.game.players.get(i).sausage.head.getPosition())));
             if (player_p.x < ubx) { ubx = player_p.x;}
             if (player_p.y < uby) { uby = player_p.y;}
             if (player_p.x > lbx) { lbx = player_p.x;}
@@ -102,10 +98,10 @@ public class Box {
         Tween.to(state.scene.camera, MoveableAccessor.POSITION_Z, .3f).target(final_dist).start(state.scene.tweenManager);
     }
 
-    public Vec2 GetSpawn(){
+    public Vector2 GetSpawn(){
         Locus using = state.scene.spawn_points.get(spawn_index);
         spawn_index += 1;
-        return units.S2P(units.gl2S(new Vec2(using.pos[0], -using.pos[1])));
+        return units.unAspect(units.S2P(units.gl2S(new Vector2(using.pos[0], -using.pos[1]))));
 
         //return new Vec2(10f,10f);
     }
@@ -121,7 +117,8 @@ public class Box {
 
     public Body createDynamicCircle(float x, float y, float radius, float density, float friction, float restitution) {
         CircleShape circleShape = new CircleShape();
-        circleShape.m_radius = radius;
+        circleShape.setRadius(radius);
+
         FixtureDef circleF = new FixtureDef();
         circleF.shape = circleShape;
         circleF.density = 1.0f*density;
@@ -131,12 +128,14 @@ public class Box {
         circleF.filter.maskBits = 1;
         //circleF.filter.groupIndex = 1;
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyType.DYNAMIC;
+
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(x, y);
         bodyDef.allowSleep = false;
         Body body = world.createBody(bodyDef);
-        body.m_angularDamping = .8f;
-        body.m_linearDamping = 4f;
+        body.setAngularDamping(.8f);
+        body.setLinearDamping(4f);
+
         body.createFixture(circleShape, 5.0f);
         body.createFixture(circleF);
         return body;
@@ -152,12 +151,12 @@ public class Box {
         circleF.restitution = .8f;
         circleF.friction = friction;
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyType.DYNAMIC;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(x, y);
         bodyDef.allowSleep = false;
         Body body = world.createBody(bodyDef);
-        body.m_angularDamping = .8f;
-        body.m_linearDamping = .8f;
+        body.setAngularDamping(.8f);
+        body.setLinearDamping(.8f);
         body.createFixture(polygonShape, 5.0f);
         body.createFixture(circleF);
         return body;
@@ -168,7 +167,7 @@ public class Box {
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.setAsBox(w, h);
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyType.STATIC;
+        bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.set(x, y);
         bodyDef.allowSleep = false;
         Body body = world.createBody(bodyDef);
@@ -176,12 +175,12 @@ public class Box {
         return body;
     }
 
-    public Body createStaticChain(Vec2[] verticies, boolean is_sensor, int mask) {
+    public Body createStaticChain(Vector2[] verticies, boolean is_sensor, int mask) {
         ChainShape chainShape = new ChainShape();
-        chainShape.createLoop(verticies, verticies.length);
+        chainShape.createLoop(verticies);
 
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyType.STATIC;
+        bodyDef.type = BodyDef.BodyType.StaticBody;
 
         bodyDef.position.set(0f, 0f);
 
@@ -191,7 +190,7 @@ public class Box {
         circleF.friction = .9f;
 
         circleF.filter.categoryBits = (short)mask;
-        circleF.filter.maskBits = mask;
+        circleF.filter.maskBits = (short)mask;
         //circleF.filter.groupIndex = mask;
 
         //Gdx.app.log("MASK:", ":"+circleF.filter.categoryBits);

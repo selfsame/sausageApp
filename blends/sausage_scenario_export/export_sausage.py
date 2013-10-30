@@ -530,14 +530,28 @@ def save_selected(filepath,
                     vertices_str += "{0:.2f}, {1:.2f}, ".format(*tuple( [v[2][0], 1.0-v[2][1]] ))
                 if use_colors:
                     vertices_str += "{0:.2f}, {1:.2f}, {2:.2f}, {3:.2f}, ".format(*tuple( v[3] )) # col
+            
+            highest = 0
                 
             for pf in ply_faces:
+                lb = 9999999
+                ub = -9999999
+                for k in pf:
+                    if k < lb: lb = k
+                    if k > ub: ub = k
+                dif = ub - lb
+                if dif > highest:
+                    highest = dif
+                if len(pf) < 3:
+                    print("WARNING: FACE WITH < 3 vertices:", pf)
                 if len(pf) == 3:
                     vertex_indices_str += "{0}, {1}, {2}, ".format(*tuple([pf[0]+object_count,pf[1]+object_count,pf[2]+object_count]))
-                else:
+                elif len(pf) == 4:
                     vertex_indices_str += "{0}, {1}, {2}, {0}, {2}, {3}, ".format(*tuple([pf[0]+object_count,pf[1]+object_count,pf[2]+object_count,pf[3]+object_count]))
+                else:
+                    print("WARNING: FACE WITH > 4 vertices:", pf)
             object_count += len(ply_verts)
-
+            print("INDEX RANGE: ", highest)
             if use_uv_coords:
                 if obj.SAUSAGE_alpha_texture:
                     uses_alpha = True

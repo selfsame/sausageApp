@@ -7,10 +7,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.sausageApp.Game.State;
 import com.sausageApp.Game.Units;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
 
 import java.util.ArrayList;
 
@@ -124,8 +124,8 @@ public class Avatar {
 
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST) ;
         batch.setProjectionMatrix(state.scene.camera.combined);
-        Vec2 screen_body = units.B2S(body.getPosition());
-        Vec2 bv = units.applyAspect(units.S2gl(screen_body));
+        Vector2 screen_body = units.B2S(body.getPosition());
+        Vector2 bv = units.applyAspect(units.S2gl(screen_body));
         float br = body.getAngle();
 
         eyes_sprite.setBounds(bv.x - (eye_width / 2f)  , bv.y  - (eye_height / 2f) ,eye_width, eye_height);

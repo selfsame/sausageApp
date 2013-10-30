@@ -1,12 +1,6 @@
 package com.sausageApp.Simulation;
 
-import com.badlogic.gdx.Gdx;
-import com.sausageApp.Players.Link;
-import com.sausageApp.Players.Player;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
-
-import java.util.ArrayList;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,7 +16,7 @@ public class AnonContact implements Contactable{
 
 
     public AnonContact(){}
-    public void beginContact(Vec2 n, Contactable partner){}
-    public void endContact(Vec2 n, Contactable partner){}
+    public void beginContact(Vector2 n, Contactable partner){}
+    public void endContact(Vector2 n, Contactable partner){}
 
 }

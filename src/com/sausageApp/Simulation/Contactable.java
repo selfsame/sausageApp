@@ -1,8 +1,8 @@
 package com.sausageApp.Simulation;
 
-import com.sausageApp.Players.Link;
-import com.sausageApp.Players.Sausage;
-import org.jbox2d.common.Vec2;
+import com.badlogic.gdx.math.Vector2;
+
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,8 +13,8 @@ import org.jbox2d.common.Vec2;
  */
 public interface Contactable {
 
-    public void beginContact(Vec2 n, Contactable partner);
-    public void endContact(Vec2 n, Contactable partner);
+    public void beginContact(Vector2 n, Contactable partner);
+    public void endContact(Vector2 n, Contactable partner);
 
 }
 

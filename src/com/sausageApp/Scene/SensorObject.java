@@ -1,13 +1,14 @@
 package com.sausageApp.Scene;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.sausageApp.Game.State;
 import com.sausageApp.Game.Units;
 import com.sausageApp.Players.Link;
 import com.sausageApp.Players.Player;
 import com.sausageApp.Simulation.Contactable;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
+
 
 import java.util.HashMap;
 
@@ -47,9 +48,9 @@ public class SensorObject implements Contactable {
         verts = data.verts;
         loc = data.loc;
 
-        Vec2[] pbies = new Vec2[(int)verts.length/2];
+        Vector2[] pbies = new Vector2[(int)verts.length/2];
         for (int j = 0; j < (int)verts.length/2; j++) {
-            pbies[j] = units.unAspect(units.S2B(units.gl2S(new Vec2(verts[j * 2], verts[j * 2 + 1]))));
+            pbies[j] = units.unAspect(units.S2B(units.gl2S(new Vector2(verts[j * 2], verts[j * 2 + 1]))));
         }
 
         body = state.box.createStaticChain( pbies, true, 1);
@@ -57,7 +58,7 @@ public class SensorObject implements Contactable {
     }
 
 
-    public void beginContact(Vec2 n, Contactable thing){
+    public void beginContact(Vector2 n, Contactable thing){
         if (thing instanceof Link){
             Link link = (Link)thing;
             Player p = link.sausage.player;
@@ -73,7 +74,7 @@ public class SensorObject implements Contactable {
         }
     }
 
-    public void endContact(Vec2 n, Contactable thing){
+    public void endContact(Vector2 n, Contactable thing){
         if (thing instanceof Link){
             Link link = (Link)thing;
             Player p = link.sausage.player;
@@ -107,7 +108,7 @@ public class SensorObject implements Contactable {
         }
         if (usage.equals("GRAVITY")){
 
-            state.box.world.setGravity( new Vec2(0f,fmod) );
+            state.box.world.setGravity( new Vector2(0f,fmod) );
         }
     }
 

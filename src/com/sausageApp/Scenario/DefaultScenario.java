@@ -1,11 +1,12 @@
 package com.sausageApp.Scenario;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
 import com.sausageApp.Game.State;
 import com.sausageApp.Game.Units;
 import com.sausageApp.Players.Player;
 import com.sausageApp.Scene.SensorObject;
-import org.jbox2d.common.Vec2;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -76,7 +77,7 @@ public class DefaultScenario implements Scenario{
             state.scene.view_dist += sensor.fmod;
         }
         if (sensor.usage.equals("GRAVITY")){
-            state.box.world.setGravity( new Vec2(0f,sensor.fmod) );
+            state.box.world.setGravity( new Vector2(0f,sensor.fmod) );
         }
     }
 
@@ -85,7 +86,7 @@ public class DefaultScenario implements Scenario{
             state.scene.view_dist -= sensor.fmod;
         }
         if (sensor.usage.equals("GRAVITY")){
-            state.box.world.setGravity( new Vec2(0f,sensor.fmod) );
+            state.box.world.setGravity( new Vector2(0f,sensor.fmod) );
             state.scene.gravity.y = sensor.fmod;
         }
     }

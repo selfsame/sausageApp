@@ -25,7 +25,8 @@ public class GameScreen
 
     private Stage stage;
     private SpriteBatch facebatch = new SpriteBatch();
-    public Touchpad touchpad;
+    public Touchpad touchpad_left;
+    public Touchpad touchpad_right;
     private Touchpad.TouchpadStyle touchpadStyle;
     private Skin touchpadSkin;
     private Drawable touchBackground;
@@ -56,28 +57,28 @@ public class GameScreen
 
 
     public void SetupTouchpads(){
-        //Create a touchpad skin
         touchpadSkin = new Skin();
-        //Set background image
         touchpadSkin.add("touchBackground", new Texture("data/touchBackground.png"));
-        //Set knob image
         touchpadSkin.add("touchKnob", new Texture("data/touchKnob.png"));
-        //Create TouchPad Style
         touchpadStyle = new Touchpad.TouchpadStyle();
-        //Create Drawable's from TouchPad skin
         touchBackground = touchpadSkin.getDrawable("touchBackground");
         touchKnob = touchpadSkin.getDrawable("touchKnob");
-        //Apply the Drawables to the TouchPad Style
         touchpadStyle.background = touchBackground;
         touchpadStyle.knob = touchKnob;
-        //Create new TouchPad with the created style
-        touchpad = new Touchpad(units.P2S(10f), touchpadStyle);
-        //setBounds(x,y,width,height)
-        touchpad.setBounds(units.P2S(15f), units.P2S(15f), units.P2S(128f), units.P2S(128f));
+
+        float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+
+        touchpad_left = new Touchpad(units.P2S(10f), touchpadStyle);
+        touchpad_left.setBounds(10f, 10f, w/4f, w/4f);
+
+        touchpad_right = new Touchpad(units.P2S(10f), touchpadStyle);
+        touchpad_right.setBounds(w*.75f-10f, 10f, w/4f, w/4f);
 
         //Create a Stage and add TouchPad
         stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, batch);
-        stage.addActor(touchpad);
+        stage.addActor(touchpad_left);
+        stage.addActor(touchpad_right);
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -119,7 +120,7 @@ public class GameScreen
         facebatch.end();
 
         stage.act(Gdx.graphics.getDeltaTime());
-        Gdx.gl.glDisable(GL20.GL_DEPTH_TEST) ;
+        //Gdx.gl.glDisable(GL20.GL_DEPTH_TEST) ;
         stage.draw();
     }
 

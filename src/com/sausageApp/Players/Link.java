@@ -4,12 +4,12 @@ package com.sausageApp.Players;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.sausageApp.Game.State;
 import com.sausageApp.Game.Units;
 import com.sausageApp.Simulation.AnonContact;
 import com.sausageApp.Simulation.Contactable;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -62,7 +62,7 @@ public class Link implements Contactable {
 
     public float NextAngle(){
         if (HasNext()){
-            Vec2 heading = body.getPosition().sub(next.body.getPosition());
+            Vector2 heading = body.getPosition().sub(next.body.getPosition());
             return (float)Math.atan2(heading.y, heading.x);
         } else {
             return 0f;
@@ -71,21 +71,21 @@ public class Link implements Contactable {
 
     public float PrevAngle(){
         if (HasPrev()){
-            Vec2 heading = body.getPosition().sub( prev.body.getPosition() );
+            Vector2 heading = body.getPosition().sub( prev.body.getPosition() );
             return (float)Math.atan2(heading.y, heading.x);
         } else {
             return 0f;
         }
     }
 
-    public Vec2 VBetween(Body b1,Body b2){
-        Vec2 v1 = b1.getPosition();
-        Vec2 v2 = b2.getPosition();
+    public Vector2 VBetween(Body b1,Body b2){
+        Vector2 v1 = b1.getPosition();
+        Vector2 v2 = b2.getPosition();
         return v1.sub(v2);
     }
 
-    public void DebugLinearImpulse(Vec2 v){
-        Vec2 b = units.SFlip(units.B2S(  body.getWorldCenter() ));
+    public void DebugLinearImpulse(Vector2 v){
+        Vector2 b = units.SFlip(units.B2S(  body.getWorldCenter() ));
 
         sausage.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
@@ -94,18 +94,18 @@ public class Link implements Contactable {
         sausage.shapeRenderer.end();
     }
 
-    public void applyLinearImpulse(Vec2 v){
-        body.applyLinearImpulse(v, body.getWorldCenter());
+    public void applyLinearImpulse(Vector2 v){
+        body.applyLinearImpulse(v, body.getWorldCenter(), true);
     }
 
-    public void applyLinearImpulse(Vec2 v, int propigate, boolean direction, boolean align, float degredation){
+    public void applyLinearImpulse(Vector2 v, int propigate, boolean direction, boolean align, float degredation){
         float v_rot = (float)Math.atan2(v.y, v.x);
         Link target = null;
         if (direction == false){   //forwards
             if (HasNext() == false) return;
             target = next;
             float rot = NextAngle();
-            if (v.length() > .01f && Math.abs(v_rot - rot) >= Math.PI/2.2f){
+            if (v.len() > .01f && Math.abs(v_rot - rot) >= Math.PI/2.2f){
                 align = false;
                 reversing = true;
             }
@@ -115,7 +115,7 @@ public class Link implements Contactable {
             if (HasPrev() == false) return;
             target = prev;
             float rot = PrevAngle();
-            if (v.length() > .1f && Math.abs(v_rot - rot) >= Math.PI/2.2f){
+            if (v.len() > .1f && Math.abs(v_rot - rot) >= Math.PI/2.2f){
                 align = false;
                 reversing = true;
             }
@@ -127,7 +127,7 @@ public class Link implements Contactable {
 
         Vector2 mod = new Vector2( potential*(.5f*v.x),  potential*(.5f*v.y));
         Vector2 result = mod.add(curve_mod);
-        body.applyLinearImpulse( new Vec2(v.x, v.y), body.getWorldCenter());
+        body.applyLinearImpulse( new Vector2(v.x, v.y), body.getWorldCenter(), true);
 
 
 
@@ -146,9 +146,9 @@ public class Link implements Contactable {
 
 
         if (align){
-           Vec2 av = VBetween(body, target.body);
-           av = av.mul((float)(v.length() / av.length()));
-           v = v.add(av).mul(.5f);
+           Vector2 av = VBetween(body, target.body);
+           av = av.scl((float)(v.len() / av.len()));
+           v = v.add(av).scl(.5f);
 
         }
 
@@ -160,7 +160,7 @@ public class Link implements Contactable {
 
 
 
-    public void beginContact(Vec2 n, Contactable thing){
+    public void beginContact(Vector2 n, Contactable thing){
        if (thing instanceof Link){
            Link link = (Link)thing;
            if (sausage == link.sausage) if (next == link || prev == link || link == this) return;
@@ -172,7 +172,7 @@ public class Link implements Contactable {
 
         }
     }
-    public void endContact(Vec2 n, Contactable thing){
+    public void endContact(Vector2 n, Contactable thing){
         if (thing instanceof Link ){
             Link link = (Link)thing;
             if (sausage == link.sausage) if (next == link || prev == link || link == this) return;
