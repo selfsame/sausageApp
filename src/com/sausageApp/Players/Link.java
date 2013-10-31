@@ -131,6 +131,7 @@ public class Link implements Contactable {
 
 
 
+
         //Gdx.app.log("?", "v:"+this+"("+v+") p:"+propigate+", d:"+direction+", a:"+align+", deg:"+degredation);
         if (sausage.player.debug_draw_sausage_force){
             DebugLinearImpulse(v);
@@ -153,6 +154,7 @@ public class Link implements Contactable {
         }
 
         target.applyLinearImpulse(v.mul(degredation), propigate - 1, direction, align, degredation);
+
 
     }
 

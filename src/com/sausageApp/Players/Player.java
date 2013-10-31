@@ -35,7 +35,7 @@ public class Player {
 
     public boolean in_lobby = true;
 
-    public float FORCE = 4f;
+    public float FORCE = 40f;
     public int propigation = 10;
 
     public int BID;
@@ -142,11 +142,11 @@ public class Player {
     public void handleInput(){
         int _propigation = propigation;
         float _FORCE = FORCE;
-        if (state.scene != null) if (Math.abs(state.scene.gravity.y) < 3f){
-            _propigation = 1;
-            _FORCE = FORCE*.1f;
-
-        }
+//        if (state.scene != null) if (Math.abs(state.scene.gravity.y) < 3f){
+//            _propigation = 1;
+//            _FORCE = FORCE*.1f;
+//
+//        }
         if (in_lobby){
             return;
         }
@@ -222,11 +222,7 @@ public class Player {
             }
 
             if(controller.getButton(OuyaController.BUTTON_O)){
-                for (SensorObject sensor: state.scene.sensors) {
-                    if (sensor.active) if (sensor.player_contacts.get(this) > 0) {
-                        sensor.activate();
-                    }
-                }
+                state.scenario.playerInput(this, OuyaController.BUTTON_O);
             }
 
         }

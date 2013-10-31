@@ -49,12 +49,14 @@ public class GameObject {
 
         alpha = data.alpha;
         texture = data.texture;
-        static_vertices = data.static_vertices.clone();
-        static_indicies = data.static_indicies.clone();
+        static_vertices = new float[data.static_vertices.length];
+        System.arraycopy(data.static_vertices,0,static_vertices,0,data.static_vertices.length);
+        static_indicies = new short[data.static_indicies.length];
+        System.arraycopy(data.static_indicies,0,static_indicies,0,data.static_indicies.length);
         if (texture){
-            mesh = meshCompiler.CompileTexMesh(static_vertices, static_indicies);
+            mesh = meshCompiler.CompileTexMesh(data.static_vertices, data.static_indicies);
         } else {
-            mesh = meshCompiler.CompileMesh(static_vertices, static_indicies);
+            mesh = meshCompiler.CompileMesh(data.static_vertices, data.static_indicies);
         }
     }
 

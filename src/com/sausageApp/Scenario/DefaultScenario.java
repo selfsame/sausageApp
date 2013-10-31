@@ -6,6 +6,7 @@ import com.sausageApp.Game.State;
 import com.sausageApp.Game.Units;
 import com.sausageApp.Players.Player;
 import com.sausageApp.Scene.SensorObject;
+import tv.ouya.console.api.OuyaController;
 
 
 /**
@@ -43,7 +44,7 @@ public class DefaultScenario implements Scenario{
     }
 
     public void playerInput(Player player, int input){
-        if (input == Input.Keys.O){
+        if (input == Input.Keys.O || input == OuyaController.BUTTON_O){
             for (SensorObject sensor: state.scene.sensors) {
                 if (sensor.active) if (sensor.player_contacts.get(player) > 0) {
 

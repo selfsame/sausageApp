@@ -11,6 +11,7 @@ import com.sausageApp.Simulation.Box;
 The definitive assortment of instances currently running
  */
 public class State {
+    public boolean debug = false;
     private static State instance = null;
     public Scene scene = null;
     public Box box = null;

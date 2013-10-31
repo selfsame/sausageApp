@@ -15,12 +15,12 @@ import java.util.ArrayList;
 public class VertexObject {
     public String name;
     public boolean texture;
-    public float[] local_mat4 = new float[]{};
-    public float[] position = new float[]{};
-    public float[] scale = new float[]{};
-    public float[] quaternion = new float[]{};
-    public float[] static_vertices = new float[]{};
-    public short[] static_indicies = new short[]{};
+    public float[] local_mat4;
+    public float[] position;
+    public float[] scale;
+    public float[] quaternion;
+    public float[] static_vertices;
+    public short[] static_indicies;
     public ArrayList<String> classes = new ArrayList<String>();
     public boolean alpha;
     public VertexObject(){};

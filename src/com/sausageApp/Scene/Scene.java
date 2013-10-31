@@ -97,7 +97,12 @@ public class Scene {
 
         tex_shader = level_geo.MakeTexShader();
 
-        wire_mesh = level_geo.CompileMesh(scene_data.wire_vertices.clone(), scene_data.wire_indicies.clone());
+        float[] vertices = new float[scene_data.wire_vertices.length];
+        System.arraycopy(scene_data.wire_vertices,0,vertices,0,scene_data.wire_vertices.length);
+        short[] indicies = new short[scene_data.wire_indicies.length];
+        System.arraycopy(scene_data.wire_indicies,0,indicies,0,scene_data.wire_indicies.length);
+
+        wire_mesh = level_geo.CompileMesh(scene_data.wire_vertices, scene_data.wire_indicies);
         wire_shader = level_geo.MakeWireShader();
 
         for (Locus locus: scene_data.locii) {
@@ -110,7 +115,9 @@ public class Scene {
         // WARNING need to make these Body containing objects safe
 
         for (Collider group: scene_data.collide_groups) {
-            float[] verts = group.verts.clone();
+            //float[] verts = new float[group.verts.length];
+            //System.arraycopy(group.verts,0,verts,0,group.verts.length);
+            float[] verts = group.verts;
             Vector2[] pbies = new Vector2[(int)verts.length/2];
             for (int j = 0; j < (int)verts.length/2; j++) {
                 pbies[j] = units.S2B(units.unAspect(units.gl2S(new Vector2(verts[j * 2], verts[j * 2 + 1]))));
@@ -127,16 +134,17 @@ public class Scene {
             dynamics.add(d);
         }
 
-        Tween.to(object_map.get("Lamp"), GameObjectAccessor.POSITION_Y, .3f).targetRelative(.1f).repeatYoyo(100, 0f).start(tweenManager);
-        Tween.to(object_map.get("Lamp"), GameObjectAccessor.SCALE_XYZ, .1f).delay(.3f).target(1f,1f,.5f).repeatYoyo(100, .2f).start(tweenManager);
-        Tween.to(object_map.get("Cloud"), GameObjectAccessor.POSITION_X, 40f).targetRelative(-50f).repeatYoyo(10, .2f).start(tweenManager);
-        Tween.to(object_map.get("Cloud.001"), GameObjectAccessor.POSITION_X, 40f).targetRelative(-50f).repeatYoyo(10, .2f).start(tweenManager);
-        Tween.to(object_map.get("Cloud.002"), GameObjectAccessor.POSITION_X, 50f).targetRelative(-30f).repeatYoyo(10, .2f).start(tweenManager);
-        Tween.to(object_map.get("Cloud.003"), GameObjectAccessor.POSITION_X, 30f).targetRelative(-10f).repeatYoyo(10, .2f).start(tweenManager);
-        Tween.to(object_map.get("Cloud.004"), GameObjectAccessor.POSITION_X, 30f).targetRelative(10f).repeatYoyo(10, .2f).start(tweenManager);
+//        Tween.to(object_map.get("Lamp"), GameObjectAccessor.POSITION_Y, .3f).targetRelative(.1f).repeatYoyo(100, 0f).start(tweenManager);
+//        Tween.to(object_map.get("Lamp"), GameObjectAccessor.SCALE_XYZ, .1f).delay(.3f).target(1f,1f,.5f).repeatYoyo(100, .2f).start(tweenManager);
+//        Tween.to(object_map.get("Cloud"), GameObjectAccessor.POSITION_X, 40f).targetRelative(-50f).repeatYoyo(10, .2f).start(tweenManager);
+//        Tween.to(object_map.get("Cloud.001"), GameObjectAccessor.POSITION_X, 40f).targetRelative(-50f).repeatYoyo(10, .2f).start(tweenManager);
+//        Tween.to(object_map.get("Cloud.002"), GameObjectAccessor.POSITION_X, 50f).targetRelative(-30f).repeatYoyo(10, .2f).start(tweenManager);
+//        Tween.to(object_map.get("Cloud.003"), GameObjectAccessor.POSITION_X, 30f).targetRelative(-10f).repeatYoyo(10, .2f).start(tweenManager);
+//        Tween.to(object_map.get("Cloud.004"), GameObjectAccessor.POSITION_X, 30f).targetRelative(10f).repeatYoyo(10, .2f).start(tweenManager);
     }
 
     public void render(float delta){
+
         tweenManager.update(Gdx.graphics.getDeltaTime());
 
         float[] b = scene_data.background;
@@ -146,67 +154,67 @@ public class Scene {
 
         camera.update();
 
+        if (state.debug == false){
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            tex_shader.begin();
+            Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
+            Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+            tex.bind();
+            Gdx.gl.glDepthRangef(0f, 1f);
+            Gdx.gl.glDepthFunc(GL20.GL_LESS);
+            Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
+            tex_shader.setUniformMatrix("u_viewProj", camera.combined);
+            for (GameObject obj: texture_meshes) {
+                tex_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
+                obj.mesh.render(tex_shader, GL20.GL_TRIANGLES);
+            }
+            tex_shader.end();
 
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        tex_shader.begin();
-        Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
-        Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-        tex.bind();
-        Gdx.gl.glDepthRangef(0f, 1f);
-        Gdx.gl.glDepthFunc(GL20.GL_LESS);
-        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
-        tex_shader.setUniformMatrix("u_viewProj", camera.combined);
-        for (GameObject obj: texture_meshes) {
-            tex_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
-            obj.mesh.render(tex_shader, GL20.GL_TRIANGLES);
+
+
+
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+            Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
+
+            level_shader.begin();
+            Gdx.gl.glDepthRangef(0f, 1f);
+            Gdx.gl.glDepthFunc(GL20.GL_LESS);
+            level_shader.setUniformMatrix("u_viewProj", camera.combined);
+
+            for (GameObject obj: vertex_meshes) {
+                level_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
+                obj.mesh.render(level_shader, GL20.GL_TRIANGLES);
+            }
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            for (GameObject obj: vertex_meshes_alpha) {
+                level_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
+                obj.mesh.render(level_shader, GL20.GL_TRIANGLES);
+            }
+            level_shader.end();
+
+            tex_shader.begin();
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            for (GameObject obj: texture_meshes_alpha) {
+                tex_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
+                obj.mesh.render(tex_shader, GL20.GL_TRIANGLES);
+            }
+            tex_shader.end();
+
+
+            wire_shader.begin();
+            Gdx.gl20.glLineWidth(1f);
+            Gdx.gl.glPolygonOffset(1f, 2f);
+            Gdx.gl.glDepthRangef(0f, 100f);
+            Gdx.gl.glDepthFunc(GL20.GL_LESS);
+            Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
+            Gdx.gl20.glDisable(GL20.GL_BLEND);
+            wire_shader.setUniformMatrix("u_viewProj", camera.combined);
+            wire_mesh.render(wire_shader, GL20.GL_LINES);
+            Gdx.gl20.glDisable(GL20.GL_BLEND);
+            wire_shader.end();
         }
-        tex_shader.end();
-
-
-
-
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
-
-        level_shader.begin();
-        Gdx.gl.glDepthRangef(0f, 1f);
-        Gdx.gl.glDepthFunc(GL20.GL_LESS);
-        level_shader.setUniformMatrix("u_viewProj", camera.combined);
-
-        for (GameObject obj: vertex_meshes) {
-            level_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
-            obj.mesh.render(level_shader, GL20.GL_TRIANGLES);
-        }
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        for (GameObject obj: vertex_meshes_alpha) {
-            level_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
-            obj.mesh.render(level_shader, GL20.GL_TRIANGLES);
-        }
-        level_shader.end();
-
-        tex_shader.begin();
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        for (GameObject obj: texture_meshes_alpha) {
-            tex_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
-            obj.mesh.render(tex_shader, GL20.GL_TRIANGLES);
-        }
-        tex_shader.end();
-
-
-        wire_shader.begin();
-        Gdx.gl20.glLineWidth(1f);
-        Gdx.gl.glPolygonOffset(1f, 2f);
-        Gdx.gl.glDepthRangef(0f, 100f);
-        Gdx.gl.glDepthFunc(GL20.GL_LESS);
-        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
-        Gdx.gl20.glDisable(GL20.GL_BLEND);
-        wire_shader.setUniformMatrix("u_viewProj", camera.combined);
-        wire_mesh.render(wire_shader, GL20.GL_LINES);
-        Gdx.gl20.glDisable(GL20.GL_BLEND);
-        wire_shader.end();
-
 
 
 

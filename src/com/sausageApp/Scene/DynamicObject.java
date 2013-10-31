@@ -36,8 +36,9 @@ public class DynamicObject extends DynamicData{
         mass = data.mass;
         classes = data.classes;
         Vector2 m = units.unAspect(units.S2B(units.gl2S(new Vector2(position.x, -position.y))));
-        body = state.box.createDynamicCircle(m.x,m.y, 2f*(radius/.12f), mass, friction, restitution);
+        body = state.box.createDynamicCircle(m.x,m.y, 2f*(radius/.12f), .00001f, friction, restitution);
 
+        state.log(":"+body.getMass());
         if (scene.object_map.containsKey(name)){
            visuals.add(scene.object_map.get(name));
         }

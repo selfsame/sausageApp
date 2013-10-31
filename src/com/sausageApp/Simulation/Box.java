@@ -2,7 +2,9 @@ package com.sausageApp.Simulation;
 
 import aurelienribon.tweenengine.Tween;
 
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.sausageApp.Game.State;
 import com.sausageApp.Game.Units;
@@ -20,7 +22,7 @@ import com.sausageApp.TweenAccessors.MoveableAccessor;
 public class Box {
     public State state = State.getInstance();
     private Units units = new Units();
-
+    public Box2DDebugRenderer debugRenderer;
 
 
     public World world;
@@ -45,6 +47,13 @@ public class Box {
 
         world = new World(gravity, true);
         world.setContactListener(contact_listener);
+        if (state.debug){
+            debugRenderer = new Box2DDebugRenderer();
+            debugRenderer.setDrawJoints(true);
+            debugRenderer.setDrawContacts(true);
+            debugRenderer.setDrawInactiveBodies(true);
+        }
+
 
 
 
@@ -56,7 +65,7 @@ public class Box {
         world.step(delta, 20, 40);
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
-        //game.profiler.addStat("World Step: (ms) "+(int)(duration*1.0e-6));
+        state.game.profiler.addStat("World Step: (ms) "+(int)(duration*1.0e-6));
     }
 
 
@@ -87,7 +96,7 @@ public class Box {
             pp = pp.add(player_p);
         }
         float dist = new Vector2(ubx,uby*1.4f).dst2(lbx,lby*1.4f);
-        pp = pp.mul(1f/(float)player_count);
+        pp = pp.scl(1f/(float)player_count);
         Vector2 ppp = new Vector2(pp.x,pp.y);
         Vector2 difff = ppp.sub(new Vector2(state.scene.camera.position.x, state.scene.camera.position.y)).mul(1f);
         float final_dist =  (float)(Math.sqrt((double)dist));
@@ -96,6 +105,12 @@ public class Box {
         Tween.to(state.scene.camera, MoveableAccessor.POSITION_X, .2f).target(pp.x).start(state.scene.tweenManager);
         Tween.to(state.scene.camera, MoveableAccessor.POSITION_Y, .2f).target(pp.y).start(state.scene.tweenManager);
         Tween.to(state.scene.camera, MoveableAccessor.POSITION_Z, .3f).target(final_dist).start(state.scene.tweenManager);
+
+
+        if (state.debug){
+            Matrix4 ddm = state.scene.camera.combined.cpy().rotate(new Vector3(0f,0f,.5f), (float)180).rotate(new Vector3(0f,.5f,0f), (float)180).scl((1f/40f)*3f).trn(-1.6f,2.2f,0f);
+            debugRenderer.render(world, ddm);
+        }
     }
 
     public Vector2 GetSpawn(){
@@ -133,8 +148,8 @@ public class Box {
         bodyDef.position.set(x, y);
         bodyDef.allowSleep = false;
         Body body = world.createBody(bodyDef);
-        body.setAngularDamping(.8f);
-        body.setLinearDamping(4f);
+        body.setAngularDamping(.01f);
+        body.setLinearDamping(.01f);
 
         body.createFixture(circleShape, 5.0f);
         body.createFixture(circleF);
@@ -147,18 +162,21 @@ public class Box {
 
         FixtureDef circleF = new FixtureDef();
         circleF.shape = polygonShape;
+
         circleF.density = 1.0f*density;
-        circleF.restitution = .8f;
+        circleF.restitution = .96f;
         circleF.friction = friction;
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(x, y);
         bodyDef.allowSleep = false;
+
         Body body = world.createBody(bodyDef);
-        body.setAngularDamping(.8f);
-        body.setLinearDamping(.8f);
+        body.setAngularDamping(.2f);
+        body.setLinearDamping(.2f);
         body.createFixture(polygonShape, 5.0f);
         body.createFixture(circleF);
+
         return body;
     }
 

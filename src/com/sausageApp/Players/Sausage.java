@@ -39,8 +39,8 @@ public class Sausage {
     public ArrayList<Link> sausage_links = new ArrayList<Link>();
     public Link head_link;
     public Link tail_link;
-    public int sausage_length = 14;
-    private float L_DIST = 1.2f;
+    public int sausage_length = 40;
+    private float L_DIST = 1.0f;
 
 
 
@@ -138,8 +138,8 @@ public class Sausage {
 
 
         jd.collideConnected = false;
-        jd.upperAngle = .77079633f;
-        jd.lowerAngle = -.77079633f;
+        jd.upperAngle = 1.27079633f;
+        jd.lowerAngle = -1.27079633f;
         jd.enableLimit = true;
         jd.maxMotorTorque = 10.0f;
 
@@ -149,9 +149,9 @@ public class Sausage {
 
 
         //Body first = scenario.createDynamicCircle(x, y, radius*1.00f, 10f);
-        Body first = state.box.createDynamicRect(x, y, radius*2.00f, radius*1.00f, 10f, .9f);
+        Body first = state.box.createDynamicRect(x, y, radius*2.00f, radius*1f, 10f, .9f);
         Body prevBody = first;
-        prevBody.setAngularDamping(1.5f);
+        prevBody.setAngularDamping(.1f);
         sausage.add(prevBody);
 
 
@@ -161,11 +161,14 @@ public class Sausage {
             if (i >= link_count-1){
                 friction = .9f;
             }
-            Body next = state.box.createDynamicRect(x+(radius*2f*L_DIST)+(i*(radius*2f*L_DIST)), y, radius*2.00f, radius*.6f, 10f, friction);
+            Body next = state.box.createDynamicRect(x+(radius*2f*L_DIST)+(i*(radius*2.2f*L_DIST)), y, radius*2.00f, radius*1f, 10f, friction);
             next.setAngularDamping(.8f);
             next.setLinearDamping(.01f * i);
             Vector2 anchor = new Vector2(x+(i*(radius*2f*L_DIST)), y);
+            state.log("L:"+next.getMass());
             jd.initialize(prevBody, next, anchor);
+            jd.localAnchorA.set(radius*2f, 0f);
+            jd.localAnchorB.set(-radius*2f, 0f);
 
             state.box.world.createJoint(jd);
             sausage.add(next);
@@ -198,50 +201,50 @@ public class Sausage {
             SimpleDraw();
         }
 
+        if (state.debug == false){
+            Gdx.gl20.glLineWidth(1f);
+            Gdx.gl20.glEnable(GL20.GL_BLEND);
+            Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
+            sausage_shader.begin();
+            UpdateMesh();
+            sausage_shader.setUniformMatrix("u_worldView", state.scene.camera.combined);
+            sausage_shader.setUniformf("z_depth", z_depth);
+            if (player.debug_draw_sausage_mesh_lines){
+                mesh.render(sausage_shader, GL20.GL_LINE_LOOP);
+            } else {
+                mesh.render(sausage_shader, GL20.GL_TRIANGLES);
+            }
 
-        Gdx.gl20.glLineWidth(1f);
-        Gdx.gl20.glEnable(GL20.GL_BLEND);
-        Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
-        sausage_shader.begin();
-        UpdateMesh();
-        sausage_shader.setUniformMatrix("u_worldView", state.scene.camera.combined);
-        sausage_shader.setUniformf("z_depth", z_depth);
-        if (player.debug_draw_sausage_mesh_lines){
-            mesh.render(sausage_shader, GL20.GL_LINE_LOOP);
-        } else {
-            mesh.render(sausage_shader, GL20.GL_TRIANGLES);
+            sausage_shader.end();
+
+
+            Gdx.gl20.glDisable(GL20.GL_BLEND);
+            cap_shader.begin();
+            cap_shader.setUniformf("z_depth", z_depth);
+            cap_shader.setUniformMatrix("u_worldView", state.scene.camera.combined);
+            cap_shader.setUniformf("player_color", player.color.r, player.color.g, player.color.b, 1.0f);
+
+
+            float angle = player.sausage.head_link.NextAngle() * (float)(180f/Math.PI) - 180f;
+            Quaternion rot = new Quaternion(new Vector3(0f,0f,1f), angle);
+            Matrix4 capmat = new Matrix4(rot);
+
+            Vector2 bv = units.applyAspect(units.S2gl((units.B2S(player.sausage.head.getPosition())))).mul(2f);
+            cap_shader.setUniformf("cap_pos", bv.x,bv.y);
+            cap_shader.setUniformMatrix("capmat", capmat);
+            end_cap.render(sausage_shader, GL20.GL_TRIANGLES);
+
+            angle = player.sausage.tail_link.PrevAngle() * (float)(180f/Math.PI) - 180f;
+            rot = new Quaternion(new Vector3(0f,0f,1f), angle);
+            capmat = new Matrix4(rot);
+
+            bv = units.applyAspect(units.S2gl((units.B2S(player.sausage.tail.getPosition())))).mul(2f);
+            cap_shader.setUniformf("cap_pos", bv.x,bv.y);
+            cap_shader.setUniformMatrix("capmat", capmat);
+            end_cap.render(sausage_shader, GL20.GL_TRIANGLES);
+
+            cap_shader.end();
         }
-
-        sausage_shader.end();
-
-
-        Gdx.gl20.glDisable(GL20.GL_BLEND);
-        cap_shader.begin();
-        cap_shader.setUniformf("z_depth", z_depth);
-        cap_shader.setUniformMatrix("u_worldView", state.scene.camera.combined);
-        cap_shader.setUniformf("player_color", player.color.r, player.color.g, player.color.b, 1.0f);
-
-
-        float angle = player.sausage.head_link.NextAngle() * (float)(180f/Math.PI) - 180f;
-        Quaternion rot = new Quaternion(new Vector3(0f,0f,1f), angle);
-        Matrix4 capmat = new Matrix4(rot);
-
-        Vector2 bv = units.applyAspect(units.S2gl((units.B2S(player.sausage.head.getPosition())))).mul(2f);
-        cap_shader.setUniformf("cap_pos", bv.x,bv.y);
-        cap_shader.setUniformMatrix("capmat", capmat);
-        end_cap.render(sausage_shader, GL20.GL_TRIANGLES);
-
-        angle = player.sausage.tail_link.PrevAngle() * (float)(180f/Math.PI) - 180f;
-        rot = new Quaternion(new Vector3(0f,0f,1f), angle);
-        capmat = new Matrix4(rot);
-
-        bv = units.applyAspect(units.S2gl((units.B2S(player.sausage.tail.getPosition())))).mul(2f);
-        cap_shader.setUniformf("cap_pos", bv.x,bv.y);
-        cap_shader.setUniformMatrix("capmat", capmat);
-        end_cap.render(sausage_shader, GL20.GL_TRIANGLES);
-
-        cap_shader.end();
-
 
 
     }
