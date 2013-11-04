@@ -39,7 +39,7 @@ public class Sausage {
     public ArrayList<Link> sausage_links = new ArrayList<Link>();
     public Link head_link;
     public Link tail_link;
-    public int sausage_length = 40;
+    public int sausage_length = 18;
     private float L_DIST = 1.0f;
 
 

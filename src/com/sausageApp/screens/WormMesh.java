@@ -222,9 +222,10 @@ public class WormMesh {
     public Mesh CapMesh(){
         Mesh mesh = new Mesh(false, 512, 512,
                 new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
-        float[] verts = new float[]{0.000000f, -0.030000f, 0.000000f,
-                0.039857f, -0.030000f, 0.000000f,
-                0.039857f, 0.030000f, 0.000000f,
+        float[] verts = new float[]{
+                0.000000f, -0.030000f, 0.000000f,
+                0.058424f, -0.030000f, 0.000000f,
+                0.058424f, 0.030000f, 0.000000f,
                 -0.029544f, -0.005209f, 0.000000f,
                 -0.029544f, 0.005209f, 0.000000f,
                 -0.049048f, -0.014930f, 0.000000f,
@@ -236,7 +237,7 @@ public class WormMesh {
                 -0.010261f, 0.028191f, 0.000000f,
                 0.000000f, -0.030000f, 0.000000f,
                 0.000000f, 0.030000f, 0.000000f,
-                -0.049048f, 0.014930f, 0.000000f};
+                -0.049048f, 0.014930f, 0.000000f };
 
         short[] inds = new short[]{0 , 1, 2,
                 3 , 4, 5,

@@ -1,5 +1,31 @@
 SAUSAGE TODO
 
+[SATURDAY]
+
+1.  Fix up house:
+	a) party room - simple wallpaper, clock, table w/ cake, presents, boom box, balloons
+	b) kitchen - fridge - stove - sink - table w/ cloth - tiled floor - cabinets.
+	c) basement
+	d) fireplace (for secret path from roof)
+
+2.  Get controllers to work on PC (swap axis, for snes controller use buttons for right joystick)
+
+3. Sausage control:
+	a) make sure force scales with length
+	b) should be able to 'stand up' if head is vertical and control stops?
+	c) if two links get separated should try to reverse forces to keep together, otherwise splits the sausage.
+	d) other safeguards (crosses over self, inside of a static polygon.)
+
+4. Camera should use FOV for zoom, so zooming out keeps the perspective from obscuring sausages.
+
+5. Implement StarCollect scenario with reappearing star pickups, keep score for players, show score/player avatar, show dedicated timer.
+
+6.  Platformer level, with game modes for single/multiplayer.
+
+
+
+-----------------
+
 
 1.  Cap sausage ends with appropriate mesh based sausagey endings. [DONE]
 	

@@ -35,7 +35,7 @@ public class Player {
 
     public boolean in_lobby = true;
 
-    public float FORCE = 40f;
+    public float FORCE = 80f;
     public int propigation = 10;
 
     public int BID;
@@ -47,6 +47,11 @@ public class Player {
     public boolean debug_draw_sausage_force = false;
     public boolean debug_draw_static_chains = false;
     public boolean debug_draw_level = true;
+
+    public int LEFT_AXIS_X = 0;
+    public int LEFT_AXIS_Y = 1;
+    public int RIGHT_AXIS_X = 2;
+    public int RIGHT_AXIS_Y = 3;
 
     public Player( Controller cont, Color col, int _uid){
         uid = _uid;
@@ -112,6 +117,8 @@ public class Player {
         in_lobby = false;
         sausage = new Sausage(this);
         propigation = sausage.sausage_length/2;
+        state.log("PLAYER "+uid+":"+controller.getName());
+
 
     }
 
@@ -204,10 +211,12 @@ public class Player {
 
 
         } else {
-            float leftXAxis = controller.getAxis(Ouya.AXIS_LEFT_X);
-            float leftYAxis = controller.getAxis(Ouya.AXIS_LEFT_Y);
-            float rightXAxis = controller.getAxis(Ouya.AXIS_RIGHT_X);
-            float rightYAxis = controller.getAxis(Ouya.AXIS_RIGHT_Y);
+
+            float leftXAxis = controller.getAxis(LEFT_AXIS_Y);
+            float leftYAxis = controller.getAxis(LEFT_AXIS_X);
+            float rightXAxis = controller.getAxis(RIGHT_AXIS_Y);
+            float rightYAxis = controller.getAxis(RIGHT_AXIS_X);
+            if (uid == 1) leftYAxis = -1.0f;
             if (leftXAxis > 0.0 || leftXAxis < 0.0){
                 sausage.tail_link.applyLinearImpulse(new Vector2(leftXAxis*(_FORCE)*1.3f, 0f), _propigation, true, true, .75f);
             }

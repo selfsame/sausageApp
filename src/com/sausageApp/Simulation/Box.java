@@ -103,7 +103,7 @@ public class Box {
         if (final_dist < state.scene.view_dist){final_dist = state.scene.view_dist;}
 
         Tween.to(state.scene.camera, MoveableAccessor.POSITION_X, .2f).target(pp.x).start(state.scene.tweenManager);
-        Tween.to(state.scene.camera, MoveableAccessor.POSITION_Y, .2f).target(pp.y).start(state.scene.tweenManager);
+        Tween.to(state.scene.camera, MoveableAccessor.POSITION_Y, .2f).target(pp.y+.4f).start(state.scene.tweenManager);
         Tween.to(state.scene.camera, MoveableAccessor.POSITION_Z, .3f).target(final_dist).start(state.scene.tweenManager);
 
 
