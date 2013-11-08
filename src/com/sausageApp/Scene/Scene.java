@@ -161,6 +161,7 @@ public class Scene {
             Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
             Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
             tex.bind();
+            Gdx.gl.glPolygonOffset(-1f, -1f);
             Gdx.gl.glDepthRangef(0f, 1f);
             Gdx.gl.glDepthFunc(GL20.GL_LESS);
             Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
@@ -205,8 +206,8 @@ public class Scene {
 
             wire_shader.begin();
             Gdx.gl20.glLineWidth(1f);
-            Gdx.gl.glPolygonOffset(1f, 2f);
-            Gdx.gl.glDepthRangef(0f, 100f);
+
+
             Gdx.gl.glDepthFunc(GL20.GL_LESS);
             Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
             Gdx.gl20.glDisable(GL20.GL_BLEND);

@@ -117,7 +117,7 @@ public class Player {
         in_lobby = false;
         sausage = new Sausage(this);
         propigation = sausage.sausage_length/2;
-        state.log("PLAYER "+uid+":"+controller.getName());
+        //state.log("PLAYER "+uid+":"+controller.getName());
 
 
     }
@@ -202,6 +202,9 @@ public class Player {
             }
             if(Gdx.input.isKeyPressed(Input.Keys.NUM_5)){
                 debug_draw_static_chains = !debug_draw_static_chains;
+            }
+            if(Gdx.input.isKeyPressed(Input.Keys.NUM_6)){
+                state.debug = !state.debug;
             }
 
             if(Gdx.input.isKeyPressed(Input.Keys.O) ){

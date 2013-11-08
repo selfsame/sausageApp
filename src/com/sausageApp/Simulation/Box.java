@@ -47,12 +47,12 @@ public class Box {
 
         world = new World(gravity, true);
         world.setContactListener(contact_listener);
-        if (state.debug){
-            debugRenderer = new Box2DDebugRenderer();
-            debugRenderer.setDrawJoints(true);
-            debugRenderer.setDrawContacts(true);
-            debugRenderer.setDrawInactiveBodies(true);
-        }
+
+        debugRenderer = new Box2DDebugRenderer();
+        debugRenderer.setDrawJoints(true);
+        debugRenderer.setDrawContacts(true);
+        debugRenderer.setDrawInactiveBodies(true);
+
 
 
 

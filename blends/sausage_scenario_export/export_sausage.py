@@ -28,159 +28,6 @@ import bpy, bmesh
 import os
 
 
-def save_mesh(filepath,
-              mesh,
-              use_normals=True,
-              use_uv_coords=True,
-              use_colors=True,
-              global_matrix=False
-              ):
-
-    def rvec3d(v):
-        return round(v[0], 6), round(v[1], 6), round(v[2], 6)
-
-    def rvec2d(v):
-        return round(v[0], 6), round(v[1], 6)
-
-    file = open(filepath, "w", encoding="utf8", newline="\n")
-    fw = file.write
-
-    # Be sure tessface & co are available!
-    if not mesh.tessfaces and mesh.polygons:
-        mesh.calc_tessface()
-
-    has_uv = bool(mesh.tessface_uv_textures)
-    has_vcol = bool(mesh.tessface_vertex_colors)
-
-    if not has_uv:
-        use_uv_coords = False
-    if not has_vcol:
-        use_colors = False
-
-    if not use_uv_coords:
-        has_uv = False
-    if not use_colors:
-        has_vcol = False
-
-    if has_uv:
-        active_uv_layer = mesh.tessface_uv_textures.active
-        if not active_uv_layer:
-            use_uv_coords = False
-            has_uv = False
-        else:
-            active_uv_layer = active_uv_layer.data
-
-    if has_vcol:
-        active_col_layer = mesh.tessface_vertex_colors.active
-        if not active_col_layer:
-            use_colors = False
-            has_vcol = False
-        else:
-            active_col_layer = active_col_layer.data
-
-    # in case
-    color = uvcoord = uvcoord_key = normal = normal_key = None
-
-    mesh_verts = mesh.vertices  # save a lookup
-    ply_verts = []  # list of dictionaries
-    # vdict = {} # (index, normal, uv) -> new index
-    vdict = [{} for i in range(len(mesh_verts))]
-    ply_faces = [[] for f in range(len(mesh.tessfaces))]
-    vert_count = 0
-    for i, f in enumerate(mesh.tessfaces):
-
-        smooth = not use_normals or f.use_smooth
-        if not smooth:
-            normal = f.normal[:]
-            normal_key = rvec3d(normal)
-
-        if has_uv:
-            uv = active_uv_layer[i]
-            uv = uv.uv1, uv.uv2, uv.uv3, uv.uv4
-        if has_vcol:
-            col = active_col_layer[i]
-            col = col.color1[:], col.color2[:], col.color3[:], col.color4[:]
-
-        f_verts = f.vertices
-
-        pf = ply_faces[i]
-        for j, vidx in enumerate(f_verts):
-            v = mesh_verts[vidx]
-
-            if smooth:
-                normal = v.normal[:]
-                normal_key = rvec3d(normal)
-
-            if has_uv:
-                uvcoord = uv[j][0], uv[j][1]
-                uvcoord_key = rvec2d(uvcoord)
-
-            if has_vcol:
-                color = col[j]
-                color = (int(color[0] * 255.0),
-                         int(color[1] * 255.0),
-                         int(color[2] * 255.0),
-                         )
-            key = normal_key, uvcoord_key, color
-
-            vdict_local = vdict[vidx]
-            pf_vidx = vdict_local.get(key)  # Will be None initially
-
-            if pf_vidx is None:  # same as vdict_local.has_key(key)
-                pf_vidx = vdict_local[key] = vert_count
-                ply_verts.append((vidx, normal, uvcoord, color))
-                vert_count += 1
-
-            pf.append(pf_vidx)
-
-    fw("ply\n")
-    fw("format ascii 1.0\n")
-    fw("comment Created by Blender %s - "
-       "www.blender.org, source file: %r\n" %
-       (bpy.app.version_string, os.path.basename(bpy.data.filepath)))
-
-    fw("element vertex %d\n" % len(ply_verts))
-
-    fw("property float x\n"
-       "property float y\n"
-       "property float z\n")
-
-    if use_normals:
-        fw("property float nx\n"
-           "property float ny\n"
-           "property float nz\n")
-    if use_uv_coords:
-        fw("property float s\n"
-           "property float t\n")
-    if use_colors:
-        fw("property uchar red\n"
-           "property uchar green\n"
-           "property uchar blue\n")
-
-    fw("element face %d\n" % len(mesh.tessfaces))
-    fw("property list uchar uint vertex_indices\n")
-    fw("end_header\n")
-
-    for i, v in enumerate(ply_verts):
-        fw("%.6f %.6f %.6f" % mesh_verts[v[0]].co[:])  # co
-        if use_normals:
-            fw(" %.6f %.6f %.6f" % v[1])  # no
-        if use_uv_coords:
-            fw(" %.6f %.6f" % v[2])  # uv
-        if use_colors:
-            fw(" %u %u %u" % v[3])  # col
-        fw("\n")
-
-    for pf in ply_faces:
-        if len(pf) == 3:
-            fw("3 %d %d %d\n" % tuple(pf))
-        else:
-            fw("4 %d %d %d %d\n" % tuple(pf))
-
-    file.close()
-    print("writing %r done" % filepath)
-
-    return {'FINISHED'}
 
 
 
@@ -223,6 +70,47 @@ def pack_game_classes(obj):
     for sclass in obj.SAUSAGE_class:
         temp.append('"'+sclass.name+'"')
     return ", ".join(temp)
+
+
+def get_ordered_vertex_loops(obj):
+    ordered_loops = []
+    bm = bmesh.new() 
+    mesh = obj.data.copy()
+    
+    if not mesh:
+        raise Exception("Error, could not get mesh data from active object")
+
+    bm.from_mesh(mesh)
+
+    def walk(index_list, vert):
+        for edge in vert.link_edges:
+            for v in edge.verts:
+                if v.index not in index_list:
+                    index_list.append(v.index)
+                    return v
+        return False
+
+    for vv in bm.verts:
+        found = False
+        for loop in ordered_loops:
+            if  vv.index in loop:
+                found = True
+        if not found:
+            new_loop = []
+
+            target = vv
+            new_loop.append(target.index)
+            while target != False:
+                target = walk(new_loop, target)
+            ordered_loops.append(new_loop)
+    
+
+
+    
+
+    return ordered_loops
+
+
 
 
 
@@ -268,6 +156,7 @@ def save_selected(filepath,
     dynamic_objects = ", ".join(temp)
     
     
+    v_count = 0
     for obj in wireframe_objects:
         bm = bmesh.new() 
         mesh = obj.data.copy()
@@ -281,34 +170,26 @@ def save_selected(filepath,
 
         first = False
         color = bm.loops.layers.color[0]
-        for face in bm.faces:
-            
-            valid = False
-            starting_count = total_wire_verts
-            make_line = False
-            for iter in range(0,len(face.loops)-1):
-                loop = face.loops[iter]
-                ed = loop.edge 
-                if ed.smooth == False or make_line == True:
-                    wire_vertices_str += "{0:.4f}, {1:.4f}, {2:.4f}, ".format(*tuple(loop.vert.co[:])) 
-                    c = loop[color]
+        for edge in bm.edges:
+            if edge.smooth == False:
+                
+                for vert in edge.verts:
+                    darkest = 4
+                    for ll in vert.link_loops:
+                        col = ll[color]
+                        t = col[0]+col[1]+col[2]
+                        if t < darkest:
+                            darkest = t
+                            c = col
+                    co = [vert.co[0], vert.co[1], vert.co[2]+.001]
+                    wire_vertices_str += "{0:.4f}, {1:.4f}, {2:.4f}, ".format(*tuple(co)) 
                     if c:
                         wire_vertices_str += "{0:.2f}, {1:.2f}, {2:.2f}, 1.0, ".format(*tuple( c )) # col
                     else:
                         wire_vertices_str += "0.0, 0.0, 0.0, 1.0, "
-                        
-                    if make_line:
-                        wire_indicies_str += "{0}, ".format(total_wire_verts-1)
-                        wire_indicies_str += "{0}, ".format(total_wire_verts)
-                    total_wire_verts += 1
-                if ed.smooth == False:
-                    make_line = True
-                    if iter == len(face.loops)-1:
-                        
-                        wire_indicies_str += "{0}, ".format(starting_count) 
-                        wire_indicies_str += "{0}, ".format(total_wire_verts-1)
-                else:
-                    make_line = False
+                    wire_indicies_str += "{0}, ".format(v_count)
+                    v_count += 1
+
 
                     
 
@@ -322,22 +203,21 @@ def save_selected(filepath,
     for obj in box2d_objects:
         bm = bmesh.new() 
         mesh = obj.data.copy()
-        
-        if not mesh:
-            raise Exception("Error, could not get mesh data from active object")
         mesh.transform(global_matrix * obj.matrix_world)
         bm.from_mesh(mesh)
         verts = bm.verts
 
-
-
-        loopset = "{mask: "+str(obj.SAUSAGE_int)+",verts:["
-        for v in verts:
-            loopset += "{0:.4f}, {1:.4f}, ".format(*tuple(v.co[0:2]))
-
-        if len(loopset) > 1:
-            loopset = loopset[:-2]
-        collide_groups_str += loopset + "]}\n, "
+        loops = get_ordered_vertex_loops(obj)
+        for loop in loops:
+            if len(loop) > 0:
+                
+                loopset = "{mask: "+str(obj.SAUSAGE_int)+",verts:["
+                
+                for i in loop:
+                    loopset += "{0:.4f}, {1:.4f}, ".format(*tuple(verts[i].co[0:2]))
+                if len(loopset) > 1:
+                    loopset = loopset[:-2]
+                collide_groups_str += loopset + "]}\n, "
 
 
     for obj in sensors:
@@ -625,23 +505,24 @@ def save(operator,
     dynamics = []
 
     for oo in context.selected_objects:
-        if oo.SAUSAGE_visible_object:
-            #if oo.type != 'CAMERA' and len(oo.data.uv_layers) > 0:
-            #    tex_objects.append(oo)
-            #else:
-            objects.append(oo)
-        if oo.SAUSAGE_wireframe_object:
-            wireframe_objects.append(oo)
-        
-        if oo.SAUSAGE_locus:
-            locii.append(oo)
-        if oo.SAUSAGE_sensor_area:
-            sensors.append(oo)
-        if oo.SAUSAGE_box2d or oo.SAUSAGE_physics_edges:
-            if oo.SAUSAGE_physics_dynamic == False:
-                box2d_objects.append(oo)
-            else:
-                dynamics.append(oo)
+        if oo.type != 'LAMP':
+            if oo.type == 'MESH' and oo.SAUSAGE_visible_object:
+                #if oo.type != 'CAMERA' and len(oo.data.uv_layers) > 0:
+                #    tex_objects.append(oo)
+                #else:
+                objects.append(oo)
+            if oo.SAUSAGE_wireframe_object:
+                wireframe_objects.append(oo)
+            
+            if oo.SAUSAGE_locus:
+                locii.append(oo)
+            if oo.SAUSAGE_sensor_area:
+                sensors.append(oo)
+            if oo.SAUSAGE_box2d or oo.SAUSAGE_physics_edges:
+                if oo.SAUSAGE_physics_dynamic == False:
+                    box2d_objects.append(oo)
+                else:
+                    dynamics.append(oo)
 
     if global_matrix is None:
         from mathutils import Matrix
