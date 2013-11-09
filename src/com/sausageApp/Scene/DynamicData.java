@@ -17,6 +17,8 @@ public class DynamicData {
     public float restitution;
     public float[] position = new float[]{};
     public float mass;
+    public float[] verts;
+    public ArrayList<String> children;
     public ArrayList<String> classes = new ArrayList<String>();
     public DynamicData(){};
 }

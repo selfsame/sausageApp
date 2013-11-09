@@ -21,6 +21,8 @@ public class DynamicObject extends DynamicData{
     public Vector3 position;
     public float mass;
     public ArrayList<String> classes = new ArrayList<String>();
+    public float[] verts;
+    public ArrayList<String> children;
 
     public ArrayList<GameObject> visuals = new ArrayList<GameObject>();
 
@@ -35,12 +37,33 @@ public class DynamicObject extends DynamicData{
         restitution = data.restitution;
         mass = data.mass;
         classes = data.classes;
+
+        children = data.children;
+
+        verts = new float[data.verts.length];
+        System.arraycopy(data.verts,0,verts,0,data.verts.length);
+
         Vector2 m = units.unAspect(units.S2B(units.gl2S(new Vector2(position.x, -position.y))));
-        body = state.box.createDynamicCircle(m.x,m.y, 2f*(radius/.12f), .00001f, friction, restitution);
+        if (type.equals("circle")){
+            body = state.box.createDynamicCircle(m.x,m.y, 2f*(radius/.12f), .00001f, friction, restitution);
+        } else if (type.equals("polygon")){
+            Vector2[] pbies = new Vector2[(int)verts.length/2];
+            for (int j = 0; j < (int)verts.length/2; j++) {
+                pbies[j] = units.S2B(units.unAspect(units.gl2S(new Vector2(verts[j * 2], verts[j * 2 + 1]))));
+            }
+            Vector2 bpos =  units.S2B(units.unAspect(units.gl2S(new Vector2(position.x,position.y))));
+            body = state.box.createDynamicPolygon(bpos.x, bpos.y, pbies, 1);
+        }
 
         state.log(":"+body.getMass());
         if (scene.object_map.containsKey(name)){
            visuals.add(scene.object_map.get(name));
+        }
+        for (String child: children){
+            if (scene.object_map.containsKey(child)){
+                visuals.add(scene.object_map.get(child));
+            }
+
         }
 
     }

@@ -193,30 +193,52 @@ public class Box {
         return body;
     }
 
-    public Body createStaticChain(Vector2[] verticies, boolean is_sensor, int mask) {
+    public Body createStaticChain(Vector2[] verticies, boolean is_sensor, int mask, boolean dynamic) {
         ChainShape chainShape = new ChainShape();
         chainShape.createLoop(verticies);
 
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-
-        bodyDef.position.set(0f, 0f);
-
         FixtureDef circleF = new FixtureDef();
         circleF.shape = chainShape;
+        circleF.density = 1.0f;
         circleF.restitution = .8f;
         circleF.friction = .9f;
 
-        circleF.filter.categoryBits = (short)mask;
-        circleF.filter.maskBits = (short)mask;
-        //circleF.filter.groupIndex = mask;
+        circleF.filter.categoryBits = 1;
+        circleF.filter.maskBits = 1;
 
-        //Gdx.app.log("MASK:", ":"+circleF.filter.categoryBits);
-
+        BodyDef bodyDef = new BodyDef();
+        if (dynamic == false){
+            bodyDef.type = BodyDef.BodyType.StaticBody;
+        } else if (dynamic == true){
+            bodyDef.type = BodyDef.BodyType.DynamicBody;
+        }
+        bodyDef.position.set(0f, 0f);
         circleF.isSensor = is_sensor;
-
         Body body = world.createBody(bodyDef);
         body.createFixture(circleF);
+        return body;
+    }
+
+    public Body createDynamicPolygon(float x, float y, Vector2[] verticies, int mask) {
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.set(verticies);
+
+        FixtureDef circleF = new FixtureDef();
+        circleF.shape = polygonShape;
+        circleF.restitution = .2f;
+        circleF.friction = .9f;
+
+        circleF.filter.categoryBits = 1;
+        circleF.filter.maskBits = 1;
+
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.fixedRotation = false;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        //bodyDef.position.set(x, y);
+        bodyDef.position.set(0f, 0f);
+        Body body = world.createBody(bodyDef);
+        body.createFixture(circleF);
+
         return body;
     }
 

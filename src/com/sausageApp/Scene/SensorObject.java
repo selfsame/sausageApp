@@ -53,7 +53,7 @@ public class SensorObject implements Contactable {
             pbies[j] = units.unAspect(units.S2B(units.gl2S(new Vector2(verts[j * 2], verts[j * 2 + 1]))));
         }
 
-        body = state.box.createStaticChain( pbies, true, 1);
+        body = state.box.createStaticChain( pbies, true, 1, false);
         body.setUserData(this);
     }
 

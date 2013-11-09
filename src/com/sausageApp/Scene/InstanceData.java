@@ -12,16 +12,12 @@ import java.util.ArrayList;
  * Time: 12:15 AM
  * To change this template use File | Settings | File Templates.
  */
-public class VertexObject {
+public class InstanceData {
     public String name;
-    public boolean texture;
     public float[] position;
     public float[] scale;
     public float[] quaternion;
-    public float[] static_vertices;
-    public short[] static_indicies;
-    public boolean template;
+    public String group;
     public ArrayList<String> classes = new ArrayList<String>();
-    public boolean alpha;
-    public VertexObject(){};
+    public InstanceData(){};
 }

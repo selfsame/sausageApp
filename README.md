@@ -22,6 +22,18 @@ SAUSAGE TODO
 
 6.  Platformer level, with game modes for single/multiplayer.
 
+7. Fix rotating game objects
+
+8. dynamic polygon objects
+
+9. shorten sausage links, fix midpoint spread and use openGL z depth to overwrite concave curve.
+
+10. [DONE] sort alpha objects by z position during level compile.
+
+11. instanced objects.
+
+12. [DONE] remember filepath and name (needs to be relative though)
+
 
 
 -----------------

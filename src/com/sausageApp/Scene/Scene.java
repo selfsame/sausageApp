@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.sausageApp.Game.State;
@@ -35,6 +36,11 @@ public class Scene {
 
     private Texture tex;
     private ShaderProgram tex_shader;
+
+    public HashMap<String, GameObject> templates = new HashMap<String, GameObject>();
+
+    public HashMap<String, ArrayList<String>> groups = new HashMap<String, ArrayList<String>>();
+
     private ArrayList<GameObject> texture_meshes = new ArrayList<GameObject>();
     private ArrayList<GameObject> texture_meshes_alpha = new ArrayList<GameObject>();
 
@@ -45,7 +51,7 @@ public class Scene {
     private ArrayList<GameObject> vertex_meshes_alpha = new ArrayList<GameObject>();
 
 
-
+    private ArrayList<GameInstance> instances = new ArrayList<GameInstance>();
 
 
     public HashMap<String, GameObject> object_map = new HashMap<String, GameObject>();
@@ -69,13 +75,19 @@ public class Scene {
         camera = new GameCamera(46.596f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(0f, 0f, 40f);
 
+        groups = scene_data.groups;
+        for (InstanceData data: scene_data.instances) {
+            instances.add(new GameInstance(data));
+        }
 
         LevelMeshCompiler level_geo = new LevelMeshCompiler();
 
         for (VertexObject obj: scene_data.vertex_objects) {
             GameObject game_obj = new GameObject(obj, level_geo);
             object_map.put(game_obj.name, game_obj);
-            if (game_obj.alpha == false){
+            if (game_obj.template == true){
+                templates.put(game_obj.name, game_obj);
+            } else if (game_obj.alpha == false){
                 vertex_meshes.add(game_obj);
             } else {
                 vertex_meshes_alpha.add(game_obj);
@@ -88,7 +100,9 @@ public class Scene {
         for (VertexObject obj: scene_data.texture_objects) {
             GameObject game_obj = new GameObject(obj, level_geo);
             object_map.put(game_obj.name, game_obj);
-            if (game_obj.alpha == false){
+            if (game_obj.template == true){
+                templates.put(game_obj.name, game_obj);
+            } else if (game_obj.alpha == false){
                 texture_meshes.add(game_obj);
             } else {
                 texture_meshes_alpha.add(game_obj);
@@ -122,7 +136,7 @@ public class Scene {
             for (int j = 0; j < (int)verts.length/2; j++) {
                 pbies[j] = units.S2B(units.unAspect(units.gl2S(new Vector2(verts[j * 2], verts[j * 2 + 1]))));
             }
-            state.box.createStaticChain(pbies, false, group.mask);
+            state.box.createStaticChain(pbies, false, group.mask, false);
         }
 
         for (SensorData group: scene_data.sensor_groups) {
@@ -187,6 +201,23 @@ public class Scene {
                 level_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
                 obj.mesh.render(level_shader, GL20.GL_TRIANGLES);
             }
+            // do instances
+            for (GameInstance obj: instances) {
+                ArrayList<String> group = groups.get(obj.group);
+                for (String groupname: group){
+                    if (templates.containsKey(groupname)){
+                        GameObject template = templates.get(groupname);
+                        if (template.alpha == false && template.texture == false){
+                            //Matrix4 mat = obj.tmat.mul(template.tmat).mul(obj.rmat.mul(template.rmat)).mul(obj.smat.mul(template.smat));
+                            Matrix4 mat = template.local_mat4.cpy().mul(obj.local_mat4.cpy());
+                            level_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4.cpy().mul(template.tmat.cpy().mul(template.rmat.cpy())));
+                            template.mesh.render(level_shader, GL20.GL_TRIANGLES);
+                        }
+                    }
+                }
+            }
+
+
             Gdx.gl.glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             for (GameObject obj: vertex_meshes_alpha) {
@@ -202,6 +233,20 @@ public class Scene {
                 obj.mesh.render(tex_shader, GL20.GL_TRIANGLES);
             }
             tex_shader.end();
+
+            // do alpha tex instances
+            for (GameInstance obj: instances) {
+                ArrayList<String> group = groups.get(obj.group);
+                for (String groupname: group){
+                    if (templates.containsKey(groupname)){
+                        GameObject template = templates.get(groupname);
+                        if (template.alpha == true && template.texture == true){
+                            tex_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
+                            template.mesh.render(tex_shader, GL20.GL_TRIANGLES);
+                        }
+                    }
+                }
+            }
 
 
             wire_shader.begin();
