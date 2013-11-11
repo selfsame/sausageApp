@@ -17,13 +17,17 @@ import com.sausageApp.Scene.VertexObject;
 public class GameObject {
     public String name = null;
     public boolean texture;
+    public boolean wire;
 
     public Matrix4 local_mat4 = null;
     public float[] static_vertices = null;
     public short[] static_indicies = null;
+    public float[] wire_vertices = null;
+    public short[] wire_indicies = null;
     public boolean alpha;
     public boolean template;
     public Mesh mesh = null;
+    public Mesh wire_mesh = null;
 
 
 
@@ -37,7 +41,7 @@ public class GameObject {
 
     public GameObject(VertexObject data, LevelMeshCompiler meshCompiler){
         name = data.name;
-
+        wire = data.wire;
         template = data.template;
         position = new Vector3(data.position);
         scale = new Vector3(data.scale[0], data.scale[1], data.scale[2] );
@@ -54,6 +58,14 @@ public class GameObject {
         System.arraycopy(data.static_vertices,0,static_vertices,0,data.static_vertices.length);
         static_indicies = new short[data.static_indicies.length];
         System.arraycopy(data.static_indicies,0,static_indicies,0,data.static_indicies.length);
+        if (wire == true) {
+            wire_vertices = new float[data.wire_vertices.length];
+            System.arraycopy(data.wire_vertices,0,wire_vertices,0,data.wire_vertices.length);
+            wire_indicies = new short[data.wire_indicies.length];
+            System.arraycopy(data.wire_indicies,0,wire_indicies,0,data.wire_indicies.length);
+            wire_mesh = meshCompiler.CompileMesh(data.wire_vertices, data.wire_indicies);
+        }
+
         if (texture){
             mesh = meshCompiler.CompileTexMesh(data.static_vertices, data.static_indicies);
         } else {

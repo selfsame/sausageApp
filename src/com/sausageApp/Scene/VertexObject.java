@@ -20,8 +20,11 @@ public class VertexObject {
     public float[] quaternion;
     public float[] static_vertices;
     public short[] static_indicies;
+    public float[] wire_vertices;
+    public short[] wire_indicies;
     public boolean template;
     public ArrayList<String> classes = new ArrayList<String>();
+    public boolean wire;
     public boolean alpha;
     public VertexObject(){};
 }

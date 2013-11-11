@@ -114,10 +114,11 @@ public class LevelMeshCompiler {
                         + "attribute vec4 a_color ;   \n"
                         + "varying vec4 v_color ;   \n"
                         + "uniform mat4 u_viewProj;"
+                        + "uniform mat4 u_obj_mat4;"
                         + "void main()                   \n"
                         + "{  v_color = a_color;                           \n"
 
-                        + "   gl_Position =   u_viewProj * a_position;   \n"
+                        + "   gl_Position =   u_viewProj *   ( u_obj_mat4  * a_position ) + vec4(0.0, 0.0, -0.002, 0.0)    ;   \n"
                         + "}                             \n";
         String fragmentShader = "#ifdef GL_ES                \n"
                 + "precision mediump float;    \n"

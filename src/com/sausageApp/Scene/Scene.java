@@ -32,21 +32,20 @@ public class Scene {
     private SceneData scene_data;
     private Json json = new Json();
 
-    private ShaderProgram level_shader;
+
 
     private Texture tex;
+
+    private ShaderProgram level_shader;
     private ShaderProgram tex_shader;
+    private ShaderProgram wire_shader;
 
     public HashMap<String, GameObject> templates = new HashMap<String, GameObject>();
-
     public HashMap<String, ArrayList<String>> groups = new HashMap<String, ArrayList<String>>();
 
     private ArrayList<GameObject> texture_meshes = new ArrayList<GameObject>();
     private ArrayList<GameObject> texture_meshes_alpha = new ArrayList<GameObject>();
-
-    private ShaderProgram wire_shader;
-    private Mesh wire_mesh;
-
+    private ArrayList<GameObject> wire_meshes = new ArrayList<GameObject>();
     private ArrayList<GameObject> vertex_meshes = new ArrayList<GameObject>();
     private ArrayList<GameObject> vertex_meshes_alpha = new ArrayList<GameObject>();
 
@@ -82,41 +81,33 @@ public class Scene {
 
         LevelMeshCompiler level_geo = new LevelMeshCompiler();
 
-        for (VertexObject obj: scene_data.vertex_objects) {
+        for (VertexObject obj: scene_data.game_objects) {
             GameObject game_obj = new GameObject(obj, level_geo);
             object_map.put(game_obj.name, game_obj);
             if (game_obj.template == true){
                 templates.put(game_obj.name, game_obj);
-            } else if (game_obj.alpha == false){
-                vertex_meshes.add(game_obj);
             } else {
-                vertex_meshes_alpha.add(game_obj);
+                if (game_obj.texture == false){
+                    if (game_obj.alpha == false){
+                        vertex_meshes.add(game_obj);
+                    } else {
+                        vertex_meshes_alpha.add(game_obj);
+                    }
+                } else if (game_obj.texture == true){
+                    if (game_obj.alpha == false){
+                        texture_meshes.add(game_obj);
+                    } else {
+                        texture_meshes_alpha.add(game_obj);
+                    }
+                }
+                if (game_obj.wire == true){
+                    wire_meshes.add(game_obj);
+                }
             }
         }
 
         level_shader = level_geo.MakeShader();
-
-
-        for (VertexObject obj: scene_data.texture_objects) {
-            GameObject game_obj = new GameObject(obj, level_geo);
-            object_map.put(game_obj.name, game_obj);
-            if (game_obj.template == true){
-                templates.put(game_obj.name, game_obj);
-            } else if (game_obj.alpha == false){
-                texture_meshes.add(game_obj);
-            } else {
-                texture_meshes_alpha.add(game_obj);
-            }
-        }
-
         tex_shader = level_geo.MakeTexShader();
-
-        float[] vertices = new float[scene_data.wire_vertices.length];
-        System.arraycopy(scene_data.wire_vertices,0,vertices,0,scene_data.wire_vertices.length);
-        short[] indicies = new short[scene_data.wire_indicies.length];
-        System.arraycopy(scene_data.wire_indicies,0,indicies,0,scene_data.wire_indicies.length);
-
-        wire_mesh = level_geo.CompileMesh(scene_data.wire_vertices, scene_data.wire_indicies);
         wire_shader = level_geo.MakeWireShader();
 
         for (Locus locus: scene_data.locii) {
@@ -126,11 +117,8 @@ public class Scene {
 
         }
 
-        // WARNING need to make these Body containing objects safe
 
         for (Collider group: scene_data.collide_groups) {
-            //float[] verts = new float[group.verts.length];
-            //System.arraycopy(group.verts,0,verts,0,group.verts.length);
             float[] verts = group.verts;
             Vector2[] pbies = new Vector2[(int)verts.length/2];
             for (int j = 0; j < (int)verts.length/2; j++) {
@@ -175,8 +163,8 @@ public class Scene {
             Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
             Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
             tex.bind();
-            Gdx.gl.glPolygonOffset(-1f, -1f);
-            Gdx.gl.glDepthRangef(0f, 1f);
+            Gdx.gl.glPolygonOffset(2f, 4f);
+            Gdx.gl.glDepthRangef(0f, 100f);
             Gdx.gl.glDepthFunc(GL20.GL_LESS);
             Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
             tex_shader.setUniformMatrix("u_viewProj", camera.combined);
@@ -193,7 +181,7 @@ public class Scene {
             Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
 
             level_shader.begin();
-            Gdx.gl.glDepthRangef(0f, 1f);
+
             Gdx.gl.glDepthFunc(GL20.GL_LESS);
             level_shader.setUniformMatrix("u_viewProj", camera.combined);
 
@@ -210,7 +198,7 @@ public class Scene {
                         if (template.alpha == false && template.texture == false){
                             //Matrix4 mat = obj.tmat.mul(template.tmat).mul(obj.rmat.mul(template.rmat)).mul(obj.smat.mul(template.smat));
                             Matrix4 mat = template.local_mat4.cpy().mul(obj.local_mat4.cpy());
-                            level_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4.cpy().mul(template.tmat.cpy().mul(template.rmat.cpy())));
+                            level_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
                             template.mesh.render(level_shader, GL20.GL_TRIANGLES);
                         }
                     }
@@ -251,13 +239,31 @@ public class Scene {
 
             wire_shader.begin();
             Gdx.gl20.glLineWidth(1f);
+            Gdx.gl.glDepthRangef(0f, 100f);
 
-
-            Gdx.gl.glDepthFunc(GL20.GL_LESS);
+            Gdx.gl.glDepthFunc(GL20.GL_LEQUAL);
             Gdx.gl.glEnable(GL20.GL_DEPTH_TEST) ;
             Gdx.gl20.glDisable(GL20.GL_BLEND);
             wire_shader.setUniformMatrix("u_viewProj", camera.combined);
-            wire_mesh.render(wire_shader, GL20.GL_LINES);
+            for (GameObject obj: wire_meshes) {
+                wire_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
+                obj.wire_mesh.render(wire_shader, GL20.GL_LINES);
+            }
+
+            // do wire instance pass
+            for (GameInstance obj: instances) {
+                ArrayList<String> group = groups.get(obj.group);
+                for (String groupname: group){
+                    if (templates.containsKey(groupname)){
+                        GameObject template = templates.get(groupname);
+                        if (template.wire == true){
+                            wire_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
+                            template.wire_mesh.render(wire_shader, GL20.GL_LINES);
+                        }
+                    }
+                }
+            }
+
             Gdx.gl20.glDisable(GL20.GL_BLEND);
             wire_shader.end();
         }

@@ -9,6 +9,7 @@ SAUSAGE TODO
 	d) fireplace (for secret path from roof)
 
 2.  Get controllers to work on PC (swap axis, for snes controller use buttons for right joystick)
+	a) need a definitive way to sniff the platform and inputs.  controller should be a unified interface.
 
 3. Sausage control:
 	a) make sure force scales with length
@@ -30,10 +31,11 @@ SAUSAGE TODO
 
 10. [DONE] sort alpha objects by z position during level compile.
 
-11. instanced objects.
+11. [DONE] instanced objects.  Add objects to a group, and add instances.  Need to ensure that GameObject and GameInstance use an interface.
 
 12. [DONE] remember filepath and name (needs to be relative though)
 
+13. The 4 shader types should co-exist in the gameobject data. they can get sorted into groups during scene setup.
 
 
 -----------------
