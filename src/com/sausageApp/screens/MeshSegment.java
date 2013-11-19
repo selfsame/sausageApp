@@ -81,6 +81,17 @@ public class MeshSegment {
             }
         }
 
+
+
+        indicies.add( (short)v_count );
+        indicies.add( (short)(v_count + 2) );
+        indicies.add( (short)(v_count + 4) );
+
+        indicies.add( (short)(v_count + 1) );
+        indicies.add( (short)(v_count + 3) );
+        indicies.add( (short)(v_count + 5) );
+
+
         indicies.add( (short)(v_count + 6) );
         indicies.add( (short)(v_count + 7) );
         indicies.add( (short)(v_count + 8) );
@@ -96,13 +107,7 @@ public class MeshSegment {
 
 
 
-        indicies.add( (short)v_count );
-        indicies.add( (short)(v_count + 2) );
-        indicies.add( (short)(v_count + 4) );
 
-        indicies.add( (short)(v_count + 1) );
-        indicies.add( (short)(v_count + 3) );
-        indicies.add( (short)(v_count + 5) );
 
 
 

@@ -2,8 +2,8 @@ package com.sausageApp.TweenAccessors;
 
 import aurelienribon.tweenengine.TweenAccessor;
 import com.badlogic.gdx.math.Vector3;
-import com.sausageApp.Scene.GameObject;
-import com.sausageApp.Simulation.Moveable;
+import com.sausageApp.Scene.GameInstance;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,7 +12,7 @@ import com.sausageApp.Simulation.Moveable;
  * Time: 3:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GameObjectAccessor implements TweenAccessor<GameObject> {
+public class GameInstanceAccessor implements TweenAccessor<GameInstance> {
 
     public static final int POSITION_X = 1;
     public static final int POSITION_Y = 2;
@@ -25,7 +25,7 @@ public class GameObjectAccessor implements TweenAccessor<GameObject> {
     public static final int SCALE_XYZ = 14;
 
     @Override
-    public int getValues(GameObject target, int tweenType, float[] returnValues) {
+    public int getValues(GameInstance target, int tweenType, float[] returnValues) {
         switch (tweenType) {
             case POSITION_X: returnValues[0] = target.getPosition().x; return 1;
             case POSITION_Y: returnValues[0] = target.getPosition().y; return 1;
@@ -49,7 +49,7 @@ public class GameObjectAccessor implements TweenAccessor<GameObject> {
     }
 
     @Override
-    public void setValues(GameObject target, int tweenType, float[] newValues) {
+    public void setValues(GameInstance target, int tweenType, float[] newValues) {
         Vector3 p = target.getPosition();
         Vector3 s = target.scale;
         switch (tweenType) {

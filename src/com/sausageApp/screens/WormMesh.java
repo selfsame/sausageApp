@@ -111,17 +111,17 @@ public class WormMesh {
                 + "  float prev_curve_amount = distance(node, prev_normal+prev) - distance(node, prev);                                    \n"
                 + "  float next_curve_amount = distance(next_normal+next, node) - distance(next, node);                                    \n"
                 + "  curve_amount =  (v_concavity ) * curve_amount*17.0 ;  "
-                + "  prev_curve_amount =  (prev_curve_amount) * prev_curve_amount*17.0 ;  "
-                + "  next_curve_amount =  (next_curve_amount)  * next_curve_amount*17.0 ;  "
+                + "  prev_curve_amount =  (prev_curve_amount) * prev_curve_amount*17.0;  "
+                + "  next_curve_amount =  (next_curve_amount)  * next_curve_amount*17.0;  "
 
 
-                +"   vec2 nspread = (next_normal * interpolation_right*(1.0+next_curve_amount) + prev_normal * interpolation_left*(1.0+prev_curve_amount)) + a_position.x*((prev_normal+next_normal)/4.0)*(1.0+curve_amount) ;"
+                +"   vec2 nspread = (next_normal * interpolation_right*(1.0+next_curve_amount) + prev_normal * interpolation_left*(1.0+prev_curve_amount)) + a_position.x*((prev_normal+next_normal)/4.0)*(1.0+curve_amount * (1.0+(v_concavity-abs(v_concavity))*.1) ) ;"
                 + "  v_color = a_color;                     \n"
                 + "                                      \n"
 
                 //+ "   nspread = nspread - abs(1- v_concavity)*abs(a_position.y+1)*.003*a_position.x;                          \n"
 
-                + "   mod =   vec4(pos.x + nspread.x  , pos.y + nspread.y    ,z_depth,a_position.w);                        \n"
+                + "   mod =   vec4(pos.x + nspread.x  , pos.y + nspread.y    ,z_depth+index*.0001,a_position.w);                        \n"
                 + "   gl_Position =  u_worldView * mod ;   \n"
                 + "}                             \n";
         String fragmentShader = "#ifdef GL_ES                \n"
@@ -138,8 +138,9 @@ public class WormMesh {
                 + "float thresh = 1.0;"
                 + "vec4 col = v_normal; "
                 + "mask = (v_color.x * v_color.x) - ( v_color.y) ;"
-                //+ "  if(mask*v_concavity > 0) col = vec4(0.0,0.0,0.0,1.0); \n"
-                + "  if(mask*v_concavity > 0.0) discard;"
+
+                + "  if(mask*v_concavity > 0) col = vec4(1.0,0.0,0.0,0.0); \n"
+                //+ "  if(mask*v_concavity > 0.0) discard;"
                 //+ "  if(mask > 0.0) col = vec4(1.0,0.0,0.0,1.0); "//discard;" //vec4(.1,.2,.2,1.0); "//discard; \n"    (.1f, .2f, .2f, 1f)
 
                 + "  gl_FragColor = col;    \n"

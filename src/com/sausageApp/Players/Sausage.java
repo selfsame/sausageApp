@@ -39,7 +39,10 @@ public class Sausage {
     public ArrayList<Link> sausage_links = new ArrayList<Link>();
     public Link head_link;
     public Link tail_link;
-    public int sausage_length = 18;
+
+    public float[] nodes = new float[]{.5f,.5f,0f,0f};
+
+    public int sausage_length = 24;
     private float L_DIST = 1.0f;
 
 
@@ -204,6 +207,10 @@ public class Sausage {
         if (state.debug == false){
             Gdx.gl20.glLineWidth(1f);
             Gdx.gl20.glEnable(GL20.GL_BLEND);
+            Gdx.gl20.glDepthFunc(GL20.GL_LESS);
+            //Gdx.gl20.glBlendEquation(GL20.GL_BLEND_EQUATION_RGB);
+            //Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
+            //Gdx.gl20.glDisable(Gdx.gl20.GL_DEPTH_TEST);
             Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
             sausage_shader.begin();
             UpdateMesh();
@@ -257,7 +264,7 @@ public class Sausage {
     public void UpdateMesh(){
 
 
-        float[] nodes = new float[(sausage_length+4)*2];
+        nodes = new float[(sausage_length+4)*2];
 
         Vector2 lp = units.applyAspect(units.S2gl((units.B2S(sausage_bodies.get(0).getPosition()))));
 

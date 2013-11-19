@@ -45,7 +45,7 @@ def getGlobalAO(context, vertex, ob, distance, rays):
         rot = ob.matrix_world.to_3x3()
         normal = rot * vertex.normal
         normal.normalize()
-        rays = [r for r in rays if r.dot(normal) > -0.3 ]
+        rays = [r for r in rays if r.dot(normal) > -0.5 ]
         hits = len(rays)
         for ray in rays:
             ray_start_position = pos + (normal * .001)
@@ -84,7 +84,7 @@ def do_ao(context):
 
     for vert in bm.verts:
         
-        result = getGlobalAO(context,vert, obj, 10, rays)
+        result = getGlobalAO(context,vert, obj, obj.VBAKE.AO_STRENGTH , rays)
         #print("!"+str(result))
         result = 1-result
         for loop in vert.link_loops:
@@ -237,13 +237,22 @@ def mix_vcol(context, bm=False):
 
     for vert in bm.verts:
         for loop in vert.link_loops:
+            sfac = False
             oc = obcolor * obj.VBAKE.MIX_OBCOLOR
             for i, stack in enumerate(obj.VBAKE_LAYER):
                 if colors[i] != False:
-                    nc = Vector(loop[colors[i]])
-                    if stack.invert == True:
-                        nc = Vector((1,1,1)) - nc
-                    oc = blend(oc,nc, stack.mix, stack.factor) 
+                    if stack.stack_factor == True:
+                        sfac = i
+                    else:
+                        nc = Vector(loop[colors[i]])
+                        if stack.invert == True:
+                            nc = Vector((1,1,1)) - nc
+                        if sfac != False:
+                            f = Vector(loop[colors[sfac]]).normalized().length * stack.factor
+                            sfac = False
+                        else:
+                            f = stack.factor
+                        oc = blend(oc,nc, stack.mix, f) 
 
 
             loop[result_layer] = (oc.x, oc.y, oc.z)
@@ -298,6 +307,8 @@ def UPDATE_MIX(self, context):
     obj = context.active_object
     if is_ready(obj):
         mix_vcol(context)
+    #context.scene.update()
+    bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
         
 def ACTIVATION(self, context):
     obj = context.active_object
@@ -321,11 +332,14 @@ def is_ready(obj):
 
 class VBAKE_group(bpy.types.PropertyGroup):
     BAKED = bpy.props.BoolProperty(update=ACTIVATION)
-    AO_STRENGTH = bpy.props.FloatProperty(default = 1.0, update=UPDATE_AO_STRENGTH, min=0, max=100)
+    AO_STRENGTH = bpy.props.FloatProperty(default = 15.0, min=0, max=1000)
     MIX_OBCOLOR = bpy.props.FloatProperty(default = 1.0, update=UPDATE_MIX, min=0, max=1)
     MIX_AO = bpy.props.FloatProperty(default = .5, update=UPDATE_MIX, min=0, max=1)
     MIX_LIGHT = bpy.props.FloatProperty(default = .5, update=UPDATE_MIX, min=0, max=1)
     LAST_UPDATE = bpy.props.FloatProperty(default = 0)  
+    
+    AO_TARGET = bpy.props.StringProperty(default = "AO")  
+    LIGHT_TARGET = bpy.props.StringProperty(default = "LIGHT")  
     
     CACHE_LOC = bpy.props.FloatVectorProperty()  
     CACHE_SCALE = bpy.props.FloatVectorProperty() 
@@ -364,8 +378,9 @@ bpy.types.Object.VBAKE = bpy.props.PointerProperty(type=VBAKE_group)
 ##  UI List for vertex color stack
 
 class VBAKE_LAYER(bpy.types.PropertyGroup):
+    stack_factor = bpy.props.BoolProperty(name="stack factor",update=UPDATE_MIX)
     name = bpy.props.StringProperty(name="vertex color name", default="Col")
-    invert = bpy.props.BoolProperty(name="invert")
+    invert = bpy.props.BoolProperty(name="invert",update=UPDATE_MIX)
     factor = bpy.props.FloatProperty(default = 1.0, update=UPDATE_MIX, min=0, max=1)
     mix = bpy.props.EnumProperty(name="AO Blend",
             items=(('mix', "Mix", ""),
@@ -392,7 +407,7 @@ class VBAKE_LAYER(bpy.types.PropertyGroup):
     def update_layers(self, context):
         pass
         
-    layer = bpy.props.EnumProperty(items=refresh)
+    layer = bpy.props.EnumProperty(items=refresh,update=UPDATE_MIX)
  
 bpy.utils.register_class(VBAKE_LAYER)
 bpy.types.Object.VBAKE_LAYER = bpy.props.CollectionProperty(type=VBAKE_LAYER)
@@ -410,15 +425,16 @@ class VBAKE_STACK_class(bpy.types.UIList):
             row = layout.row() #layout.row().box().row()
             #row.label(text=sclass.name if sclass.name else "", translate=False, icon_value=icon)
             
-            row = layout.row().split(.3)
+            row = layout.row().split(.1)
             row.separator()
+            row.prop(sclass, "stack_factor", text="", icon='LINKED')
 
             row = layout.row().split(1)
             row.prop(sclass, "layer", text="", icon='COLOR')
             row = layout.row().split(.3)
             row.prop(sclass, "invert", text="", icon='IMAGE_ALPHA')
             row.prop(sclass, "mix", text="")
-            row = layout.row().split(.7)
+            row = layout.row().split(1)
             row.prop(sclass, "factor", text="")
             
 
@@ -439,6 +455,8 @@ class VBAKE_STACK_OT_add(bpy.types.Operator):
         def invoke(self, context, event):
                 obj = context.active_object
                 obj.VBAKE_LAYER.add()
+                obj.VBAKE_LAYER_index = len(obj.VBAKE_LAYER)-1
+                UPDATE_MIX(self,context)
                 return{'FINISHED'}
 class VBAKE_STACK_OT_add(bpy.types.Operator):
         bl_idname      = 'vbake_color.add'
@@ -448,6 +466,8 @@ class VBAKE_STACK_OT_add(bpy.types.Operator):
         def invoke(self, context, event):
                 obj = context.active_object
                 obj.VBAKE_LAYER.add()
+                obj.VBAKE_LAYER_index = len(obj.VBAKE_LAYER)-1
+                UPDATE_MIX(cself,ontext)
                 return{'FINISHED'}
             
 class VBAKE_STACK_OT_remove(bpy.types.Operator):
@@ -460,6 +480,8 @@ class VBAKE_STACK_OT_remove(bpy.types.Operator):
 
                 obj = context.active_object
                 obj.VBAKE_LAYER.remove(obj.VBAKE_LAYER_index)
+                if obj.VBAKE_LAYER_index > len(obj.VBAKE_LAYER): obj.VBAKE_LAYER_index = len(obj.VBAKE_LAYER)-1
+                UPDATE_MIX(self,context)
                 return{'FINISHED'}
 class VBAKE_STACK_OT_up(bpy.types.Operator):
         bl_idname      = 'vbake_stack.up'
@@ -476,6 +498,7 @@ class VBAKE_STACK_OT_up(bpy.types.Operator):
                     n = 0
                 obj.VBAKE_LAYER.move(i,n)
                 obj.VBAKE_LAYER_index = n
+                UPDATE_MIX(self,context)
                 return{'FINISHED'}
 class VBAKE_STACK_OT_down(bpy.types.Operator):
         bl_idname      = 'vbake_stack.down'
@@ -492,6 +515,7 @@ class VBAKE_STACK_OT_down(bpy.types.Operator):
                     n = 0
                 obj.VBAKE_LAYER.move(i,n)
                 obj.VBAKE_LAYER_index = n
+                UPDATE_MIX(self,context)
                 return{'FINISHED'}
 
 
@@ -524,12 +548,27 @@ class RENDER_PT_hello(bpy.types.Panel ):
 
         row = layout.row()
         col = row.column()
-        col.operator('bake_vertex_diffuse.bake', text="Bake Lighting")
+        box = col.box()
+        if obj.VBAKE.LIGHT_TARGET not in obj.data.vertex_colors.keys():
+            box.operator('bake_vertex_diffuse.bake', text="Bake Lighting", icon='CHECKBOX_DEHLT')
+        else:
+            box.operator('bake_vertex_diffuse.bake', text="Re-Bake Lighting", icon='CHECKBOX_HLT')
+        row2 = box.row()
+        row2.label("target")
+        row2.prop(obj.VBAKE, "LIGHT_TARGET", text="")
         
         col = row.column()
-        col.operator('bake_vertex_ao.bake', text="Bake AO")
-        col.label("strength")
-        col.prop(obj.VBAKE, "AO_STRENGTH", text="")
+        box = col.box()
+        if obj.VBAKE.AO_TARGET not in obj.data.vertex_colors.keys():
+            box.operator('bake_vertex_ao.bake', text="Bake AO", icon='CHECKBOX_DEHLT')
+        else:
+            box.operator('bake_vertex_ao.bake', text="Re-Bake AO", icon='CHECKBOX_HLT')
+        row = box.row()
+        row.label("target")
+        row.prop(obj.VBAKE, "AO_TARGET", text="")
+        row = box.row()
+        row.label("distance")
+        row.prop(obj.VBAKE, "AO_STRENGTH", text="")
         
         
         row = layout.row()
@@ -545,6 +584,9 @@ class RENDER_PT_hello(bpy.types.Panel ):
         col = row.column()
         rrr = col.row()
         rrr.prop(obj.VBAKE, "MIX_OBCOLOR", text="")
+        
+        row  = layout.row()
+
 
         
         row = layout.row()

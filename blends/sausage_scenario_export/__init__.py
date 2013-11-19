@@ -33,6 +33,9 @@ from bpy_extras.io_utils import (ImportHelper,
                                  )
 
 bpy.types.Scene.SAUSAGE_scene_gravity = bpy.props.FloatProperty(default = 20.0)
+bpy.types.Scene.SAUSAGE_last_filepath = bpy.props.StringProperty(default = "")
+
+
 
 #bpy.types.MeshEdge.SAUSAGE_STATIC = bpy.props.BoolProperty()
 class SCENE_PT_hello( bpy.types.Panel ):
@@ -264,6 +267,9 @@ class ExportSausageScenario(bpy.types.Operator, ExportHelper):
 
     filename_ext = ".json"
     filter_glob = StringProperty(default="*.json", options={'HIDDEN'})
+    SAUSAGE_last_filepath = bpy.props.StringProperty(default="")
+    
+
 
     use_mesh_modifiers = BoolProperty(
             name="Apply Modifiers",
@@ -288,6 +294,8 @@ class ExportSausageScenario(bpy.types.Operator, ExportHelper):
             description="Export the active vertex color layer",
             default=True,
             )
+
+
 
 
 
@@ -321,7 +329,13 @@ class ExportSausageScenario(bpy.types.Operator, ExportHelper):
 
     @classmethod
     def poll(cls, context):
-        return context.active_object != None
+        return len(context.selected_objects) > 0
+
+    def invoke(self, context, event): 
+        if context.scene.SAUSAGE_last_filepath != "":
+            self.filepath = context.scene.SAUSAGE_last_filepath
+        context.window_manager.fileselect_add(self) 
+        return {'RUNNING_MODAL'} 
 
     def execute(self, context):
         from . import export_sausage
@@ -332,6 +346,7 @@ class ExportSausageScenario(bpy.types.Operator, ExportHelper):
                                             "axis_up",
                                             "check_existing",
                                             "filter_glob",
+                                            "SAUSAGE_last_filepath"
                                             ))
         global_matrix = axis_conversion(to_forward=self.axis_forward,
                                         to_up=self.axis_up,
@@ -344,12 +359,17 @@ class ExportSausageScenario(bpy.types.Operator, ExportHelper):
 
         filepath = self.filepath
         filepath = bpy.path.ensure_ext(filepath, self.filename_ext)
-
+        context.scene.SAUSAGE_last_filepath = filepath
         return export_sausage.save(self, context, **keywords)
 
     def draw(self, context):
+
+        
+
         layout = self.layout
 
+        row = layout.row()
+        row.prop(context.scene, "SAUSAGE_last_filepath")
         row = layout.row()
         row.prop(self, "use_mesh_modifiers")
         row.prop(self, "use_normals")

@@ -203,8 +203,8 @@ public class Box {
         circleF.restitution = .8f;
         circleF.friction = .9f;
 
-        circleF.filter.categoryBits = 1;
-        circleF.filter.maskBits = 1;
+        circleF.filter.categoryBits = (short)mask;
+        circleF.filter.maskBits = (short)mask;
 
         BodyDef bodyDef = new BodyDef();
         if (dynamic == false){
@@ -228,8 +228,8 @@ public class Box {
         circleF.restitution = .2f;
         circleF.friction = .9f;
 
-        circleF.filter.categoryBits = 1;
-        circleF.filter.maskBits = 1;
+        circleF.filter.categoryBits = (short)mask;
+        circleF.filter.maskBits = (short)mask;
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.fixedRotation = false;

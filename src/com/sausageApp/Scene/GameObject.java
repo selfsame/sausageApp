@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.sausageApp.Scene.LevelMeshCompiler;
 import com.sausageApp.Scene.VertexObject;
+import com.sausageApp.Simulation.Moveable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,7 +15,7 @@ import com.sausageApp.Scene.VertexObject;
  * Time: 5:06 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GameObject {
+public class GameObject implements Moveable {
     public String name = null;
     public boolean texture;
     public boolean wire;

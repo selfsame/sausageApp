@@ -27,7 +27,8 @@ Only one mesh can be exported at a time.
 import bpy, bmesh
 import os
 
-
+from mathutils import Matrix
+from mathutils import Vector
 
 
 
@@ -55,6 +56,28 @@ def get_scene_data():
 
 def pack_dynamic_data(obj, global_matrix, global_scale):
     loc = obj.location*global_matrix
+    children_names = []
+    for o in obj.children:
+        children_names.append(o.name)
+    children_names = ", ".join(children_names)
+    vert_chain = ""
+    if obj.SAUSAGE_physics_type == 'polygon':
+        bm = bmesh.new() 
+        mesh = obj.data.copy()
+        #mesh.transform(global_matrix  * obj.matrix_local * Matrix.Translation(obj.location*-1) )
+        mesh.transform(global_matrix)
+        bm.from_mesh(mesh)
+        verts = bm.verts
+        loops = get_ordered_vertex_loops(obj)
+        for loop in loops:
+            if len(loop) > 0:
+                vert_chain = ""
+                for i in loop:
+                    co = [verts[i].co[0]-loc[0], verts[i].co[1]-loc[1]]
+                    vert_chain += "{0:.4f}, {1:.4f}, ".format(*tuple(co))
+                if len(vert_chain) > 1:
+                    vert_chain = vert_chain[:-2]
+
     result = '{type:"'+obj.SAUSAGE_physics_type+'",\n'
     result += 'name:"'+obj.name+'",\n'
     result += "position:[{0:.4f}, {1:.4f}, {2:.4f}], ".format(*tuple( loc ))
@@ -62,6 +85,8 @@ def pack_dynamic_data(obj, global_matrix, global_scale):
     result += "friction:"+str(obj.SAUSAGE_physics_friction)+", \n"
     result += "restitution:"+str(obj.SAUSAGE_physics_restitution)+", \n"
     result += "mass:"+str(obj.SAUSAGE_physics_mass)+", \n"
+    result += "verts:["+vert_chain+"], \n"
+    result += "children:["+children_names+"], \n"
     result += "classes:["+pack_game_classes(obj)+"]}\n"
     return result
 
@@ -102,6 +127,7 @@ def get_ordered_vertex_loops(obj):
             new_loop.append(target.index)
             while target != False:
                 target = walk(new_loop, target)
+            new_loop.reverse()
             ordered_loops.append(new_loop)
     
 
@@ -115,8 +141,8 @@ def get_ordered_vertex_loops(obj):
 
 
 
-def save_selected(filepath,
-              objects, box2d_objects, wireframe_objects, locii, sensors, dynamics,
+def save_selected(filepath, objects, box2d_objects, locii, sensors, dynamics, instances,
+              group_dict={},
               use_normals=True,
               use_uv_coords=True,
               use_colors=True,
@@ -131,6 +157,8 @@ def save_selected(filepath,
     file = open(filepath, "w", encoding="utf8", newline="\n")
     fw = file.write
 
+    game_objects = ""
+
     vertices_str = ""
     vertex_indices_str = ""
     vertex_objects = ""
@@ -143,8 +171,7 @@ def save_selected(filepath,
 
     collide_groups_str = ""
     sensor_groups_str = ""
-    wire_vertices_str = "[  "
-    wire_indicies_str = "[  "
+
     camera_str = "camera:[0.0, 0.0, 2.0], "
     locii_str = ""
     object_count = 0
@@ -154,50 +181,6 @@ def save_selected(filepath,
     for obj in dynamics:
         temp.append(pack_dynamic_data(obj, global_matrix, global_scale))
     dynamic_objects = ", ".join(temp)
-    
-    
-    v_count = 0
-    for obj in wireframe_objects:
-        bm = bmesh.new() 
-        mesh = obj.data.copy()
-        
-        if not mesh:
-            raise Exception("Error, could not get mesh data from active object")
-        mesh.transform(global_matrix * obj.matrix_world)
-        bm.from_mesh(mesh)
-
-        
-
-        first = False
-        color = bm.loops.layers.color[0]
-        for edge in bm.edges:
-            if edge.smooth == False:
-                
-                for vert in edge.verts:
-                    darkest = 4
-                    for ll in vert.link_loops:
-                        col = ll[color]
-                        t = col[0]+col[1]+col[2]
-                        if t < darkest:
-                            darkest = t
-                            c = col
-                    co = [vert.co[0], vert.co[1], vert.co[2]+.001]
-                    wire_vertices_str += "{0:.4f}, {1:.4f}, {2:.4f}, ".format(*tuple(co)) 
-                    if c:
-                        wire_vertices_str += "{0:.2f}, {1:.2f}, {2:.2f}, 1.0, ".format(*tuple( c )) # col
-                    else:
-                        wire_vertices_str += "0.0, 0.0, 0.0, 1.0, "
-                    wire_indicies_str += "{0}, ".format(v_count)
-                    v_count += 1
-
-
-                    
-
-
-    if wire_vertices_str != "[":
-        wire_vertices_str = wire_vertices_str[:-2]
-    if wire_indicies_str != "[":
-        wire_indicies_str = wire_indicies_str[:-2]
     
 
     for obj in box2d_objects:
@@ -252,6 +235,22 @@ def save_selected(filepath,
     if locii_str != "":
         locii_str = locii_str[:-2]
 
+    instance_string_list = []
+    for obj in instances:
+        instance_str = "{group:\""+obj.dupli_group.name+"\", "
+        instance_str += "classes:["+pack_game_classes(obj)+"], "
+
+        obj_mat4 = global_matrix * obj.matrix_local 
+        decom = obj_mat4.decompose()
+        oloc = decom[0]
+        oquat = (global_matrix * obj.matrix_world).decompose()[1]
+        oscale = (unscaled_matrix * obj.matrix_world).decompose()[2]
+
+        instance_str += "position:[{0:.4f}, {1:.4f}, {2:.4f}], ".format(*tuple( oloc ))
+        instance_str += "scale:[{0:.4f}, {1:.4f}, {2:.4f}], ".format(*tuple( oscale ))
+        instance_str += "quaternion:[{0:.4f}, {1:.4f}, {2:.4f}, {3:.4f}] ".format(*tuple( oquat ))
+        instance_str += "}\n"
+        instance_string_list.append(instance_str)
 
     for obj in objects:
         bpy.context.scene.objects.active = obj
@@ -261,6 +260,42 @@ def save_selected(filepath,
         elif not obj.data:
             print("no mesh on object ", obj.name)
         else: 
+
+            wire_vertices = []
+            wire_indicies = []
+            if obj.SAUSAGE_wireframe_object:
+                v_count = 0
+                
+                bm = bmesh.new() 
+                mesh = obj.data.copy()
+                if not mesh:
+                    raise Exception("Error, could not get mesh data from active object")
+                #mesh.transform(global_matrix * obj.matrix_world)
+                mesh.transform(Matrix.Scale(global_scale, 4)  ) 
+                bm.from_mesh(mesh)
+                first = False
+                color = bm.loops.layers.color[0]
+                for edge in bm.edges:
+                    if edge.smooth == False:
+                        
+                        for vert in edge.verts:
+                            darkest = 4
+                            for ll in vert.link_loops:
+                                col = ll[color]
+                                t = col[0]+col[1]+col[2]
+                                if t < darkest:
+                                    darkest = t
+                                    c = col
+                            #co = (Vector((0,0,.01)) * global_matrix * obj.matrix_local) + vert.co
+                            co = [vert.co[0], vert.co[1], vert.co[2]]
+                            wire_vertices.append( "{0:.4f}, {1:.4f}, {2:.4f}".format(*tuple(co))   )
+                            if c:
+                                wire_vertices.append( "{0:.2f}, {1:.2f}, {2:.2f}, 1.0".format(*tuple( c ))   )# col
+                            else:
+                                wire_vertices.append( "0.0, 0.0, 0.0, 1.0"  )
+                            wire_indicies.append( "{0}".format(v_count)  )
+                            v_count += 1
+
             object_count = 0
             mesh = obj.data.copy()
 
@@ -270,18 +305,17 @@ def save_selected(filepath,
             use_texture = False
             use_colors = True
 
+            template = False
+            if len(obj.users_group) > 0:
+                template = True
+
             object_loc = global_matrix * obj.location
             object_loc_str = "position:[{0:.4f}, {1:.4f}, {2:.4f}], ".format(*tuple( object_loc ))
 
             from mathutils import Matrix
 
-            obj_mat4 = global_matrix * obj.matrix_world #* Matrix.Scale(1/global_scale, 4)    
-            obj_mat4_str = ("\nlocal_mat4:["+
-                            "{0:.3f}, {1:.3f}, {2:.3f}, {3:.3f},".format(*tuple( obj_mat4[0] )) +
-                            "{0:.3f}, {1:.3f}, {2:.3f}, {3:.3f},".format(*tuple( obj_mat4[1] )) +
-                            "{0:.3f}, {1:.3f}, {2:.3f}, {3:.3f},".format(*tuple( obj_mat4[2] )) +
-                            "{0:.3f}, {1:.3f}, {2:.3f}, {3:.3f} ".format(*tuple( obj_mat4[3] )) +
-                            "]\n, ")
+            obj_mat4 = global_matrix * obj.matrix_local 
+
             decom = obj_mat4.decompose()
             oloc = decom[0]
             oquat = (global_matrix * obj.matrix_world).decompose()[1]
@@ -290,6 +324,8 @@ def save_selected(filepath,
             decomp_str = "position:[{0:.4f}, {1:.4f}, {2:.4f}], ".format(*tuple( oloc ))
             decomp_str += "scale:[{0:.4f}, {1:.4f}, {2:.4f}], ".format(*tuple( oscale ))
             decomp_str += "quaternion:[{0:.4f}, {1:.4f}, {2:.4f}, {3:.4f}], ".format(*tuple( oquat ))
+
+            decomp_str += "template:"+str(template).lower()+", "
 
             if len(obj.data.uv_layers) > 0:
                 use_texture = True
@@ -432,12 +468,28 @@ def save_selected(filepath,
                     print("WARNING: FACE WITH > 4 vertices:", pf)
             object_count += len(ply_verts)
             print("INDEX RANGE: ", highest)
+
+            
+
             if use_uv_coords:
-                if obj.SAUSAGE_alpha_texture:
-                    uses_alpha = True
-                texture_objects += '\n\n{name:"'+obj.name+'",\n '+ "classes:["+pack_game_classes(obj)+"],\n " + "texture:true,\n "+decomp_str + obj_mat4_str +" static_vertices:["+vertices_str[0:-2]+"],\n"+"static_indicies:["+vertex_indices_str[0:-2]+"],\n alpha:"+str(uses_alpha).lower()+"}, "
+                uses_uv = True
             else:
-                vertex_objects += '\n\n{name:"'+obj.name+'",\n '+ "classes:["+pack_game_classes(obj)+"],\n " + "texture:false,\n "+decomp_str + obj_mat4_str + " static_vertices:["+vertices_str[0:-2]+"],\n"+"static_indicies:["+vertex_indices_str[0:-2]+"],\n alpha:"+str(uses_alpha).lower()+"}, "
+                uses_uv = False
+            if obj.SAUSAGE_alpha_texture:
+                uses_alpha = True
+            if not obj.SAUSAGE_visible_object:
+                vertices_str = ", "
+                vertex_indices_str = ", "
+            game_objects += ('\n\n{name:"'+obj.name+'",\n '+ "classes:["+pack_game_classes(obj)+"],\n " + 
+                "texture:"+str(uses_uv).lower()+",\n "+
+                "wire:"+str(obj.SAUSAGE_wireframe_object).lower()+", \n"+
+                decomp_str + 
+                " static_vertices:["+vertices_str[0:-2]+"],\n"+
+                "static_indicies:["+vertex_indices_str[0:-2]+"],\n"+ 
+                "wire_vertices:["+", ".join(wire_vertices)+"],\n"+
+                "wire_indicies:["+", ".join(wire_indicies)+"],\n"+
+                "alpha:"+str(uses_alpha).lower()+"}, ")
+
 
 
 
@@ -454,16 +506,19 @@ def save_selected(filepath,
     
 
 
-    fw("{"+get_scene_data()+
-        "vertex_objects:["+vertex_objects[0:-2]+"],\n\n"+
-        "texture_objects:["+texture_objects[0:-2]+"],\n\n"+
-
-        "wire_vertices:"+wire_vertices_str+"],\n"+
-        "wire_indicies:"+wire_indicies_str+"],\n"+
+    fw("{"+get_scene_data()+"\n\n"+
+        
+        "groups:"+group_dict+",\n\n"+
+        "instances:["+", ".join(instance_string_list)+"], \n\n"+
+        
         "collide_groups:["+collide_groups_str[0:-2]+"],\n"+
         "dynamic_objects:["+dynamic_objects+"],\n"+
         "sensor_groups:["+sensor_groups_str[0:-2]+"],\n"+
-        "locii:["+locii_str +"]}")
+        "locii:["+locii_str +"],\n\n\n\n"+
+
+        "game_objects:["+game_objects[0:-2]+"],\n\n"+
+        "}")
+        
     file.close()
     print("writing %r done" % filepath)
 
@@ -475,6 +530,19 @@ def save_selected(filepath,
 
 
 
+def sort_z(group):
+    new_group = []
+    for o in group:
+        placed = False
+        for ind, j in enumerate(new_group):
+            if o.location[1] < j.location[1]:
+                new_group.insert(ind, o)
+                placed = True
+                break
+        if not placed:
+            new_group.append(o)
+    new_group.reverse()
+    return new_group
 
 
 
@@ -496,24 +564,30 @@ def save(operator,
     scene = context.scene
     obj = context.selected_objects
 
+    groups = []
+
+    for g in bpy.data.groups:
+        if len(g.objects) > 0:
+            name_list = []
+            for o in g.objects:
+                name_list.append('"'+o.name+'"')
+            groups.append( g.name+":[" + ", ".join(name_list)+"]")
+    groups = "{"+", ".join(groups)+"}"
+
     objects = []
-    tex_objects = []
-    wireframe_objects = []
     box2d_objects = []
     locii = []
     sensors = []
     dynamics = []
+    instances = []
 
     for oo in context.selected_objects:
         if oo.type != 'LAMP':
-            if oo.type == 'MESH' and oo.SAUSAGE_visible_object:
-                #if oo.type != 'CAMERA' and len(oo.data.uv_layers) > 0:
-                #    tex_objects.append(oo)
-                #else:
+            if oo.type == "EMPTY" and oo.dupli_type == "GROUP":
+                instances.append(oo)
+            if oo.type == 'MESH' and (oo.SAUSAGE_visible_object or oo.SAUSAGE_wireframe_object):
                 objects.append(oo)
-            if oo.SAUSAGE_wireframe_object:
-                wireframe_objects.append(oo)
-            
+
             if oo.SAUSAGE_locus:
                 locii.append(oo)
             if oo.SAUSAGE_sensor_area:
@@ -523,6 +597,8 @@ def save(operator,
                     box2d_objects.append(oo)
                 else:
                     dynamics.append(oo)
+
+    objects = sort_z(objects)
 
     if global_matrix is None:
         from mathutils import Matrix
@@ -538,7 +614,8 @@ def save(operator,
 
 
 
-    ret = save_selected(filepath, objects, box2d_objects, wireframe_objects, locii, sensors, dynamics,
+    ret = save_selected(filepath, objects, box2d_objects, locii, sensors, dynamics, instances,
+                    group_dict = groups,
                     use_normals=use_normals,
                     use_uv_coords=use_uv_coords,
                     use_colors=use_colors,

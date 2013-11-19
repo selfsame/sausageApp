@@ -9,6 +9,8 @@ import com.sausageApp.Simulation.Box;
 
 /**
 The definitive assortment of instances currently running
+
+ boolean isDesktop = (Gdx.app.getType() == ApplicationType.Desktop);
  */
 public class State {
     public boolean debug = false;

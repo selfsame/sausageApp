@@ -24,4 +24,6 @@ public interface Scenario {
 
     public void enterSensor(SensorObject sensor, Player player);
     public void exitSensor(SensorObject sensor, Player player);
+    public void enterSpecialSensor(SensorObject sensor, Player player);
+    public void exitSpecialSensor(SensorObject sensor, Player player);
 }

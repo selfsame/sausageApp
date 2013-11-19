@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.sausageApp.Scene.LevelMeshCompiler;
 import com.sausageApp.Scene.VertexObject;
+import com.sausageApp.Simulation.Moveable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,7 +15,7 @@ import com.sausageApp.Scene.VertexObject;
  * Time: 5:06 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GameInstance {
+public class GameInstance implements Moveable {
     public String name = null;
 
 
@@ -34,18 +35,19 @@ public class GameInstance {
     public GameInstance(InstanceData data){
         name = data.name;
         group = data.group;
-
-
         position = new Vector3(data.position);
         scale = new Vector3(data.scale[0], data.scale[1], data.scale[2] );
         rotation = new Quaternion( data.quaternion[1], data.quaternion[2], (float) (data.quaternion[3]), (float) (data.quaternion[0]));
-
-
-
         UpdateMatrix();
+    }
 
-
-
+    public GameInstance(String _name, String _group, Vector3 _position, Vector3 _scale, Quaternion _rotation){
+        name = _name;
+        group = _group;
+        position = new Vector3(_position);
+        scale = new Vector3(_scale );
+        rotation = new Quaternion( _rotation );
+        UpdateMatrix();
     }
 
     public void UpdateMatrix(){

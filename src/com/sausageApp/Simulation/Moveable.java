@@ -1,5 +1,6 @@
 package com.sausageApp.Simulation;
 
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -10,5 +11,10 @@ import com.badlogic.gdx.math.Vector3;
  * To change this template use File | Settings | File Templates.
  */
 public interface Moveable {
-    public Vector3 position = null;
+    public Vector3 scale = null;
+    public Quaternion getRotation();
+    public void setRotation(Quaternion q);
+    public Vector3 getPosition();
+    public void setPosition(Vector3 p);
+    public void setScale(Vector3 p);
 }

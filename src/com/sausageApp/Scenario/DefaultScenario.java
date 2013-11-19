@@ -80,7 +80,9 @@ public class DefaultScenario implements Scenario{
         if (sensor.usage.equals("GRAVITY")){
             state.box.world.setGravity( new Vector2(0f,sensor.fmod) );
         }
+        enterSpecialSensor(sensor, player);
     }
+    public void enterSpecialSensor(SensorObject sensor, Player player){}
 
     public void exitSensor(SensorObject sensor, Player player){
         if (sensor.usage.equals("ZOOM")){
@@ -90,6 +92,8 @@ public class DefaultScenario implements Scenario{
             state.box.world.setGravity( new Vector2(0f,sensor.fmod) );
             state.scene.gravity.y = sensor.fmod;
         }
+        exitSpecialSensor(sensor, player);
     }
+    public void exitSpecialSensor(SensorObject sensor, Player player){}
 
 }

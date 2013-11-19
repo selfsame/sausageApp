@@ -9,9 +9,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Json;
 import com.sausageApp.Game.State;
 import com.sausageApp.Game.Units;
+import com.sausageApp.Simulation.Moveable;
+import com.sausageApp.TweenAccessors.GameInstanceAccessor;
 import com.sausageApp.TweenAccessors.GameObjectAccessor;
 import com.sausageApp.TweenAccessors.MoveableAccessor;
 
@@ -50,13 +54,14 @@ public class Scene {
     private ArrayList<GameObject> vertex_meshes_alpha = new ArrayList<GameObject>();
 
 
-    private ArrayList<GameInstance> instances = new ArrayList<GameInstance>();
+    public ArrayList<GameInstance> instances = new ArrayList<GameInstance>();
 
 
     public HashMap<String, GameObject> object_map = new HashMap<String, GameObject>();
     public ArrayList<DynamicObject> dynamics = new ArrayList<DynamicObject>();
     public ArrayList<SensorObject> sensors = new ArrayList<SensorObject>();
     public ArrayList<Locus> spawn_points = new ArrayList<Locus>();
+    public ArrayList<Locus> pickup_points = new ArrayList<Locus>();
 
     public Vector2 gravity;
     public GameCamera camera;
@@ -65,8 +70,22 @@ public class Scene {
     //public Scenario scenario;
 
     public Scene(String filename){
+        LevelMeshCompiler level_geo = new LevelMeshCompiler();
+
+        // load common data
+        scene_data = json.fromJson(SceneData.class,Gdx.files.internal("scenarios/common.json"));
+        groups = scene_data.groups;
+        for (VertexObject obj: scene_data.game_objects) {
+            GameObject game_obj = new GameObject(obj, level_geo);
+            object_map.put(game_obj.name, game_obj);
+            if (game_obj.template == true){
+                templates.put(game_obj.name, game_obj);
+            }
+        }
+
         Tween.registerAccessor(GameCamera.class, new MoveableAccessor());
         Tween.registerAccessor(GameObject.class, new GameObjectAccessor());
+        Tween.registerAccessor(GameInstance.class, new GameInstanceAccessor());
         scene_data = json.fromJson(SceneData.class, Gdx.files.internal( filename ));
         gravity = new Vector2(.0f, scene_data.gravity);
         state.newBox(gravity);
@@ -74,12 +93,15 @@ public class Scene {
         camera = new GameCamera(46.596f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(0f, 0f, 40f);
 
-        groups = scene_data.groups;
+        for (String gname: scene_data.groups.keySet()){
+            groups.put(gname, scene_data.groups.get(gname));
+        }
+
         for (InstanceData data: scene_data.instances) {
             instances.add(new GameInstance(data));
         }
 
-        LevelMeshCompiler level_geo = new LevelMeshCompiler();
+
 
         for (VertexObject obj: scene_data.game_objects) {
             GameObject game_obj = new GameObject(obj, level_geo);
@@ -113,6 +135,8 @@ public class Scene {
         for (Locus locus: scene_data.locii) {
             if (locus.usage.equals("PLAYER_SPAWN")){
                 spawn_points.add(locus);
+            } else {
+                pickup_points.add(locus);
             }
 
         }
@@ -184,7 +208,23 @@ public class Scene {
 
             Gdx.gl.glDepthFunc(GL20.GL_LESS);
             level_shader.setUniformMatrix("u_viewProj", camera.combined);
+            if (state.game.players.size() > 0 ){
 
+                //p =  units.P2S(state.game.players.get(0).sausage.tail.getPosition().add(80f, 40f).scl(4f));
+                //Vector3 pp = new Vector3(p.x,p.y,0f);
+                //pp = camera.combined.getTranslation(pp);
+                //state.log(":::"+pp.x+","+pp.y);
+                short s = (short) ((short)state.game.players.get(0).sausage.sausage_bodies.size()*2);
+                float[] nodes = new float[s];
+                float w = Gdx.graphics.getWidth();
+                float h = Gdx.graphics.getHeight();
+                for (int i=0;i< s/2;i++) {
+                    Vector2 p = units.B2S(state.game.players.get(0).sausage.sausage_bodies.get(i).getPosition());
+                    nodes[i*2] = w/2f + p.x/2f + camera.position.x/2f;
+                    nodes[i*2+1] = (h*1.5f-p.y)/2f;
+                }
+                //level_shader.setUniform2fv("nodes", nodes, 0, nodes.length);
+            }
             for (GameObject obj: vertex_meshes) {
                 level_shader.setUniformMatrix("u_obj_mat4", obj.local_mat4);
                 obj.mesh.render(level_shader, GL20.GL_TRIANGLES);
