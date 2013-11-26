@@ -3,6 +3,8 @@ package com.sausageApp.Scene;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
+import java.util.ArrayList;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jplur
@@ -11,6 +13,8 @@ import com.badlogic.gdx.math.Vector3;
  * To change this template use File | Settings | File Templates.
  */
 public class SensorData {
+    public String name;
+    public ArrayList<String> children = null;
     public String tag;
     public String usage;
     public boolean enter;

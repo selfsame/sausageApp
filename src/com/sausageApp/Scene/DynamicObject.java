@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.sausageApp.Game.State;
 import com.sausageApp.Game.Units;
+import com.sausageApp.Simulation.Moveable;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,8 @@ public class DynamicObject extends DynamicData{
 
     public String type;
     public String name;
+    public ArrayList<String> children = null;
+    public Moveable parent = null;
     public float radius;
     public float friction;
     public float restitution;
@@ -22,7 +25,7 @@ public class DynamicObject extends DynamicData{
     public float mass;
     public ArrayList<String> classes = new ArrayList<String>();
     public float[] verts;
-    public ArrayList<String> children;
+
 
     public ArrayList<GameObject> visuals = new ArrayList<GameObject>();
 
@@ -31,6 +34,7 @@ public class DynamicObject extends DynamicData{
     public DynamicObject(Scene scene, DynamicData data){
         type = data.type;
         name = data.name;
+
         radius = data.radius;
         position = new Vector3(data.position);
         friction = data.friction;

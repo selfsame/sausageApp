@@ -34,7 +34,7 @@ public class StarCollect extends DefaultScenario implements Scenario {
     }
 
     public void start(){
-
+      Tween.to(state.scene.object_map.get("grandfather_clock"), GameInstanceAccessor.POSITION_X, .6f).targetRelative(-.05f).repeatYoyo(10000, 0f).start(state.scene.tweenManager);
       for (SensorObject sensor: state.scene.sensors){
           if (sensor.usage.equals("GENERIC")){
               GameInstance star = new GameInstance("star"+sensor.loc[0], "star", new Vector3(sensor.loc[0], -sensor.loc[1], 0f), new Vector3(1f,1f,1f), new Quaternion() );

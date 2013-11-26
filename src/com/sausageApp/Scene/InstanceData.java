@@ -14,6 +14,7 @@ import java.util.ArrayList;
  */
 public class InstanceData {
     public String name;
+    public ArrayList<String> children;
     public float[] position;
     public float[] scale;
     public float[] quaternion;

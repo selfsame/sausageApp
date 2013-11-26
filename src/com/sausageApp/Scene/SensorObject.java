@@ -8,8 +8,10 @@ import com.sausageApp.Game.Units;
 import com.sausageApp.Players.Link;
 import com.sausageApp.Players.Player;
 import com.sausageApp.Simulation.Contactable;
+import com.sausageApp.Simulation.Moveable;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -20,6 +22,9 @@ import java.util.HashMap;
  * To change this template use File | Settings | File Templates.
  */
 public class SensorObject implements Contactable {
+    public String name;
+    public ArrayList<String> children = null;
+    public Moveable parent = null;
     public State state = State.getInstance();
     private Units units = new Units();
 
@@ -38,6 +43,8 @@ public class SensorObject implements Contactable {
     public boolean active = false;
 
     public SensorObject(SensorData data){
+        name = data.name;
+        children = data.children;
         tag = data.tag;
         usage = data.usage;
         fmod = data.fmod;

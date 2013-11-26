@@ -1,5 +1,7 @@
 package com.sausageApp.Scene;
 
+import java.util.ArrayList;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jplur
@@ -8,6 +10,8 @@ package com.sausageApp.Scene;
  * To change this template use File | Settings | File Templates.
  */
 public class Locus {
+    public String name;
+    public ArrayList<String> children = null;
     public String tag;
     public String usage;
     public float fmod;

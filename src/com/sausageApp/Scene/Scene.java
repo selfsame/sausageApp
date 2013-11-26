@@ -160,6 +160,19 @@ public class Scene {
             dynamics.add(d);
         }
 
+        for (GameObject obj: object_map.values()){
+            //state.log("::"+obj.children);
+            if (obj.children != null){
+                for (String cname: obj.children){
+                    if (object_map.containsKey(cname)){
+
+                        //object_map.get(cname).setPosition(object_map.get(cname).position.sub(obj.position));
+                        object_map.get(cname).parent = obj.name;
+                    }
+                }
+            }
+        }
+
 //        Tween.to(object_map.get("Lamp"), GameObjectAccessor.POSITION_Y, .3f).targetRelative(.1f).repeatYoyo(100, 0f).start(tweenManager);
 //        Tween.to(object_map.get("Lamp"), GameObjectAccessor.SCALE_XYZ, .1f).delay(.3f).target(1f,1f,.5f).repeatYoyo(100, .2f).start(tweenManager);
 //        Tween.to(object_map.get("Cloud"), GameObjectAccessor.POSITION_X, 40f).targetRelative(-50f).repeatYoyo(10, .2f).start(tweenManager);

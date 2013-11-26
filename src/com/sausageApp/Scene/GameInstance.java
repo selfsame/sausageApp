@@ -8,6 +8,8 @@ import com.sausageApp.Scene.LevelMeshCompiler;
 import com.sausageApp.Scene.VertexObject;
 import com.sausageApp.Simulation.Moveable;
 
+import java.util.ArrayList;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jplur
@@ -17,6 +19,8 @@ import com.sausageApp.Simulation.Moveable;
  */
 public class GameInstance implements Moveable {
     public String name = null;
+    public ArrayList<String> children = null;
+    public String parent = null;
 
 
 
@@ -34,6 +38,7 @@ public class GameInstance implements Moveable {
 
     public GameInstance(InstanceData data){
         name = data.name;
+        children = data.children;
         group = data.group;
         position = new Vector3(data.position);
         scale = new Vector3(data.scale[0], data.scale[1], data.scale[2] );

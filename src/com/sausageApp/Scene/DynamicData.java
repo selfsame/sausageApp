@@ -12,13 +12,14 @@ import java.util.ArrayList;
 public class DynamicData {
     public String type;
     public String name;
+    public ArrayList<String> children = null;
     public float radius;
     public float friction;
     public float restitution;
     public float[] position = new float[]{};
     public float mass;
     public float[] verts;
-    public ArrayList<String> children;
+
     public ArrayList<String> classes = new ArrayList<String>();
     public DynamicData(){};
 }

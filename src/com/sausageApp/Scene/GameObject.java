@@ -4,9 +4,12 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.sausageApp.Game.State;
 import com.sausageApp.Scene.LevelMeshCompiler;
 import com.sausageApp.Scene.VertexObject;
 import com.sausageApp.Simulation.Moveable;
+
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,7 +19,10 @@ import com.sausageApp.Simulation.Moveable;
  * To change this template use File | Settings | File Templates.
  */
 public class GameObject implements Moveable {
+    public State state = State.getInstance();
     public String name = null;
+    public ArrayList<String> children = null;
+    public String parent = null;
     public boolean texture;
     public boolean wire;
 
@@ -42,6 +48,7 @@ public class GameObject implements Moveable {
 
     public GameObject(VertexObject data, LevelMeshCompiler meshCompiler){
         name = data.name;
+        children = data.children;
         wire = data.wire;
         template = data.template;
         position = new Vector3(data.position);
@@ -78,7 +85,25 @@ public class GameObject implements Moveable {
         smat = new Matrix4().scl(scale);
         rmat = new Matrix4().rotate(rotation);
         tmat = new Matrix4().translate(position);
+        //tmat = new Matrix4().translate(position.cpy().add( getParentPosition()));
         local_mat4 = tmat.mul(rmat).mul(smat);
+        if (parent != null){
+
+            GameObject pobj = state.scene.object_map.get(parent);
+            Matrix4 p_mat4 = pobj.local_mat4.cpy();
+
+            Matrix4 psmat = new Matrix4().scl(getParentScale());
+            //rmat = new Matrix4().rotate(pobj.rotation).inv().mul(new Matrix4().rotate(rotation)) ;
+
+            Matrix4 prmat = new Matrix4().rotate(getParentRotation());
+            //Matrix4 ptmat = new Matrix4().translate(getParentPosition());//new Matrix4().translate(position.cpy().add( getParentPosition()));
+            Matrix4 ptmat = new Matrix4().translate(position);
+
+            //local_mat4 = p_mat4.mul(tmat).mul(smat);
+            local_mat4 = p_mat4.mul(local_mat4);
+
+        }
+
     }
 
 
@@ -98,6 +123,8 @@ public class GameObject implements Moveable {
     public void setPosition(Vector3 p){
         position = p;
         UpdateMatrix();
+        updateChildPosition();
+
     }
 
     public void setScale(Vector3 p){
@@ -105,5 +132,48 @@ public class GameObject implements Moveable {
         UpdateMatrix();
     }
 
+    public void updateChildPosition(){
+        for (String cname: children){
+            if (state.scene.object_map.containsKey(cname)){
+                GameObject child = state.scene.object_map.get(cname);
+                child.UpdateMatrix();
+                child.updateChildPosition();
+            }
+        }
+    }
+
+    public Vector3 getParentPosition(){
+        if (parent != null){
+            if (state.scene.object_map.containsKey(parent)){
+                return state.scene.object_map.get(parent).position.cpy().add(state.scene.object_map.get(parent).getParentPosition());
+            }
+        }
+        return new Vector3(0f,0f,0f);
+    }
+
+    public Vector3 getParentScale(){
+        if (parent != null){
+            if (state.scene.object_map.containsKey(parent)){
+                Vector3 ps = state.scene.object_map.get(parent).getParentScale();
+                return state.scene.object_map.get(parent).scale.cpy().scl(ps);   //new Vector3(ps.x,ps.y,ps.z)
+            }
+        }
+        return scale.cpy();//return new Vector3(1f,1f,1f);
+    }
+
+    public Quaternion getParentRotation(){
+        if (parent != null){
+            if (state.scene.object_map.containsKey(parent)){
+                Quaternion pr = state.scene.object_map.get(parent).getParentRotation();
+                Quaternion r =  rotation.cpy();
+
+                return pr.mul(state.scene.object_map.get(parent).rotation.cpy());
+                //return state.scene.object_map.get(parent).rotation.cpy().mul(pr);
+            }
+        }
+        // bad hack beacause the model space rotation is not using the coordinate system of the game
+        return rotation.cpy();//.mul(new Quaternion().setEulerAngles(0f,0f,0f));
+
+    }
 
 }

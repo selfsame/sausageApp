@@ -14,6 +14,7 @@ import java.util.ArrayList;
  */
 public class VertexObject {
     public String name;
+    public ArrayList<String> children = null;
     public boolean texture;
     public float[] position;
     public float[] scale;

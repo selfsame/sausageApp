@@ -1,11 +1,13 @@
 package com.sausageApp.Scenario;
 
+import aurelienribon.tweenengine.Tween;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.sausageApp.Game.State;
 import com.sausageApp.Game.Units;
 import com.sausageApp.Players.Player;
 import com.sausageApp.Scene.SensorObject;
+import com.sausageApp.TweenAccessors.GameInstanceAccessor;
 import tv.ouya.console.api.OuyaController;
 
 
@@ -27,7 +29,9 @@ public class DefaultScenario implements Scenario{
     }
 
     public void start(){
-
+        Tween.to(state.scene.object_map.get("grandfather_clock"), GameInstanceAccessor.POSITION_X, .6f).targetRelative(-.05f).repeatYoyo(10000, 0f).start(state.scene.tweenManager);
+        Tween.to(state.scene.object_map.get("Lamp.001"), GameInstanceAccessor.POSITION_Z, .6f).targetRelative(.05f).repeatYoyo(10000, 0f).start(state.scene.tweenManager);
+        Tween.to(state.scene.object_map.get("grandfather_clock.001"), GameInstanceAccessor.POSITION_X, .6f).targetRelative(-.05f).repeatYoyo(10000, 0f).start(state.scene.tweenManager);
     }
 
     public void update(float delta){
