@@ -86,18 +86,13 @@ public class GameObject implements Moveable {
         rmat = new Matrix4().rotate(rotation);
         tmat = new Matrix4().translate(position);
         //tmat = new Matrix4().translate(position.cpy().add( getParentPosition()));
-        local_mat4 = tmat.mul(rmat).mul(smat);
+        local_mat4 = tmat.cpy().mul(rmat.cpy()).mul(smat.cpy());
         if (parent != null){
 
             GameObject pobj = state.scene.object_map.get(parent);
             Matrix4 p_mat4 = pobj.local_mat4.cpy();
+            local_mat4 = tmat.cpy().mul(rmat.cpy()).mul(smat.cpy());
 
-            Matrix4 psmat = new Matrix4().scl(getParentScale());
-            //rmat = new Matrix4().rotate(pobj.rotation).inv().mul(new Matrix4().rotate(rotation)) ;
-
-            Matrix4 prmat = new Matrix4().rotate(getParentRotation());
-            //Matrix4 ptmat = new Matrix4().translate(getParentPosition());//new Matrix4().translate(position.cpy().add( getParentPosition()));
-            Matrix4 ptmat = new Matrix4().translate(position);
 
             //local_mat4 = p_mat4.mul(tmat).mul(smat);
             local_mat4 = p_mat4.mul(local_mat4);
